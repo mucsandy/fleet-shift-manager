@@ -1,3 +1,5 @@
+<p align="center"><img src="assets/fleet-icon.svg" alt="Fleet Shift Manager icon" width="72"></p>
+
 <h1 align="center">Fleet Shift Manager</h1>
 
 <p align="center"><strong>A clearer handover. A useful history. Less paper in the vehicle.</strong></p>
@@ -12,6 +14,7 @@
 
 <p align="center">
   <a href="#why-i-built-it">The idea</a> ·
+  <a href="#see-the-app">See the app</a> ·
   <a href="#what-the-app-does">Features</a> ·
   <a href="#handovers-that-fit-real-life">Handover types</a> ·
   <a href="#setup--release-status">Setup</a> ·
@@ -19,6 +22,43 @@
 </p>
 
 ---
+
+![Fleet Shift Manager: handover choices and a marked damage report in the iPhone SE preview](assets/showcase/cover.png)
+
+## See the app
+
+![Animated tour of vehicle selection, handovers, damage reports, tasks and shift leadership](assets/showcase/feature-tour.gif)
+
+*Actual captures from Power Apps' iPhone SE preview (375 × 667), with fictional demo data. The GIF is a screenshot sequence with presentation transitions, not a performance recording. The sample damage photo is AI-generated and labeled in the app.*
+
+| Start with the right vehicle | Record what actually happened |
+| :---: | :---: |
+| <img src="assets/screenshots/vehicle-picker.png" alt="Choose between fictional pool and replacement vehicles" width="280"> | <img src="assets/screenshots/handover-types.png" alt="Six handover and logbook operation types" width="280"> |
+| Damage and tasks follow the selected vehicle. | Direct handover, park, collect, logbook entry and workshop journeys. |
+
+| Put damage in the right place | Find the current shift lead |
+| :---: | :---: |
+| <img src="assets/screenshots/damage-map.png" alt="Front vehicle sketch with a numbered damage point" width="280"> | <img src="assets/screenshots/shift-leads.png" alt="Current shift lead highlighted above the weekly roster" width="280"> |
+| Open a report from its point on the sketch. | Guides and shift leadership have separate views. |
+
+<details>
+<summary>More app screenshots: tasks, guides and damage details</summary>
+
+![Handovers, damage and shift leadership together](assets/showcase/workflow-overview.png)
+
+| Due vehicle tasks | Task instructions and documentation |
+| :---: | :---: |
+| <img src="assets/screenshots/tasks.png" alt="Due tasks for the selected vehicle" width="280"> | <img src="assets/screenshots/task-checklist.png" alt="Task instructions and person selection" width="280"> |
+
+| Information and guides | Saved damage details |
+| :---: | :---: |
+| <img src="assets/screenshots/information.png" alt="Information and document view with guide cards" width="280"> | <img src="assets/screenshots/damage-detail.png" alt="Saved fictional damage report" width="280"> |
+
+<p align="center"><img src="assets/screenshots/damage-photo.png" alt="Labeled AI-generated example photo shown in its matching damage report" width="300"></p>
+
+The sample bumper image is artificial, clearly labeled and associated only with the fictional front-left report. It is not an operational damage photograph.
+
+</details>
 
 ## Why I built it
 
@@ -80,7 +120,7 @@ The connected workflow is designed around SharePoint. A real deployment needs it
 
 ## Setup & release status
 
-**This repository is currently a README-only project preview. The app source, screenshots, guides and an importable app package have not been published here yet.**
+**This repository is currently a project preview with the README, app screenshots and an animated tour. The app source, separate guides and an importable app package have not been published here yet.**
 
 There is no installable download at this stage. A GitHub repository ZIP is not a Power Apps import package.
 
@@ -120,6 +160,13 @@ If this project saves you some work, you can buy me a coffee. It's entirely opti
 </a>
 
 [Support the project via PayPal](https://www.paypal.com/qrcodes/p2pqrc/QCZZ628B4PT2W)
+
+<details>
+<summary>Or scan the PayPal QR code</summary>
+
+<p><a href="https://www.paypal.com/qrcodes/p2pqrc/QCZZ628B4PT2W"><img src="assets/support/paypal-qr.png" alt="PayPal support QR code" width="220"></a></p>
+
+</details>
 
 ## License
 
