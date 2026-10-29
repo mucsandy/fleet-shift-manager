@@ -1,2 +1,151 @@
-# fleet-shift-manager
-Volunteer-built Power Apps template for fleet handovers, digital logbooks, damage reports and shift information. Anonymized community edition.
+<h1 align="center">Fleet Shift Manager</h1>
+
+<p align="center"><strong>A clearer handover. A useful history. Less paper in the vehicle.</strong></p>
+<p align="center">A mobile Microsoft Power Apps project for teams that share vehicles.</p>
+
+<p align="center">
+  <img alt="Built with Power Apps" src="https://img.shields.io/badge/built_with-Power_Apps-76D9C3?style=flat-square&labelColor=14243D">
+  <img alt="Power Fx" src="https://img.shields.io/badge/logic-Power_Fx-76D9C3?style=flat-square&labelColor=14243D">
+  <img alt="README preview" src="https://img.shields.io/badge/status-project_preview-C61F3A?style=flat-square&labelColor=14243D">
+  <a href="#license"><img alt="MIT license" src="https://img.shields.io/badge/license-MIT-76D9C3?style=flat-square&labelColor=14243D"></a>
+</p>
+
+<p align="center">
+  <a href="#why-i-built-it">The idea</a> ·
+  <a href="#what-the-app-does">Features</a> ·
+  <a href="#handovers-that-fit-real-life">Handover types</a> ·
+  <a href="#setup--release-status">Setup</a> ·
+  <a href="#buy-me-a-coffee">Buy me a coffee</a>
+</p>
+
+---
+
+## Why I built it
+
+I wanted the next driver to be able to answer a few simple questions:
+
+**Who last used this vehicle? What condition was it left in? Is there anything I need to deal with before I go?**
+
+The answers were spread across a paper logbook, a folder in the vehicle and handover conversations. I built Fleet Shift Manager to bring that routine into one place, from choosing the vehicle to documenting what happened during the shift.
+
+It grew out of my volunteer work, but the workflow is useful anywhere a team shares vehicles. I'm preparing an anonymized English community edition so other teams can study it, adapt it and save themselves some of the work.
+
+## What the app does
+
+| Workflow | What it brings together |
+| --- | --- |
+| **Vehicle selection** | Choose the actual vehicle before opening its damage reports or tasks. |
+| **Handovers** | Record the people involved, vehicle condition and equipment checks, including cases without an in-person handover. |
+| **Digital logbook** | Start/end times, odometer readings, journey details, refueling liters and a signature or explicit name confirmation. |
+| **Damage reports** | Put a report on the right point of a vehicle sketch and follow its review status. |
+| **Workshop visits** | Handle a workshop drop-off, a replacement vehicle and the return to the original vehicle. |
+| **Recurring tasks** | Read instructions, document completion or explain an issue, then keep a readable history. |
+| **Shift information** | Separate views for guides and the shift-lead roster, with the current duty period highlighted. |
+| **Administration** | Role-dependent screens for people, vehicles, task plans and content. |
+
+Further shift documents are planned for the information area.
+
+## Handovers that fit real life
+
+Sometimes you hand the keys directly to another driver. Sometimes you park the vehicle and leave. Sometimes the next person collects it hours later.
+
+The app makes those different events explicit:
+
+1. **Driver to driver** — a direct handover to another person.
+2. **Park vehicle — no direct handover** — leave the vehicle without a recipient present.
+3. **Collect vehicle — no direct handover** — pick it up without an in-person giver.
+4. **Logbook entry without a handover** — record a journey without transferring the vehicle.
+5. **Workshop / vehicle swap** — document the workshop and replacement workflow.
+6. **Vehicle back from workshop** — record the original vehicle's return.
+
+A parked vehicle still needs a clear history. The last recorded giver remains available to the next driver even when there was no direct handover.
+
+## A record the next driver can use
+
+Time and odometer checks help catch invalid entries before saving. Refueling can include the amount in liters. The saved logbook details retain the values and confirmation captured for that operation, rather than borrowing the current form draft.
+
+Damage reports link to points on vehicle diagrams, while leadership review and vehicle-release decisions are kept separate from the original report. Recurring tasks bring their instructions and documented outcomes into the same vehicle context.
+
+## The English demo
+
+The prepared demo is a separate Canvas app with seven English screens and nine typed local collections. It uses fictional people, vehicles, tasks and reports.
+
+- Changes last for the current app session.
+- There are no business connectors, live directory lookups or email dispatch.
+- A role switch lets you explore the leadership and administration views. It is a simulation, not access control.
+- Photo uploads are disabled in the disconnected edition. The sample damage photo is AI-generated and clearly labeled.
+- Signature drawing and explicit name confirmation are local workflow acknowledgements, not a certified electronic-signature service.
+
+The connected workflow is designed around SharePoint. A real deployment needs its own lists, connections, permissions and attachment handling; the disconnected demo does not test those integrations.
+
+## Setup & release status
+
+**This repository is currently a README-only project preview. The app source, screenshots, guides and an importable app package have not been published here yet.**
+
+There is no installable download at this stage. A GitHub repository ZIP is not a Power Apps import package.
+
+For a future deployment you will need:
+
+- A Power Apps account, applicable licensing and permission to create/edit apps in your chosen environment.
+- A separate development app or environment for initial setup and testing.
+- For persistent shared records: a backend you control, with the required lists, connections and real data-source permissions.
+- Tests with ordinary driver and leadership accounts, plus the phones your team actually uses.
+
+Installation instructions will accompany the reviewed release artifact. Microsoft documents [Canvas app package import](https://learn.microsoft.com/en-us/power-apps/maker/canvas-apps/export-import-app-package) and [Canvas source files](https://learn.microsoft.com/en-us/power-apps/maker/canvas-apps/power-apps-yaml); these are different from downloading a source repository.
+
+You can follow the project here on GitHub for the next update.
+
+## A few boundaries
+
+The community edition uses invented people and vehicles and contains no operational records or organization branding. This is an independent project.
+
+**A damage entry in the app does not replace the required accident report or your organization's reporting procedure.**
+
+In a connected app, enforce access at the backing data source. Hiding an administration button is not a permission model. Full workshop/replacement regression tests, physical-device checks and a fresh-environment installation test remain part of the release work.
+
+## Feedback
+
+If your team uses shared vehicles, I'd like to hear which part of the handover is most often missed. Bugs with a clear reproduction, small improvements and examples of other routines are welcome.
+
+[Open an issue](https://github.com/mucsandy/fleet-shift-manager/issues) · [My GitHub profile](https://github.com/mucsandy)
+
+Please use fictional data in public examples. Do not include personal details, real signatures, credentials or operational photographs.
+
+## Buy me a coffee
+
+If this project saves you some work, you can buy me a coffee. It's entirely optional — feedback and sharing the project are appreciated too.
+
+<a href="https://www.paypal.com/qrcodes/p2pqrc/QCZZ628B4PT2W">
+  <img src="https://img.shields.io/badge/Buy_me_a_coffee-PayPal-0070BA?style=for-the-badge&logo=paypal&logoColor=white" alt="Buy me a coffee via PayPal">
+</a>
+
+[Support the project via PayPal](https://www.paypal.com/qrcodes/p2pqrc/QCZZ628B4PT2W)
+
+## License
+
+<details>
+<summary>MIT License — original project work</summary>
+
+Copyright (c) 2026 mucsandy
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+</details>
+
+Microsoft Power Apps and other platform products remain subject to their own terms.
