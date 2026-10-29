@@ -1,0 +1,1355 @@
+# ************************************************************************************************
+# Warning: YAML source code for Canvas Apps should only be used to review changes made within Power Apps Studio and for minor edits (Preview).
+# Use the maker portal to create and edit your Power Apps.
+# 
+# The schema file for Canvas Apps is available at https://go.microsoft.com/fwlink/?linkid=2304907
+# 
+# For more information, visit https://go.microsoft.com/fwlink/?linkid=2292623
+# ************************************************************************************************
+Screens:
+  Information:
+    Properties:
+      OnVisible: =With({deviceNow:Now()},With({utcNow:DateAdd(deviceNow,TimeZoneOffset(deviceNow),TimeUnit.Minutes)},With({y:Year(utcNow)},With({marchEnd:Date(y,3,31),octEnd:Date(y,10,31)},With({dstStart:DateAdd(DateAdd(marchEnd,1-Weekday(marchEnd,StartOfWeek.Sunday),TimeUnit.Days),1,TimeUnit.Hours),dstEnd:DateAdd(DateAdd(octEnd,1-Weekday(octEnd,StartOfWeek.Sunday),TimeUnit.Days),1,TimeUnit.Hours)},With({berlinNow:DateAdd(utcNow,If(utcNow>=dstStart && utcNow<dstEnd,120,60),TimeUnit.Minutes)},If(IsBlank(locInfDutyMinute) || locInfDutyMinute<>((Weekday(berlinNow,StartOfWeek.Monday)-1)*1440+Hour(berlinNow)*60+Minute(berlinNow)),UpdateContext({locInfDutyMinute:(Weekday(berlinNow,StartOfWeek.Monday)-1)*1440+Hour(berlinNow)*60+Minute(berlinNow)})))))))); If(IsBlank(locInfAuditSection),UpdateContext({locInfAuditSection:"Info"})); If(IsBlank(locInfView) || locInfView="Contact" || locInfView="ContactOptions",UpdateContext({locInfView:"Browse",locInfAuditSection:"Info"})); If(!locInfLoading,UpdateContext({locInfError:"",locInfLoading:true,locInfAuditGuideError:"",locInfAuditMemberError:""}); Concurrent(If(false || IsBlank(locInfAuditGuideLoadedAt) || DateDiff(locInfAuditGuideLoadedAt,Now(),TimeUnit.Seconds)>=120,IfError(true; UpdateContext({locInfAuditGuideLoadedAt:Now()}),UpdateContext({locInfAuditGuideError:FirstError.Message,locInfAuditGuideLoadedAt:Blank()}))),IfError(true;Set(varOperator,LookUp(FleetMembers,Person.Email=varDemoUser.Email)),Set(varOperator,LookUp(FleetMembers,ID=0));UpdateContext({locInfAuditMemberError:FirstError.Message}))); If(varGuideId>0,UpdateContext({locInfGuide:LookUp(FleetGuides,ID=varGuideId && PublicationStatus.Value="Approved")})); UpdateContext({locInfError:Trim(locInfAuditGuideError & " " & locInfAuditMemberError),locInfLoading:false}))
+    Children:
+      - InfRoot:
+          Control: GroupContainer@1.5.0
+          Variant: AutoLayout
+          Properties:
+            DropShadow: =DropShadow.None
+            Fill: =ColorValue("#F2F5FA")
+            Height: =Parent.Height
+            LayoutAlignItems: =LayoutAlignItems.Stretch
+            LayoutDirection: =LayoutDirection.Vertical
+            Width: =Parent.Width
+          Children:
+            - InfHeader:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  BorderColor: =ColorValue("#E8EBF1")
+                  DropShadow: =DropShadow.None
+                  Fill: =Color.White
+                  FillPortions: =0
+                  Height: =64
+                  LayoutAlignItems: =LayoutAlignItems.Center
+                  LayoutDirection: =LayoutDirection.Horizontal
+                  LayoutGap: =8
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingLeft: =12
+                  PaddingRight: =12
+                Children:
+                  - InfBack:
+                      Control: ModernButton@1.0.0
+                      Properties:
+                        AccessibleLabel: ="Back"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        Appearance: =ButtonAppearance.Transparent
+                        BasePaletteColor: =ColorValue("#C8102E")
+                        BorderThickness: =0
+                        Color: =ColorValue("#10233F")
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =48
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnSelect: =If(Coalesce(locInfView,"Browse") <> "Browse", UpdateContext({locInfView:"Browse"}), Switch(varInfoOrigin,"Damage",Navigate(DamageReports),"Hygiene",Navigate(HygieneCheck),Navigate(VehicleHome)))
+                        RadiusBottomLeft: =16
+                        RadiusBottomRight: =16
+                        RadiusTopLeft: =16
+                        RadiusTopRight: =16
+                        Size: =16
+                        Text: ="‹"
+                        Width: =48
+                  - InfHeading:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        Color: =ColorValue("#10233F")
+                        FillPortions: =1
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Bold
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Role: =TextRole.Heading1
+                        Size: =22
+                        Text: ="DEMO · Info"
+                        Wrap: =false
+                  - InfRefresh:
+                      Control: ModernButton@1.0.0
+                      Properties:
+                        AccessibleLabel: ="Reload information"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        Appearance: =ButtonAppearance.Transparent
+                        BasePaletteColor: =ColorValue("#C8102E")
+                        BorderThickness: =0
+                        Color: =ColorValue("#10233F")
+                        DisplayMode: =If(locInfLoading,DisplayMode.Disabled,DisplayMode.Edit)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =48
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnSelect: =If(!locInfLoading,UpdateContext({locInfError:"",locInfLoading:true,locInfAuditGuideError:"",locInfAuditMemberError:""}); Concurrent(If(true || IsBlank(locInfAuditGuideLoadedAt) || DateDiff(locInfAuditGuideLoadedAt,Now(),TimeUnit.Seconds)>=120,IfError(true; UpdateContext({locInfAuditGuideLoadedAt:Now()}),UpdateContext({locInfAuditGuideError:FirstError.Message,locInfAuditGuideLoadedAt:Blank()}))),IfError(true;Set(varOperator,LookUp(FleetMembers,Person.Email=varDemoUser.Email)),Set(varOperator,LookUp(FleetMembers,ID=0));UpdateContext({locInfAuditMemberError:FirstError.Message}))); If(varGuideId>0,UpdateContext({locInfGuide:LookUp(FleetGuides,ID=varGuideId && PublicationStatus.Value="Approved")})); UpdateContext({locInfError:Trim(locInfAuditGuideError & " " & locInfAuditMemberError),locInfLoading:false}))
+                        RadiusBottomLeft: =16
+                        RadiusBottomRight: =16
+                        RadiusTopLeft: =16
+                        RadiusTopRight: =16
+                        Size: =16
+                        Text: ="↻"
+                        Width: =48
+            - InfBody:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  AlignInContainer: =AlignInContainer.Center
+                  DropShadow: =DropShadow.None
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =8
+                  LayoutMaxWidth: =1040
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  LayoutOverflowY: =LayoutOverflow.Scroll
+                  PaddingBottom: =8
+                  PaddingLeft: =If(Parent.Width<=320,12,16)
+                  PaddingRight: =If(Parent.Width<=320,12,16)
+                  PaddingTop: =8
+                  Width: =Min(Parent.Width,1040)
+                Children:
+                  - btnInfAuditInfo:
+                      Control: ModernButton@1.0.0
+                      Properties:
+                        AccessibleLabel: ="Info & documents"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        Appearance: =If(Coalesce(locInfAuditSection,"Info")="Info",ButtonAppearance.Primary,ButtonAppearance.Secondary)
+                        BasePaletteColor: =ColorValue("#10233F")
+                        BorderThickness: =0
+                        Color: =If(Coalesce(locInfAuditSection,"Info")="Info",Color.White,ColorValue("#10233F"))
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =48
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnSelect: =UpdateContext({locInfAuditSection:"Info",locInfView:"Browse"}); Reset(InfGuideGallery)
+                        RadiusBottomLeft: =16
+                        RadiusBottomRight: =16
+                        RadiusTopLeft: =16
+                        RadiusTopRight: =16
+                        Size: =16
+                        Text: ="Info & documents"
+                        Visible: =Coalesce(locInfView,"Browse")="Browse"
+                        Width: =Parent.Width-Parent.PaddingLeft-Parent.PaddingRight
+                  - btnInfAuditDuty:
+                      Control: ModernButton@1.0.0
+                      Properties:
+                        AccessibleLabel: ="Shift lead"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        Appearance: =If(Coalesce(locInfAuditSection,"Info")="Duty",ButtonAppearance.Primary,ButtonAppearance.Secondary)
+                        BasePaletteColor: =ColorValue("#10233F")
+                        BorderThickness: =0
+                        Color: =If(Coalesce(locInfAuditSection,"Info")="Duty",Color.White,ColorValue("#10233F"))
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =48
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnSelect: =UpdateContext({locInfAuditSection:"Duty",locInfView:"Browse"}); Reset(galInfDutyLeaders)
+                        RadiusBottomLeft: =16
+                        RadiusBottomRight: =16
+                        RadiusTopLeft: =16
+                        RadiusTopRight: =16
+                        Size: =16
+                        Text: ="Shift lead"
+                        Visible: =Coalesce(locInfView,"Browse")="Browse"
+                        Width: =Parent.Width-Parent.PaddingLeft-Parent.PaddingRight
+                  - btnInfDemoRole:
+                      Control: ModernButton@1.0.0
+                      Properties:
+                        AccessibleLabel: ="Change demo role. Simulation only."
+                        AlignInContainer: =AlignInContainer.Stretch
+                        Appearance: =ButtonAppearance.Secondary
+                        BasePaletteColor: =ColorValue("#C8102E")
+                        Color: =ColorValue("#10233F")
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =48
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnSelect: =Set(varDemoRoleIndex,If(varDemoRoleIndex=1,2,varDemoRoleIndex=2,3,1));Set(varDemoPerson,LookUp(FleetMembers,ID=varDemoRoleIndex).Person);Set(varDemoUser,{Email:varDemoPerson.Email,FullName:varDemoPerson.DisplayName,Image:varDemoPerson.Picture});Set(varOperator,LookUp(FleetMembers,ID=varDemoRoleIndex && Person.Email=varDemoUser.Email));Set(varReportId,0);Set(varTaskId,0);Set(varGiver,LookUp(FleetMembers,ID=0));Set(varReceiver,LookUp(FleetMembers,ID=0));UpdateContext({locInfAuditMemberError:"",locInfError:""})
+                        RadiusBottomLeft: =16
+                        RadiusBottomRight: =16
+                        RadiusTopLeft: =16
+                        RadiusTopRight: =16
+                        Size: =16
+                        Text: |-
+                          ="Demo role: " & varOperator.Role.Value & " ↻"
+                        Visible: =Coalesce(locInfView,"Browse")="Browse" && Coalesce(locInfAuditSection,"Info")="Info"
+                        Width: =Parent.Width-Parent.PaddingLeft-Parent.PaddingRight
+                  - lblInfDutyTitle:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =ColorValue("#14253D")
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Bold
+                        Height: =38
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        Role: =TextRole.Heading2
+                        Size: =24
+                        Text: ="YOUR SHIFT LEADS"
+                        Visible: =Coalesce(locInfView,"Browse")="Browse" && locInfAuditSection="Duty"
+                  - lblInfDutyHint:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =ColorValue("#43566F")
+                        Font: =Font.'Segoe UI'
+                        Height: =42
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        Size: =14
+                        Text: |-
+                          ="On duty now: highlighted green · Weekly schedule in Berlin time"
+                        Visible: =Coalesce(locInfView,"Browse")="Browse" && locInfAuditSection="Duty"
+                  - galInfDutyLeaders:
+                      Control: Gallery@2.15.0
+                      Variant: Vertical
+                      Properties:
+                        AccessibleLabel: |-
+                          ="Shift leads: current shift first, then other weekly shifts"
+                        ContentLanguage: ="en-GB"
+                        DelayItemLoading: =false
+                        FillPortions: =0
+                        Height: =684
+                        Items: =SortByColumns(Table({Title:"Demo Lead A",Schedule:"Mon 08:00 – Wed 20:00",Phone:"",PhoneLink:"",Email:"lead-a@example.invalid",OnDuty:locInfDutyMinute>=480 && locInfDutyMinute<4080,SortPriority:If(locInfDutyMinute>=480 && locInfDutyMinute<4080,0,1)},{Title:"Demo Lead B",Schedule:"Wed 20:00 – Sat 08:00",Phone:"",PhoneLink:"",Email:"lead-b@example.invalid",OnDuty:locInfDutyMinute>=4080 && locInfDutyMinute<7680,SortPriority:If(locInfDutyMinute>=4080 && locInfDutyMinute<7680,0,2)},{Title:"Demo Lead C",Schedule:"Sat 08:00 – Mon 08:00",Phone:"",PhoneLink:"",Email:"lead-c@example.invalid",OnDuty:locInfDutyMinute>=7680 || locInfDutyMinute<480,SortPriority:If(locInfDutyMinute>=7680 || locInfDutyMinute<480,0,3)}),"SortPriority",SortOrder.Ascending)
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        LoadingSpinner: =LoadingSpinner.None
+                        Selectable: =false
+                        ShowScrollbar: =false
+                        TemplatePadding: =4
+                        TemplateSize: =220
+                        Visible: =Coalesce(locInfView,"Browse")="Browse" && locInfAuditSection="Duty"
+                        Width: =Parent.Width-If(InfRoot.Width<=320,24,32)
+                      Children:
+                        - conInfDutyCard:
+                            Control: GroupContainer@1.5.0
+                            Variant: AutoLayout
+                            Properties:
+                              BorderColor: =ColorValue("#E2E9F2")
+                              BorderThickness: =1
+                              Fill: =If(ThisItem.OnDuty,ColorValue("#08704A"),Color.White)
+                              Height: =218
+                              LayoutAlignItems: =LayoutAlignItems.Stretch
+                              LayoutDirection: =LayoutDirection.Vertical
+                              LayoutGap: =4
+                              PaddingBottom: =12
+                              PaddingLeft: =12
+                              PaddingRight: =12
+                              PaddingTop: =12
+                              RadiusBottomLeft: =24
+                              RadiusBottomRight: =24
+                              RadiusTopLeft: =24
+                              RadiusTopRight: =24
+                              Width: =Parent.TemplateWidth
+                            Children:
+                              - lblInfDutyStatus:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    AlignInContainer: =AlignInContainer.Stretch
+                                    Color: =If(ThisItem.OnDuty,Color.White,ColorValue("#18283B"))
+                                    Font: =Font.'Segoe UI'
+                                    FontWeight: =FontWeight.Bold
+                                    Height: =24
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    Live: =Live.Polite
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingRight: =0
+                                    PaddingTop: =0
+                                    Text: =If(ThisItem.OnDuty,"● ON DUTY NOW","REGULAR WEEKLY SHIFT")
+                                    Wrap: =false
+                              - lblInfDutyName:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    AlignInContainer: =AlignInContainer.Stretch
+                                    Color: =If(ThisItem.OnDuty,Color.White,ColorValue("#18283B"))
+                                    Font: =Font.'Segoe UI'
+                                    FontWeight: =FontWeight.Bold
+                                    Height: =36
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingRight: =0
+                                    PaddingTop: =0
+                                    Role: =TextRole.Heading3
+                                    Size: =24
+                                    Text: =ThisItem.Title
+                                    Wrap: =false
+                              - lblInfDutyPeriod:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    AlignInContainer: =AlignInContainer.Stretch
+                                    Color: =If(ThisItem.OnDuty,Color.White,ColorValue("#18283B"))
+                                    Font: =Font.'Segoe UI'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =26
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingRight: =0
+                                    PaddingTop: =0
+                                    Size: =17
+                                    Text: =ThisItem.Schedule
+                                    Wrap: =false
+                              - btnInfDutyCall:
+                                  Control: ModernButton@1.0.0
+                                  Properties:
+                                    AccessibleLabel: |-
+                                      =ThisItem.Title & " call: " & ThisItem.Phone
+                                    AlignInContainer: =AlignInContainer.Stretch
+                                    Appearance: =ButtonAppearance.Outline
+                                    BasePaletteColor: =If(ThisItem.OnDuty,ColorValue("#08704A"),ColorValue("#C8102E"))
+                                    BorderColor: =ColorValue("#DDE5EF")
+                                    BorderThickness: =1
+                                    Color: =If(ThisItem.OnDuty,Color.White,ColorValue("#18283B"))
+                                    Font: =Font.'Segoe UI'
+                                    FontWeight: =FontWeight.Bold
+                                    Height: =48
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    OnSelect: |-
+                                      =UpdateContext({locInfError:"DEMO: This external action is unavailable."})
+                                    RadiusBottomLeft: =16
+                                    RadiusBottomRight: =16
+                                    RadiusTopLeft: =16
+                                    RadiusTopRight: =16
+                                    Size: =20
+                                    Text: ="☎ " & ThisItem.Phone
+                                    Width: =Parent.Width-24
+                              - btnInfDutyMail:
+                                  Control: ModernButton@1.0.0
+                                  Properties:
+                                    AccessibleLabel: |-
+                                      ="Email to " & ThisItem.Title & ": " & ThisItem.Email
+                                    AlignInContainer: =AlignInContainer.Stretch
+                                    Appearance: =ButtonAppearance.Outline
+                                    BasePaletteColor: =If(ThisItem.OnDuty,ColorValue("#08704A"),ColorValue("#C8102E"))
+                                    BorderColor: =ColorValue("#DDE5EF")
+                                    BorderThickness: =1
+                                    Color: =If(ThisItem.OnDuty,Color.White,ColorValue("#18283B"))
+                                    Font: =Font.'Segoe UI'
+                                    FontWeight: =FontWeight.Normal
+                                    Height: =40
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    OnSelect: |-
+                                      =UpdateContext({locInfError:"DEMO: This external action is unavailable."})
+                                    RadiusBottomLeft: =16
+                                    RadiusBottomRight: =16
+                                    RadiusTopLeft: =16
+                                    RadiusTopRight: =16
+                                    Size: =If(Parent.Width<330,12,14)
+                                    Text: =ThisItem.Email
+                                    Width: =Parent.Width-24
+                  - InfBrowseTop:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        DropShadow: =DropShadow.None
+                        FillPortions: =0
+                        Height: =If(locInfView="Filter",72,184)
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutGap: =8
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        Visible: =Coalesce(locInfView,"Browse")="Browse" && Coalesce(locInfAuditSection,"Info")="Info" || locInfView="Filter"
+                      Children:
+                        - InfScope:
+                            Control: GroupContainer@1.5.0
+                            Variant: AutoLayout
+                            Properties:
+                              DropShadow: =DropShadow.None
+                              FillPortions: =0
+                              Height: =48
+                              LayoutAlignItems: =LayoutAlignItems.Stretch
+                              LayoutDirection: =LayoutDirection.Horizontal
+                              LayoutGap: =8
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              Visible: =Coalesce(locInfView,"Browse")="Browse"
+                            Children:
+                              - InfGuidesScope:
+                                  Control: ModernButton@1.0.0
+                                  Properties:
+                                    AccessibleLabel: ="All info"
+                                    AlignInContainer: =AlignInContainer.Stretch
+                                    Appearance: =If(!Coalesce(locInfAuditDocuments,false),ButtonAppearance.Primary,ButtonAppearance.Secondary)
+                                    BasePaletteColor: =ColorValue("#C8102E")
+                                    BorderThickness: =0
+                                    Color: =If(!Coalesce(locInfAuditDocuments,false),Color.White,ColorValue("#18283B"))
+                                    FillPortions: =1
+                                    Font: =Font.'Segoe UI'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =48
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    OnSelect: =UpdateContext({locInfAuditDocuments:false}); Reset(InfGuideGallery)
+                                    RadiusBottomLeft: =16
+                                    RadiusBottomRight: =16
+                                    RadiusTopLeft: =16
+                                    RadiusTopRight: =16
+                                    Size: =14
+                                    Text: ="All info"
+                              - InfContactsScope:
+                                  Control: ModernButton@1.0.0
+                                  Properties:
+                                    AccessibleLabel: ="Documents"
+                                    AlignInContainer: =AlignInContainer.Stretch
+                                    Appearance: =If(Coalesce(locInfAuditDocuments,false),ButtonAppearance.Primary,ButtonAppearance.Secondary)
+                                    BasePaletteColor: =ColorValue("#C8102E")
+                                    BorderThickness: =0
+                                    Color: =If(Coalesce(locInfAuditDocuments,false),Color.White,ColorValue("#18283B"))
+                                    FillPortions: =1
+                                    Font: =Font.'Segoe UI'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =48
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    OnSelect: =UpdateContext({locInfAuditDocuments:true}); Reset(InfGuideGallery)
+                                    RadiusBottomLeft: =16
+                                    RadiusBottomRight: =16
+                                    RadiusTopLeft: =16
+                                    RadiusTopRight: =16
+                                    Size: =14
+                                    Text: ="Documents"
+                              - InfOptions:
+                                  Control: ModernButton@1.0.0
+                                  Properties:
+                                    AccessibleLabel: ="Filter"
+                                    AlignInContainer: =AlignInContainer.Stretch
+                                    Appearance: =ButtonAppearance.Outline
+                                    BasePaletteColor: =ColorValue("#C8102E")
+                                    BorderColor: =ColorValue("#DDE5EF")
+                                    BorderThickness: =1
+                                    Color: =ColorValue("#14253D")
+                                    Font: =Font.'Segoe UI'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =48
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    OnSelect: =UpdateContext({locInfView:"Filter"})
+                                    RadiusBottomLeft: =16
+                                    RadiusBottomRight: =16
+                                    RadiusTopLeft: =16
+                                    RadiusTopRight: =16
+                                    Size: =14
+                                    Text: ="Filter"
+                                    Width: =72
+                        - InfSearchBlock:
+                            Control: GroupContainer@1.5.0
+                            Variant: AutoLayout
+                            Properties:
+                              DropShadow: =DropShadow.None
+                              FillPortions: =0
+                              Height: =72
+                              LayoutAlignItems: =LayoutAlignItems.Stretch
+                              LayoutDirection: =LayoutDirection.Vertical
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                            Children:
+                              - InfSearchLabel:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    AlignInContainer: =AlignInContainer.Stretch
+                                    Color: =ColorValue("#14253D")
+                                    Font: =Font.'Segoe UI'
+                                    Height: =24
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingRight: =0
+                                    PaddingTop: =0
+                                    Size: =16
+                                    Text: ="Title starts with"
+                              - InfSearch:
+                                  Control: ModernTextInput@1.1.2
+                                  Properties:
+                                    AccessibleLabel: ="Title starts with"
+                                    AlignInContainer: =AlignInContainer.Stretch
+                                    Appearance: =Appearance.Outline
+                                    BasePaletteColor: =ColorValue("#C8102E")
+                                    BorderColor: =ColorValue("#DCE2EB")
+                                    BorderThickness: =1
+                                    ContentLanguage: ="en-GB"
+                                    Fill: =Color.White
+                                    Height: =48
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    OnChange: =Reset(InfGuideGallery)
+                                    Placeholder: ="Enter text"
+                                    RadiusBottomLeft: =12
+                                    RadiusBottomRight: =12
+                                    RadiusTopLeft: =12
+                                    RadiusTopRight: =12
+                                    Size: =16
+                                    Type: =TextInputType.Search
+                                    Width: =Parent.Width
+                        - InfSummary:
+                            Control: GroupContainer@1.5.0
+                            Variant: AutoLayout
+                            Properties:
+                              DropShadow: =DropShadow.None
+                              FillPortions: =0
+                              Height: =48
+                              LayoutAlignItems: =LayoutAlignItems.Center
+                              LayoutDirection: =LayoutDirection.Horizontal
+                              LayoutGap: =8
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              Visible: =Coalesce(locInfView,"Browse")="Browse" && Coalesce(locInfAuditSection,"Info")="Info"
+                            Children:
+                              - InfActiveFilter:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    AlignInContainer: =AlignInContainer.Stretch
+                                    Color: =ColorValue("#14253D")
+                                    FillPortions: =1
+                                    Font: =Font.'Segoe UI'
+                                    Height: =48
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingRight: =0
+                                    PaddingTop: =0
+                                    Size: =14
+                                    Text: =Coalesce(locInfCategory,"All categories")
+                              - InfMaintainEntry:
+                                  Control: ModernButton@1.0.0
+                                  Properties:
+                                    AccessibleLabel: ="Manage"
+                                    AlignInContainer: =AlignInContainer.Stretch
+                                    Appearance: =ButtonAppearance.Outline
+                                    BasePaletteColor: =ColorValue("#C8102E")
+                                    BorderColor: =ColorValue("#DDE5EF")
+                                    BorderThickness: =1
+                                    Color: =ColorValue("#14253D")
+                                    Font: =Font.'Segoe UI'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =48
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    OnSelect: =If(!locInfLoading && IsBlank(locInfAuditMemberError) && !IsBlank(varOperator.ID) && varOperator.Active && (varOperator.Role.Value="Team lead" || varOperator.Role.Value="Administrator"),UpdateContext({locInfView:"Maintain"}))
+                                    RadiusBottomLeft: =16
+                                    RadiusBottomRight: =16
+                                    RadiusTopLeft: =16
+                                    RadiusTopRight: =16
+                                    Size: =16
+                                    Text: ="Manage"
+                                    Visible: =(true) && (!locInfLoading && IsBlank(locInfAuditMemberError) && !IsBlank(varOperator.ID) && varOperator.Active && (varOperator.Role.Value="Team lead" || varOperator.Role.Value="Administrator"))
+                  - InfLoading:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        Color: =ColorValue("#14253D")
+                        Font: =Font.'Segoe UI'
+                        Height: =48
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =16
+                        Text: ="Loading information …"
+                        Visible: =locInfLoading
+                  - InfError:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =ColorValue("#C8102E")
+                        Font: =Font.'Segoe UI'
+                        Height: =48
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        Live: =Live.Assertive
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =16
+                        Text: |-
+                          ="Could not load or open: " & locInfError
+                        Visible: =!IsBlank(locInfError)
+                  - lblInfAuditFreshness:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =ColorValue("#575B61")
+                        FocusedBorderThickness: =2
+                        Font: =Font.'Segoe UI'
+                        Height: =24
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =14
+                        TabIndex: =0
+                        Text: =If(IsBlank(locInfAuditGuideLoadedAt),"", "Content updated at " & Text(locInfAuditGuideLoadedAt,"hh:mm") & " · ↻ reloads")
+                        Visible: =Coalesce(locInfView,"Browse")="Browse" && Coalesce(locInfAuditSection,"Info")="Info" && !locInfLoading && IsBlank(locInfError) && !IsBlank(locInfAuditGuideLoadedAt)
+                        Width: =Parent.Width-Parent.PaddingLeft-Parent.PaddingRight
+                  - InfEmpty:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =ColorValue("#14253D")
+                        Font: =Font.'Segoe UI'
+                        Height: =72
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =16
+                        Text: =If(Coalesce(locInfAuditDocuments,false),"No published content for this selection yet. Authorized staff can add PDF and document links under “Manage”.",If(IsBlank(InfSearch.Text) && IsBlank(locInfCategory),"Published information and instructions appear here. No content is stored yet.","No information for this selection. Reset the selection in Filters."))
+                        Visible: =Coalesce(locInfView,"Browse")="Browse" && Coalesce(locInfAuditSection,"Info")="Info" && !locInfLoading && IsBlank(locInfError) && IsBlank(LookUp(FleetGuides,PublicationStatus.Value="Approved" && (IsBlank(locInfCategory) || Category.Value=locInfCategory) && (IsBlank(InfSearch.Text) || StartsWith(Title,InfSearch.Text)),ID))
+                  - InfGuideGallery:
+                      Control: Gallery@2.15.0
+                      Variant: VariableHeight
+                      Properties:
+                        AccessibleLabel: ="Published guides. Select to read."
+                        ContentLanguage: ="en-GB"
+                        FillPortions: =0
+                        Height: =Min(440,Max(280,InfBody.Height-232))
+                        Items: =SortByColumns(Filter(FleetGuides,PublicationStatus.Value="Approved" && (IsBlank(locInfCategory) || Category.Value=locInfCategory) && (IsBlank(InfSearch.Text) || StartsWith(Title,InfSearch.Text))),"Title",SortOrder.Ascending)
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        TabIndex: =0
+                        TemplatePadding: =4
+                        TemplateSize: =144
+                        Visible: =Coalesce(locInfView,"Browse")="Browse" && Coalesce(locInfAuditSection,"Info")="Info" && !locInfLoading && IsBlank(locInfError) && !InfEmpty.Visible
+                        Width: =Parent.Width-If(InfRoot.Width<=320,24,32)
+                      Children:
+                        - InfGuideRow:
+                            Control: GroupContainer@1.5.0
+                            Variant: AutoLayout
+                            Properties:
+                              BorderColor: =ColorValue("#E2E9F2")
+                              BorderThickness: =1
+                              Fill: =Color.White
+                              Height: =Max(Parent.TemplateHeight,InfGuideTitle.Height+InfGuideMeta.Height+80)
+                              LayoutAlignItems: =LayoutAlignItems.Stretch
+                              LayoutDirection: =LayoutDirection.Vertical
+                              LayoutGap: =8
+                              PaddingBottom: =8
+                              PaddingLeft: =12
+                              PaddingRight: =12
+                              PaddingTop: =8
+                              RadiusBottomLeft: =24
+                              RadiusBottomRight: =24
+                              RadiusTopLeft: =24
+                              RadiusTopRight: =24
+                              Width: =Parent.TemplateWidth
+                            Children:
+                              - InfGuideTitle:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    AlignInContainer: =AlignInContainer.Stretch
+                                    AutoHeight: =true
+                                    Color: =ColorValue("#14253D")
+                                    Font: =Font.'Segoe UI'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =48
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingRight: =0
+                                    PaddingTop: =0
+                                    Size: =20
+                                    Text: =ThisItem.Title
+                              - InfGuideMeta:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    AlignInContainer: =AlignInContainer.Stretch
+                                    AutoHeight: =true
+                                    Color: =ColorValue("#575B61")
+                                    Font: =Font.'Segoe UI'
+                                    Height: =63
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingRight: =0
+                                    PaddingTop: =0
+                                    Size: =14
+                                    Text: |-
+                                      =ThisItem.Category.Value & Char(10) & "Version: " & Coalesce(ThisItem.DocumentVersion,"not specified") & " · Reviewed: " & If(IsBlank(ThisItem.ReviewedOn),"not specified",Text(ThisItem.ReviewedOn,"dd.mm.yyyy")) & Char(10) & "Responsible: " & Coalesce(ThisItem.Owner.DisplayName,"not stored") & If(Coalesce(locInfAuditDocuments,false),Char(10) & If(IsBlank(ThisItem.DocumentUrl),"No document link stored","Document available · open the entry"),"")
+                              - InfRead:
+                                  Control: ModernButton@1.0.0
+                                  Properties:
+                                    AccessibleLabel: |-
+                                      ="Read guide: " & ThisItem.Title
+                                    AlignInContainer: =AlignInContainer.Stretch
+                                    Appearance: =ButtonAppearance.Subtle
+                                    BasePaletteColor: =ColorValue("#C8102E")
+                                    BorderColor: =ColorValue("#E5EAF1")
+                                    BorderThickness: =0
+                                    Color: =ColorValue("#C8102E")
+                                    Font: =Font.'Segoe UI'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =48
+                                    Icon: ="ArrowRight"
+                                    Layout: =ButtonLayout.IconAfter
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    OnSelect: =Set(varGuideId,ThisItem.ID); UpdateContext({locInfView:"Guide",locInfGuide:ThisItem})
+                                    RadiusBottomLeft: =16
+                                    RadiusBottomRight: =16
+                                    RadiusTopLeft: =16
+                                    RadiusTopRight: =16
+                                    Size: =16
+                                    Text: ="Read"
+                                    Width: =Parent.Width-24
+                  - InfReadPage:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Center
+                        DropShadow: =DropShadow.None
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutGap: =12
+                        LayoutMaxWidth: =720
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        LayoutOverflowY: =LayoutOverflow.Scroll
+                        Visible: =Coalesce(locInfView,"Browse") <> "Browse"
+                        Width: =Min(Parent.Width-If(InfRoot.Width<=320,24,32),720)
+                      Children:
+                        - InfGuideDetailTitle:
+                            Control: Label@2.5.1
+                            Properties:
+                              AlignInContainer: =AlignInContainer.Stretch
+                              AutoHeight: =true
+                              Color: =ColorValue("#14253D")
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =48
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingRight: =0
+                              PaddingTop: =0
+                              Size: =20
+                              Text: =If(IsBlank(locInfGuide.ID),"The guide is no longer published or available.",locInfGuide.Title)
+                              Visible: =locInfView="Guide"
+                        - InfGuideDetailMeta:
+                            Control: Label@2.5.1
+                            Properties:
+                              AlignInContainer: =AlignInContainer.Stretch
+                              AutoHeight: =true
+                              Color: =ColorValue("#14253D")
+                              Font: =Font.'Segoe UI'
+                              Height: =84
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingRight: =0
+                              PaddingTop: =0
+                              Size: =14
+                              Text: |-
+                                =locInfGuide.Category.Value & Char(10) & "Version: " & Coalesce(locInfGuide.DocumentVersion,"not specified") & Char(10) & "Reviewed: " & If(IsBlank(locInfGuide.ReviewedOn),"not specified",Text(locInfGuide.ReviewedOn,"dd.mm.yyyy")) & Char(10) & "Responsible: " & Coalesce(locInfGuide.Owner.DisplayName,"not stored")
+                              Visible: =locInfView="Guide"
+                        - InfDocumentTop:
+                            Control: ModernButton@1.0.0
+                            Properties:
+                              AccessibleLabel: ="Open document"
+                              AlignInContainer: =AlignInContainer.Stretch
+                              Appearance: =ButtonAppearance.Outline
+                              BasePaletteColor: =ColorValue("#C8102E")
+                              BorderColor: =ColorValue("#DDE5EF")
+                              BorderThickness: =1
+                              Color: =ColorValue("#14253D")
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =48
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              OnSelect: |-
+                                =UpdateContext({locInfError:"DEMO: This external action is unavailable."})
+                              RadiusBottomLeft: =16
+                              RadiusBottomRight: =16
+                              RadiusTopLeft: =16
+                              RadiusTopRight: =16
+                              Size: =16
+                              Text: ="Open document"
+                              Visible: =locInfView="Guide" && !IsBlank(locInfGuide.DocumentUrl)
+                              Width: =Parent.Width
+                        - InfNoDocument:
+                            Control: Label@2.5.1
+                            Properties:
+                              AlignInContainer: =AlignInContainer.Stretch
+                              AutoHeight: =true
+                              Color: =ColorValue("#14253D")
+                              Font: =Font.'Segoe UI'
+                              Height: =24
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingRight: =0
+                              PaddingTop: =0
+                              Size: =16
+                              Text: ="No additional document stored."
+                              Visible: =locInfView="Guide" && IsBlank(locInfGuide.DocumentUrl)
+                        - InfGuideContent:
+                            Control: Label@2.5.1
+                            Properties:
+                              AlignInContainer: =AlignInContainer.Stretch
+                              AutoHeight: =true
+                              Color: =ColorValue("#14253D")
+                              Font: =Font.'Segoe UI'
+                              Height: =54
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingRight: =0
+                              PaddingTop: =0
+                              Size: =18
+                              Text: =If(IsBlank(locInfGuide.Content),"No guide text stored.",PlainText(locInfGuide.Content))
+                              Visible: =locInfView="Guide"
+                        - InfDocumentBottom:
+                            Control: ModernButton@1.0.0
+                            Properties:
+                              AccessibleLabel: ="Open document"
+                              AlignInContainer: =AlignInContainer.Stretch
+                              Appearance: =ButtonAppearance.Outline
+                              BasePaletteColor: =ColorValue("#C8102E")
+                              BorderColor: =ColorValue("#DDE5EF")
+                              BorderThickness: =1
+                              Color: =ColorValue("#14253D")
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =48
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              OnSelect: |-
+                                =UpdateContext({locInfError:"DEMO: This external action is unavailable."})
+                              RadiusBottomLeft: =16
+                              RadiusBottomRight: =16
+                              RadiusTopLeft: =16
+                              RadiusTopRight: =16
+                              Size: =16
+                              Text: ="Open document"
+                              Visible: =locInfView="Guide" && !IsBlank(locInfGuide.DocumentUrl)
+                              Width: =Parent.Width
+                        - InfFilterHeading:
+                            Control: Label@2.5.1
+                            Properties:
+                              AlignInContainer: =AlignInContainer.Stretch
+                              Color: =ColorValue("#14253D")
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =32
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingRight: =0
+                              PaddingTop: =0
+                              Size: =20
+                              Text: ="Select category"
+                              Visible: =locInfView="Filter"
+                        - InfCategory0:
+                            Control: ModernButton@1.0.0
+                            Properties:
+                              AccessibleLabel: ="All categories"
+                              AlignInContainer: =AlignInContainer.Stretch
+                              Appearance: =ButtonAppearance.Outline
+                              BasePaletteColor: =ColorValue("#C8102E")
+                              BorderColor: =ColorValue("#DDE5EF")
+                              BorderThickness: =1
+                              Color: =ColorValue("#14253D")
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =48
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              OnSelect: =UpdateContext({locInfCategory:Blank(),locInfView:"Browse"}); Reset(InfGuideGallery)
+                              RadiusBottomLeft: =16
+                              RadiusBottomRight: =16
+                              RadiusTopLeft: =16
+                              RadiusTopRight: =16
+                              Size: =16
+                              Text: ="All categories"
+                              Visible: =locInfView="Filter"
+                              Width: =Parent.Width
+                        - InfCategory1:
+                            Control: ModernButton@1.0.0
+                            Properties:
+                              AccessibleLabel: ="Vehicle"
+                              AlignInContainer: =AlignInContainer.Stretch
+                              Appearance: =ButtonAppearance.Outline
+                              BasePaletteColor: =ColorValue("#C8102E")
+                              BorderColor: =ColorValue("#DDE5EF")
+                              BorderThickness: =1
+                              Color: =ColorValue("#14253D")
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =48
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              OnSelect: =UpdateContext({locInfCategory:"Vehicle",locInfView:"Browse"}); Reset(InfGuideGallery)
+                              RadiusBottomLeft: =16
+                              RadiusBottomRight: =16
+                              RadiusTopLeft: =16
+                              RadiusTopRight: =16
+                              Size: =16
+                              Text: ="Vehicle"
+                              Visible: =locInfView="Filter"
+                              Width: =Parent.Width
+                        - InfCategory2:
+                            Control: ModernButton@1.0.0
+                            Properties:
+                              AccessibleLabel: ="Cleaning"
+                              AlignInContainer: =AlignInContainer.Stretch
+                              Appearance: =ButtonAppearance.Outline
+                              BasePaletteColor: =ColorValue("#C8102E")
+                              BorderColor: =ColorValue("#DDE5EF")
+                              BorderThickness: =1
+                              Color: =ColorValue("#14253D")
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =48
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              OnSelect: =UpdateContext({locInfCategory:"Cleaning",locInfView:"Browse"}); Reset(InfGuideGallery)
+                              RadiusBottomLeft: =16
+                              RadiusBottomRight: =16
+                              RadiusTopLeft: =16
+                              RadiusTopRight: =16
+                              Size: =16
+                              Text: ="Cleaning"
+                              Visible: =locInfView="Filter"
+                              Width: =Parent.Width
+                        - InfCategory3:
+                            Control: ModernButton@1.0.0
+                            Properties:
+                              AccessibleLabel: ="Organization"
+                              AlignInContainer: =AlignInContainer.Stretch
+                              Appearance: =ButtonAppearance.Outline
+                              BasePaletteColor: =ColorValue("#C8102E")
+                              BorderColor: =ColorValue("#DDE5EF")
+                              BorderThickness: =1
+                              Color: =ColorValue("#14253D")
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =48
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              OnSelect: =UpdateContext({locInfCategory:"Organization",locInfView:"Browse"}); Reset(InfGuideGallery)
+                              RadiusBottomLeft: =16
+                              RadiusBottomRight: =16
+                              RadiusTopLeft: =16
+                              RadiusTopRight: =16
+                              Size: =16
+                              Text: ="Organization"
+                              Visible: =locInfView="Filter"
+                              Width: =Parent.Width
+                        - InfCategory4:
+                            Control: ModernButton@1.0.0
+                            Properties:
+                              AccessibleLabel: ="Everyday use"
+                              AlignInContainer: =AlignInContainer.Stretch
+                              Appearance: =ButtonAppearance.Outline
+                              BasePaletteColor: =ColorValue("#C8102E")
+                              BorderColor: =ColorValue("#DDE5EF")
+                              BorderThickness: =1
+                              Color: =ColorValue("#14253D")
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =48
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              OnSelect: =UpdateContext({locInfCategory:"Everyday use",locInfView:"Browse"}); Reset(InfGuideGallery)
+                              RadiusBottomLeft: =16
+                              RadiusBottomRight: =16
+                              RadiusTopLeft: =16
+                              RadiusTopRight: =16
+                              Size: =16
+                              Text: ="Everyday use"
+                              Visible: =locInfView="Filter"
+                              Width: =Parent.Width
+                        - InfCategory5:
+                            Control: ModernButton@1.0.0
+                            Properties:
+                              AccessibleLabel: ="Other"
+                              AlignInContainer: =AlignInContainer.Stretch
+                              Appearance: =ButtonAppearance.Outline
+                              BasePaletteColor: =ColorValue("#C8102E")
+                              BorderColor: =ColorValue("#DDE5EF")
+                              BorderThickness: =1
+                              Color: =ColorValue("#14253D")
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =48
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              OnSelect: =UpdateContext({locInfCategory:"Other",locInfView:"Browse"}); Reset(InfGuideGallery)
+                              RadiusBottomLeft: =16
+                              RadiusBottomRight: =16
+                              RadiusTopLeft: =16
+                              RadiusTopRight: =16
+                              Size: =16
+                              Text: ="Other"
+                              Visible: =locInfView="Filter"
+                              Width: =Parent.Width
+                        - InfFilterSearchNote:
+                            Control: Label@2.5.1
+                            Properties:
+                              AlignInContainer: =AlignInContainer.Stretch
+                              AutoHeight: =true
+                              Color: =ColorValue("#14253D")
+                              Font: =Font.'Segoe UI'
+                              Height: =24
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingRight: =0
+                              PaddingTop: =0
+                              Size: =16
+                              Text: |-
+                                ="Title starts with: " & Coalesce(InfSearch.Text,"no search text")
+                              Visible: =locInfView="Filter"
+                        - InfClear:
+                            Control: ModernButton@1.0.0
+                            Properties:
+                              AccessibleLabel: ="Reset search"
+                              AlignInContainer: =AlignInContainer.Stretch
+                              Appearance: =ButtonAppearance.Outline
+                              BasePaletteColor: =ColorValue("#C8102E")
+                              BorderColor: =ColorValue("#DDE5EF")
+                              BorderThickness: =1
+                              Color: =ColorValue("#14253D")
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =48
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              OnSelect: =Reset(InfSearch); UpdateContext({locInfCategory:Blank(),locInfView:"Browse"}); Reset(InfGuideGallery)
+                              RadiusBottomLeft: =16
+                              RadiusBottomRight: =16
+                              RadiusTopLeft: =16
+                              RadiusTopRight: =16
+                              Size: =16
+                              Text: ="Reset search"
+                              Visible: =locInfView="Filter"
+                              Width: =Parent.Width
+                        - InfOptionsMaintain:
+                            Control: ModernButton@1.0.0
+                            Properties:
+                              AccessibleLabel: ="Manage content"
+                              AlignInContainer: =AlignInContainer.Stretch
+                              Appearance: =ButtonAppearance.Outline
+                              BasePaletteColor: =ColorValue("#C8102E")
+                              BorderColor: =ColorValue("#DDE5EF")
+                              BorderThickness: =1
+                              Color: =ColorValue("#14253D")
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =48
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              OnSelect: =If(!locInfLoading && IsBlank(locInfAuditMemberError) && !IsBlank(varOperator.ID) && varOperator.Active && (varOperator.Role.Value="Team lead" || varOperator.Role.Value="Administrator"),UpdateContext({locInfView:"Maintain"}))
+                              RadiusBottomLeft: =16
+                              RadiusBottomRight: =16
+                              RadiusTopLeft: =16
+                              RadiusTopRight: =16
+                              Size: =16
+                              Text: ="Manage content"
+                              Visible: =(locInfView="Filter") && (!locInfLoading && IsBlank(locInfAuditMemberError) && !IsBlank(varOperator.ID) && varOperator.Active && (varOperator.Role.Value="Team lead" || varOperator.Role.Value="Administrator"))
+                              Width: =Parent.Width
+                        - InfMaintainHeading:
+                            Control: Label@2.5.1
+                            Properties:
+                              AlignInContainer: =AlignInContainer.Stretch
+                              Color: =ColorValue("#14253D")
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =32
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingRight: =0
+                              PaddingTop: =0
+                              Size: =20
+                              Text: ="Manage content"
+                              Visible: =locInfView="Maintain" && (!locInfLoading && IsBlank(locInfAuditMemberError) && !IsBlank(varOperator.ID) && varOperator.Active && (varOperator.Role.Value="Team lead" || varOperator.Role.Value="Administrator"))
+                        - InfMaintainExplanation:
+                            Control: Label@2.5.1
+                            Properties:
+                              AlignInContainer: =AlignInContainer.Stretch
+                              AutoHeight: =true
+                              Color: =ColorValue("#14253D")
+                              Font: =Font.'Segoe UI'
+                              Height: =120
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingRight: =0
+                              PaddingTop: =0
+                              Size: =16
+                              Text: ="Manage members, guides and contacts directly in the app. Active team leads and administrators in the member list have access."
+                              Visible: =locInfView="Maintain" && (!locInfLoading && IsBlank(locInfAuditMemberError) && !IsBlank(varOperator.ID) && varOperator.Active && (varOperator.Role.Value="Team lead" || varOperator.Role.Value="Administrator"))
+                        - InfMaintainGuides:
+                            Control: ModernButton@1.0.0
+                            Properties:
+                              AccessibleLabel: ="Manage guides"
+                              AlignInContainer: =AlignInContainer.Stretch
+                              Appearance: =ButtonAppearance.Outline
+                              BasePaletteColor: =ColorValue("#C8102E")
+                              BorderColor: =ColorValue("#DDE5EF")
+                              BorderThickness: =1
+                              Color: =ColorValue("#14253D")
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =48
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              OnSelect: =If(!locInfLoading && IsBlank(locInfAuditMemberError) && !IsBlank(varOperator.ID) && varOperator.Active && (varOperator.Role.Value="Team lead" || varOperator.Role.Value="Administrator"),UpdateContext({locInfAuditGuideLoadedAt:Blank()}); Navigate(ContentAdmin,ScreenTransition.None,{cntEntry:"Guides"}))
+                              RadiusBottomLeft: =16
+                              RadiusBottomRight: =16
+                              RadiusTopLeft: =16
+                              RadiusTopRight: =16
+                              Size: =16
+                              Text: ="Manage guides"
+                              Visible: =(locInfView="Maintain") && (!locInfLoading && IsBlank(locInfAuditMemberError) && !IsBlank(varOperator.ID) && varOperator.Active && (varOperator.Role.Value="Team lead" || varOperator.Role.Value="Administrator"))
+                              Width: =Parent.Width
+                        - InfMaintainRoster:
+                            Control: ModernButton@1.0.0
+                            Properties:
+                              AccessibleLabel: ="Manage members"
+                              AlignInContainer: =AlignInContainer.Stretch
+                              Appearance: =ButtonAppearance.Outline
+                              BasePaletteColor: =ColorValue("#C8102E")
+                              BorderColor: =ColorValue("#DDE5EF")
+                              BorderThickness: =1
+                              Color: =ColorValue("#14253D")
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =48
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              OnSelect: =If(!locInfLoading && IsBlank(locInfAuditMemberError) && !IsBlank(varOperator.ID) && varOperator.Active && (varOperator.Role.Value="Team lead" || varOperator.Role.Value="Administrator"),Navigate(Administration,ScreenTransition.None,{admEntry:"Members"}))
+                              RadiusBottomLeft: =16
+                              RadiusBottomRight: =16
+                              RadiusTopLeft: =16
+                              RadiusTopRight: =16
+                              Size: =16
+                              Text: ="Manage members"
+                              Visible: =(locInfView="Maintain") && (!locInfLoading && IsBlank(locInfAuditMemberError) && !IsBlank(varOperator.ID) && varOperator.Active && (varOperator.Role.Value="Team lead" || varOperator.Role.Value="Administrator"))
+                              Width: =Parent.Width
+                        - InfMaintainRefresh:
+                            Control: ModernButton@1.0.0
+                            Properties:
+                              AccessibleLabel: ="Reload"
+                              AlignInContainer: =AlignInContainer.Stretch
+                              Appearance: =ButtonAppearance.Outline
+                              BasePaletteColor: =ColorValue("#C8102E")
+                              BorderColor: =ColorValue("#DDE5EF")
+                              BorderThickness: =1
+                              Color: =ColorValue("#14253D")
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =48
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              OnSelect: =If(!locInfLoading,UpdateContext({locInfError:"",locInfLoading:true,locInfAuditGuideError:"",locInfAuditMemberError:""}); Concurrent(If(true || IsBlank(locInfAuditGuideLoadedAt) || DateDiff(locInfAuditGuideLoadedAt,Now(),TimeUnit.Seconds)>=120,IfError(true; UpdateContext({locInfAuditGuideLoadedAt:Now()}),UpdateContext({locInfAuditGuideError:FirstError.Message,locInfAuditGuideLoadedAt:Blank()}))),IfError(true;Set(varOperator,LookUp(FleetMembers,Person.Email=varDemoUser.Email)),Set(varOperator,LookUp(FleetMembers,ID=0));UpdateContext({locInfAuditMemberError:FirstError.Message}))); If(varGuideId>0,UpdateContext({locInfGuide:LookUp(FleetGuides,ID=varGuideId && PublicationStatus.Value="Approved")})); UpdateContext({locInfError:Trim(locInfAuditGuideError & " " & locInfAuditMemberError),locInfLoading:false}); UpdateContext({locInfView:"Browse",locInfAuditSection:"Info"}))
+                              RadiusBottomLeft: =16
+                              RadiusBottomRight: =16
+                              RadiusTopLeft: =16
+                              RadiusTopRight: =16
+                              Size: =16
+                              Text: ="Reload"
+                              Visible: =locInfView="Maintain" && (!locInfLoading && IsBlank(locInfAuditMemberError) && !IsBlank(varOperator.ID) && varOperator.Active && (varOperator.Role.Value="Team lead" || varOperator.Role.Value="Administrator"))
+                              Width: =Parent.Width
+            - InfNav:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  BorderColor: =ColorValue("#E5EAF1")
+                  DropShadow: =DropShadow.None
+                  Fill: =ColorValue("#10233F")
+                  FillPortions: =0
+                  Height: =76
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Horizontal
+                  LayoutGap: =4
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =18
+                  PaddingLeft: =8
+                  PaddingRight: =8
+                  PaddingTop: =10
+                  RadiusBottomLeft: =0
+                  RadiusBottomRight: =0
+                  RadiusTopLeft: =26
+                  RadiusTopRight: =26
+                Children:
+                  - InfNav0:
+                      Control: ModernButton@1.0.0
+                      Properties:
+                        AccessibleLabel: ="Vehicle"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        Appearance: =ButtonAppearance.Transparent
+                        BasePaletteColor: =ColorValue("#C8102E")
+                        BorderThickness: =0
+                        Color: =ColorValue("#CFDBEB")
+                        DisplayMode: =If(false,DisplayMode.Disabled,DisplayMode.Edit)
+                        FillPortions: =1
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =48
+                        Icon: ="VehicleCar"
+                        Layout: =If(InfRoot.Width<=340,ButtonLayout.TextOnly,ButtonLayout.IconBefore)
+                        LayoutMinHeight: =44
+                        LayoutMinWidth: =0
+                        OnSelect: =Set(varInfoOrigin,""); Navigate(VehicleHome)
+                        PaddingLeft: =3
+                        PaddingRight: =3
+                        RadiusBottomLeft: =16
+                        RadiusBottomRight: =16
+                        RadiusTopLeft: =16
+                        RadiusTopRight: =16
+                        Size: =12
+                        Text: ="Vehicle"
+                        Tooltip: =If(false,"First finish the current action or cancel it using Back.","Vehicle")
+                        Width: =Max(44,(Parent.Width-28)/4)
+                  - InfNav1:
+                      Control: ModernButton@1.0.0
+                      Properties:
+                        AccessibleLabel: ="Damage"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        Appearance: =ButtonAppearance.Transparent
+                        BasePaletteColor: =ColorValue("#C8102E")
+                        BorderThickness: =0
+                        Color: =If(Coalesce(varVehicleId,0)>0,ColorValue("#CFDBEB"),ColorValue("#8B95A5"))
+                        DisplayMode: =If(Coalesce(varVehicleId,0)>0,If(false,DisplayMode.Disabled,DisplayMode.Edit),DisplayMode.Disabled)
+                        FillPortions: =1
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =48
+                        Icon: ="Warning"
+                        Layout: =If(InfRoot.Width<=340,ButtonLayout.TextOnly,ButtonLayout.IconBefore)
+                        LayoutMinHeight: =44
+                        LayoutMinWidth: =0
+                        OnSelect: =If(Coalesce(varVehicleId,0)>0,Set(varInfoOrigin,""); Navigate(DamageReports))
+                        PaddingLeft: =3
+                        PaddingRight: =3
+                        RadiusBottomLeft: =16
+                        RadiusBottomRight: =16
+                        RadiusTopLeft: =16
+                        RadiusTopRight: =16
+                        Size: =12
+                        Text: ="Damage"
+                        Tooltip: =If(Coalesce(varVehicleId,0)>0,If(false,"First finish the current action or cancel it using Back.","Damage"),"Select a vehicle first.")
+                        Width: =Max(44,(Parent.Width-28)/4)
+                  - InfNav2:
+                      Control: ModernButton@1.0.0
+                      Properties:
+                        AccessibleLabel: ="Tasks"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        Appearance: =ButtonAppearance.Transparent
+                        BasePaletteColor: =ColorValue("#C8102E")
+                        BorderThickness: =0
+                        Color: =If(Coalesce(varVehicleId,0)>0,ColorValue("#CFDBEB"),ColorValue("#8B95A5"))
+                        DisplayMode: =If(Coalesce(varVehicleId,0)>0,If(false,DisplayMode.Disabled,DisplayMode.Edit),DisplayMode.Disabled)
+                        FillPortions: =1
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =48
+                        Icon: ="CheckmarkCircle"
+                        Layout: =If(InfRoot.Width<=340,ButtonLayout.TextOnly,ButtonLayout.IconBefore)
+                        LayoutMinHeight: =44
+                        LayoutMinWidth: =0
+                        OnSelect: =If(Coalesce(varVehicleId,0)>0,Set(varInfoOrigin,""); Navigate(HygieneCheck))
+                        PaddingLeft: =3
+                        PaddingRight: =3
+                        RadiusBottomLeft: =16
+                        RadiusBottomRight: =16
+                        RadiusTopLeft: =16
+                        RadiusTopRight: =16
+                        Size: =12
+                        Text: ="Tasks"
+                        Tooltip: =If(Coalesce(varVehicleId,0)>0,If(false,"First finish the current action or cancel it using Back.","Hygiene"),"Select a vehicle first.")
+                        Width: =Max(44,(Parent.Width-28)/4)
+                  - InfNav3:
+                      Control: ModernButton@1.0.0
+                      Properties:
+                        AccessibleLabel: ="Info"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        BasePaletteColor: =ColorValue("#C8102E")
+                        BorderThickness: =0
+                        Color: =ColorValue("#CFDBEB")
+                        DisplayMode: =If(false,DisplayMode.Disabled,DisplayMode.Edit)
+                        FillPortions: =1
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =48
+                        Icon: ="Info"
+                        IconStyle: =IconStyle.Filled
+                        Layout: =If(InfRoot.Width<=340,ButtonLayout.TextOnly,ButtonLayout.IconBefore)
+                        LayoutMinHeight: =44
+                        LayoutMinWidth: =0
+                        OnSelect: =Set(varInfoOrigin,""); UpdateContext({locInfView:"Browse"})
+                        PaddingLeft: =3
+                        PaddingRight: =3
+                        RadiusBottomLeft: =16
+                        RadiusBottomRight: =16
+                        RadiusTopLeft: =16
+                        RadiusTopRight: =16
+                        Size: =12
+                        Text: ="Info"
+                        Tooltip: =If(false,"First finish the current action or cancel it using Back.","Info")
+                        Width: =Max(44,(Parent.Width-28)/4)
+      - tmrInfDutyClock:
+          Control: Timer@2.1.0
+          Properties:
+            AutoStart: =true
+            Duration: =10000
+            Height: =1
+            OnTimerEnd: =With({deviceNow:Now()},With({utcNow:DateAdd(deviceNow,TimeZoneOffset(deviceNow),TimeUnit.Minutes)},With({y:Year(utcNow)},With({marchEnd:Date(y,3,31),octEnd:Date(y,10,31)},With({dstStart:DateAdd(DateAdd(marchEnd,1-Weekday(marchEnd,StartOfWeek.Sunday),TimeUnit.Days),1,TimeUnit.Hours),dstEnd:DateAdd(DateAdd(octEnd,1-Weekday(octEnd,StartOfWeek.Sunday),TimeUnit.Days),1,TimeUnit.Hours)},With({berlinNow:DateAdd(utcNow,If(utcNow>=dstStart && utcNow<dstEnd,120,60),TimeUnit.Minutes)},If(IsBlank(locInfDutyMinute) || locInfDutyMinute<>((Weekday(berlinNow,StartOfWeek.Monday)-1)*1440+Hour(berlinNow)*60+Minute(berlinNow)),UpdateContext({locInfDutyMinute:(Weekday(berlinNow,StartOfWeek.Monday)-1)*1440+Hour(berlinNow)*60+Minute(berlinNow)}))))))))
+            Repeat: =true
+            Visible: =false
+            Width: =1

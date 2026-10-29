@@ -1,0 +1,1828 @@
+# ************************************************************************************************
+# Warning: YAML source code for Canvas Apps should only be used to review changes made within Power Apps Studio and for minor edits (Preview).
+# Use the maker portal to create and edit your Power Apps.
+# 
+# The schema file for Canvas Apps is available at https://go.microsoft.com/fwlink/?linkid=2304907
+# 
+# For more information, visit https://go.microsoft.com/fwlink/?linkid=2292623
+# ************************************************************************************************
+Screens:
+  ContentAdmin:
+    Properties:
+      Fill: =ColorValue("#F3F5F9")
+      OnVisible: =UpdateContext({acnBusy:false}); If(IsBlank(acnMode) || !Coalesce(acnDirty,false),UpdateContext({acnDirty:false,acnEntity:If(cntEntry="Contacts","Contacts","Guides"),acnMode:"Browse",acnSavedID:Blank(),acnUnknown:false,acnPending:Blank()})); UpdateContext({acnError:Blank(),acnLoading:true}); IfError(UpdateContext({acnAuthorized:false}); true; Set(varOperator,LookUp(FleetMembers,Person.Email=varDemoUser.Email)); UpdateContext({acnAuthorized:!IsBlank(varOperator.ID) && varOperator.Active && (varOperator.Role.Value="Team lead" || varOperator.Role.Value="Administrator")}); If(acnAuthorized,true; true),UpdateContext({acnAuthorized:false,acnError:"Could not load data. Please try again."})); UpdateContext({acnLoading:false})
+    Children:
+      - conacnRoot:
+          Control: GroupContainer@1.5.0
+          Variant: AutoLayout
+          Properties:
+            DropShadow: =DropShadow.None
+            Height: =Max(0,Parent.Height-76)
+            LayoutAlignItems: =LayoutAlignItems.Stretch
+            LayoutDirection: =LayoutDirection.Vertical
+            LayoutGap: =12
+            LayoutOverflowY: =LayoutOverflow.Scroll
+            PaddingBottom: =24
+            PaddingLeft: =16
+            PaddingRight: =16
+            PaddingTop: =16
+            Width: =Parent.Width
+          Children:
+            - lblacnTitle:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Color: =ColorValue("#10233F")
+                  Fill: =Color.White
+                  Font: =Font.'Segoe UI'
+                  FontWeight: =FontWeight.Bold
+                  Height: =64
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =8
+                  PaddingLeft: =16
+                  PaddingRight: =12
+                  PaddingTop: =8
+                  Size: =If(App.Width<600,18,24)
+                  Text: ="DEMO · Manage content"
+            - btnacnBack:
+                Control: Button@0.0.45
+                Properties:
+                  AccessibleLabel: ="Back to administration"
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Appearance: ='ButtonCanvas.Appearance'.Outline
+                  BasePaletteColor: =ColorValue("#C8102E")
+                  BorderColor: =ColorValue("#DDE5EF")
+                  BorderRadius: =16
+                  DisplayMode: =If(!acnBusy,DisplayMode.Edit,DisplayMode.Disabled)
+                  Font: =Font.'Segoe UI'
+                  FontColor: =ColorValue("#18283B")
+                  FontSize: =16
+                  Height: =48
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  OnSelect: =If(acnDirty,UpdateContext({acnPending:"Back"}),Navigate(Administration,ScreenTransition.None,{admEntry:"Hub"}))
+                  Text: ="Back to administration"
+                  Width: =Parent.Width
+            - lblacnDenied:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =ColorValue("#14253D")
+                  Font: =Font.'Segoe UI'
+                  Height: =28
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: ="Only active team leads and administrators can manage content."
+                  Visible: =!acnAuthorized && !acnLoading
+            - lblacnLoading:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =ColorValue("#14253D")
+                  Font: =Font.'Segoe UI'
+                  Height: =28
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: ="Loading data …"
+                  Visible: =acnLoading
+            - lblacnError:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =ColorValue("#14253D")
+                  Font: =Font.'Segoe UI'
+                  Height: =28
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: =acnError
+                  Visible: =!IsBlank(acnError)
+            - btnacnRetry:
+                Control: Button@0.0.45
+                Properties:
+                  AccessibleLabel: ="Reload data"
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Appearance: ='ButtonCanvas.Appearance'.Outline
+                  BasePaletteColor: =ColorValue("#C8102E")
+                  BorderColor: =ColorValue("#DDE5EF")
+                  BorderRadius: =16
+                  DisplayMode: =If(!acnBusy,DisplayMode.Edit,DisplayMode.Disabled)
+                  Font: =Font.'Segoe UI'
+                  FontColor: =ColorValue("#18283B")
+                  FontSize: =16
+                  Height: =48
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  OnSelect: =UpdateContext({acnError:Blank(),acnLoading:true}); IfError(UpdateContext({acnAuthorized:false}); true; Set(varOperator,LookUp(FleetMembers,Person.Email=varDemoUser.Email)); UpdateContext({acnAuthorized:!IsBlank(varOperator.ID) && varOperator.Active && (varOperator.Role.Value="Team lead" || varOperator.Role.Value="Administrator")}); If(acnAuthorized,true; true),UpdateContext({acnAuthorized:false,acnError:"Could not load data. Please try again."})); UpdateContext({acnLoading:false})
+                  Text: ="Reload data"
+                  Width: =Parent.Width
+            - btnacnSwitchGuides:
+                Control: Button@0.0.45
+                Properties:
+                  AccessibleLabel: ="Guides"
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Appearance: ='ButtonCanvas.Appearance'.Outline
+                  BasePaletteColor: =ColorValue("#C8102E")
+                  BorderColor: =ColorValue("#DDE5EF")
+                  BorderRadius: =16
+                  DisplayMode: =If(acnAuthorized && !acnBusy,DisplayMode.Edit,DisplayMode.Disabled)
+                  Font: =Font.'Segoe UI'
+                  FontColor: =ColorValue("#18283B")
+                  FontSize: =16
+                  Height: =48
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  OnSelect: =If(acnDirty,UpdateContext({acnPending:"Guides"}),UpdateContext({acnEntity:"Guides",acnMode:"Browse",acnSavedID:Blank(),acnUnknown:false,acnError:Blank()}))
+                  Text: ="Guides"
+                  Width: =Parent.Width
+            - btnacnSwitchContacts:
+                Control: Button@0.0.45
+                Properties:
+                  AccessibleLabel: ="Contacts"
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Appearance: ='ButtonCanvas.Appearance'.Outline
+                  BasePaletteColor: =ColorValue("#C8102E")
+                  BorderColor: =ColorValue("#DDE5EF")
+                  BorderRadius: =16
+                  DisplayMode: =If(acnAuthorized && !acnBusy,DisplayMode.Edit,DisplayMode.Disabled)
+                  Font: =Font.'Segoe UI'
+                  FontColor: =ColorValue("#18283B")
+                  FontSize: =16
+                  Height: =48
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  OnSelect: =If(acnDirty,UpdateContext({acnPending:"Contacts"}),UpdateContext({acnEntity:"Contacts",acnMode:"Browse",acnSavedID:Blank(),acnUnknown:false,acnError:Blank()}))
+                  Text: ="Contacts"
+                  Width: =Parent.Width
+            - lblacnDiscard:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =ColorValue("#14253D")
+                  Font: =Font.'Segoe UI'
+                  Height: =28
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: ="Discard unsaved changes?"
+                  Visible: =!IsBlank(acnPending)
+            - btnacnKeep:
+                Control: Button@0.0.45
+                Properties:
+                  AccessibleLabel: ="Continue editing"
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Appearance: ='ButtonCanvas.Appearance'.Outline
+                  BasePaletteColor: =ColorValue("#C8102E")
+                  BorderColor: =ColorValue("#DDE5EF")
+                  BorderRadius: =16
+                  DisplayMode: =If(acnAuthorized && !acnBusy,DisplayMode.Edit,DisplayMode.Disabled)
+                  Font: =Font.'Segoe UI'
+                  FontColor: =ColorValue("#18283B")
+                  FontSize: =16
+                  Height: =48
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  OnSelect: =UpdateContext({acnPending:Blank()})
+                  Text: ="Continue editing"
+                  Visible: =!IsBlank(acnPending)
+                  Width: =Parent.Width
+            - btnacnDiscard:
+                Control: Button@0.0.45
+                Properties:
+                  AccessibleLabel: ="Discard changes"
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Appearance: ='ButtonCanvas.Appearance'.Outline
+                  BasePaletteColor: =ColorValue("#C8102E")
+                  BorderColor: =ColorValue("#DDE5EF")
+                  BorderRadius: =16
+                  DisplayMode: =If(acnAuthorized && !acnBusy,DisplayMode.Edit,DisplayMode.Disabled)
+                  Font: =Font.'Segoe UI'
+                  FontColor: =ColorValue("#18283B")
+                  FontSize: =16
+                  Height: =48
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  OnSelect: =UpdateContext({acnDirty:false,acnUnknown:false,acnSavedID:Blank(),acnError:Blank()}); If(acnPending="Back",UpdateContext({acnPending:Blank()}); Navigate(Administration,ScreenTransition.None,{admEntry:"Hub"}),UpdateContext({acnEntity:If(acnPending="Cancel",acnEntity,acnPending),acnMode:"Browse",acnPending:Blank()}))
+                  Text: ="Discard changes"
+                  Visible: =!IsBlank(acnPending)
+                  Width: =Parent.Width
+            - conacnFieldSearch:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  FillPortions: =0
+                  Height: =88
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =8
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  Visible: =acnAuthorized && acnMode="Browse" && !acnLoading
+                Children:
+                  - lblacnSearchLabel:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =ColorValue("#14253D")
+                        Font: =Font.'Segoe UI'
+                        Height: =28
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =16
+                        Text: ="Search titles"
+                  - inpacnSearch:
+                      Control: TextInput@0.0.54
+                      Properties:
+                        AccessibleLabel: ="Search titles"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        ContentLanguage: ="en-GB"
+                        DisplayMode: =If(acnBusy,DisplayMode.Disabled,DisplayMode.Edit)
+                        FontSize: =16
+                        Height: =48
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        Mode: ='TextInputCanvas.Mode'.SingleLine
+                        Placeholder: ="Enter text"
+                        TriggerOutput: ='TextInputCanvas.TriggerOutput'.Keypress
+            - btnacnNew:
+                Control: Button@0.0.45
+                Properties:
+                  AccessibleLabel: ="Create a new entry"
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Appearance: ='ButtonCanvas.Appearance'.Outline
+                  BasePaletteColor: =ColorValue("#C8102E")
+                  BorderColor: =ColorValue("#DDE5EF")
+                  BorderRadius: =16
+                  DisplayMode: =If(acnAuthorized && !acnBusy,DisplayMode.Edit,DisplayMode.Disabled)
+                  Font: =Font.'Segoe UI'
+                  FontColor: =ColorValue("#18283B")
+                  FontSize: =16
+                  Height: =48
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  OnSelect: =UpdateContext({acnG:Blank(),acnC:Blank(),acnID:Blank(),acnBaseModified:Blank(),acnSavedID:Blank(),acnMode:"Edit",acnDirty:false,acnUnknown:false,acnError:Blank()}); Reset(inpacnSearch); Reset(inpacnTitle); Reset(inpacnCategory); Reset(inpacnStatus); Reset(inpacnContent); Reset(inpacnLink); Reset(inpacnVersion); Reset(inpacnChecked); UpdateContext({acnAuditClearOwner:false,acnAuditClearPerson:false}); Reset(cmbacnOwnerAccount); Reset(cmbacnPersonAccount); Reset(inpacnFunction); Reset(inpacnPhone); Reset(inpacnFromDate); Reset(inpacnFromTime); Reset(inpacnToDate); Reset(inpacnToTime); Reset(inpacnNotes)
+                  Text: ="Create a new entry"
+                  Visible: =acnAuthorized && acnMode="Browse" && !acnLoading
+                  Width: =Parent.Width
+            - galacnGuides:
+                Control: Gallery@2.15.0
+                Variant: VariableHeight
+                Properties:
+                  AccessibleLabel: ="Entries by title"
+                  ContentLanguage: ="en-GB"
+                  FillPortions: =0
+                  Height: =320
+                  Items: =Filter(FleetGuides,StartsWith(Title,inpacnSearch.Value))
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  TabIndex: =0
+                  TemplatePadding: =8
+                  TemplateSize: =120
+                  Visible: =acnAuthorized && acnMode="Browse" && !acnLoading && acnEntity="Guides"
+                Children:
+                  - conacnRowG:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        DropShadow: =DropShadow.None
+                        Height: =lblacnRowG.Height+64
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutGap: =8
+                        PaddingBottom: =8
+                        Width: =Parent.TemplateWidth
+                      Children:
+                        - lblacnRowG:
+                            Control: Label@2.5.1
+                            Properties:
+                              AlignInContainer: =AlignInContainer.Stretch
+                              AutoHeight: =true
+                              Color: =ColorValue("#14253D")
+                              Font: =Font.'Segoe UI'
+                              Height: =28
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingRight: =0
+                              PaddingTop: =0
+                              Size: =16
+                              Text: =ThisItem.Title & Char(10) & ThisItem.Category.Value & " · " & ThisItem.PublicationStatus.Value
+                        - btnacnEditG:
+                            Control: Button@0.0.45
+                            Properties:
+                              AccessibleLabel: ="Edit"
+                              AlignInContainer: =AlignInContainer.Stretch
+                              Appearance: ='ButtonCanvas.Appearance'.Outline
+                              BasePaletteColor: =ColorValue("#C8102E")
+                              BorderColor: =ColorValue("#DDE5EF")
+                              BorderRadius: =16
+                              DisplayMode: =If(acnAuthorized && !acnBusy,DisplayMode.Edit,DisplayMode.Disabled)
+                              Font: =Font.'Segoe UI'
+                              FontColor: =ColorValue("#18283B")
+                              FontSize: =16
+                              Height: =48
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              OnSelect: =UpdateContext({acnBusy:true,acnError:Blank()}); IfError(true; UpdateContext({acnG:LookUp(FleetGuides,ID=ThisItem.ID)}); If(IsBlank(acnG.ID),UpdateContext({acnError:"The entry no longer exists."}),UpdateContext({acnID:acnG.ID,acnBaseModified:acnG.Modified,acnMode:"Edit",acnSavedID:Blank(),acnDirty:false,acnUnknown:false}); Reset(inpacnSearch); Reset(inpacnTitle); Reset(inpacnCategory); Reset(inpacnStatus); Reset(inpacnContent); Reset(inpacnLink); Reset(inpacnVersion); Reset(inpacnChecked); UpdateContext({acnAuditClearOwner:false,acnAuditClearPerson:false}); Reset(cmbacnOwnerAccount); Reset(cmbacnPersonAccount); Reset(inpacnFunction); Reset(inpacnPhone); Reset(inpacnFromDate); Reset(inpacnFromTime); Reset(inpacnToDate); Reset(inpacnToTime); Reset(inpacnNotes)),UpdateContext({acnError:"The entry could not be read."})); UpdateContext({acnBusy:false})
+                              Text: ="Edit"
+                              Width: =Parent.Width
+            - lblacnEmptyG:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =ColorValue("#14253D")
+                  Font: =Font.'Segoe UI'
+                  Height: =28
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: ="No matching entries. Change the search or create an entry."
+                  Visible: =acnAuthorized && acnMode="Browse" && !acnLoading && acnEntity="Guides" && IsEmpty(Filter(FleetGuides,StartsWith(Title,inpacnSearch.Value))) && IsBlank(acnError)
+            - galacnContacts:
+                Control: Gallery@2.15.0
+                Variant: VariableHeight
+                Properties:
+                  AccessibleLabel: ="Entries by title"
+                  ContentLanguage: ="en-GB"
+                  FillPortions: =0
+                  Height: =320
+                  Items: =Filter(FleetContacts,StartsWith(Title,inpacnSearch.Value))
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  TabIndex: =0
+                  TemplatePadding: =8
+                  TemplateSize: =120
+                  Visible: =acnAuthorized && acnMode="Browse" && !acnLoading && acnEntity="Contacts"
+                Children:
+                  - conacnRowC:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        DropShadow: =DropShadow.None
+                        Height: =lblacnRowC.Height+64
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutGap: =8
+                        PaddingBottom: =8
+                        Width: =Parent.TemplateWidth
+                      Children:
+                        - lblacnRowC:
+                            Control: Label@2.5.1
+                            Properties:
+                              AlignInContainer: =AlignInContainer.Stretch
+                              AutoHeight: =true
+                              Color: =ColorValue("#14253D")
+                              Font: =Font.'Segoe UI'
+                              Height: =28
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingRight: =0
+                              PaddingTop: =0
+                              Size: =16
+                              Text: =ThisItem.Title & Char(10) & ThisItem.Function.Value & Char(10) & Coalesce(ThisItem.Phone,ThisItem.Person.Email)
+                        - btnacnEditC:
+                            Control: Button@0.0.45
+                            Properties:
+                              AccessibleLabel: ="Edit"
+                              AlignInContainer: =AlignInContainer.Stretch
+                              Appearance: ='ButtonCanvas.Appearance'.Outline
+                              BasePaletteColor: =ColorValue("#C8102E")
+                              BorderColor: =ColorValue("#DDE5EF")
+                              BorderRadius: =16
+                              DisplayMode: =If(acnAuthorized && !acnBusy,DisplayMode.Edit,DisplayMode.Disabled)
+                              Font: =Font.'Segoe UI'
+                              FontColor: =ColorValue("#18283B")
+                              FontSize: =16
+                              Height: =48
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              OnSelect: =UpdateContext({acnBusy:true,acnError:Blank()}); IfError(true; UpdateContext({acnC:LookUp(FleetContacts,ID=ThisItem.ID)}); If(IsBlank(acnC.ID),UpdateContext({acnError:"The entry no longer exists."}),UpdateContext({acnID:acnC.ID,acnBaseModified:acnC.Modified,acnMode:"Edit",acnSavedID:Blank(),acnDirty:false,acnUnknown:false}); Reset(inpacnSearch); Reset(inpacnTitle); Reset(inpacnCategory); Reset(inpacnStatus); Reset(inpacnContent); Reset(inpacnLink); Reset(inpacnVersion); Reset(inpacnChecked); UpdateContext({acnAuditClearOwner:false,acnAuditClearPerson:false}); Reset(cmbacnOwnerAccount); Reset(cmbacnPersonAccount); Reset(inpacnFunction); Reset(inpacnPhone); Reset(inpacnFromDate); Reset(inpacnFromTime); Reset(inpacnToDate); Reset(inpacnToTime); Reset(inpacnNotes)),UpdateContext({acnError:"The entry could not be read."})); UpdateContext({acnBusy:false})
+                              Text: ="Edit"
+                              Width: =Parent.Width
+            - lblacnEmptyC:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =ColorValue("#14253D")
+                  Font: =Font.'Segoe UI'
+                  Height: =28
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: ="No matching entries. Change the search or create an entry."
+                  Visible: =acnAuthorized && acnMode="Browse" && !acnLoading && acnEntity="Contacts" && IsEmpty(Filter(FleetContacts,StartsWith(Title,inpacnSearch.Value))) && IsBlank(acnError)
+            - conacnFieldTitle:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  FillPortions: =0
+                  Height: =88
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =8
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  Visible: =acnAuthorized && acnMode="Edit"
+                Children:
+                  - lblacnTitleLabel:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =ColorValue("#14253D")
+                        Font: =Font.'Segoe UI'
+                        Height: =28
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =16
+                        Text: =If(acnEntity="Guides","Title","Name")
+                  - inpacnTitle:
+                      Control: TextInput@0.0.54
+                      Properties:
+                        AccessibleLabel: =If(acnEntity="Guides","Title","Name")
+                        AlignInContainer: =AlignInContainer.Stretch
+                        ContentLanguage: ="en-GB"
+                        DisplayMode: =If(acnBusy,DisplayMode.Disabled,DisplayMode.Edit)
+                        FontSize: =16
+                        Height: =48
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        Mode: ='TextInputCanvas.Mode'.SingleLine
+                        OnChange: =If(acnMode="Edit" && acnAuthorized && !acnBusy,UpdateContext({acnDirty:true}))
+                        Placeholder: ="Enter text"
+                        TriggerOutput: ='TextInputCanvas.TriggerOutput'.Keypress
+                        Value: =If(acnEntity="Guides",acnG.Title,acnC.Title)
+            - conacnFieldCategory:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  FillPortions: =0
+                  Height: =88
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =8
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  Visible: =acnAuthorized && acnMode="Edit" && acnEntity="Guides"
+                Children:
+                  - lblacnCategoryLabel:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =ColorValue("#14253D")
+                        Font: =Font.'Segoe UI'
+                        Height: =28
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =16
+                        Text: ="Category"
+                  - inpacnCategory:
+                      Control: ComboBox@0.0.51
+                      Properties:
+                        AccessibleLabel: ="Category"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        ContentLanguage: ="en-GB"
+                        DefaultSelectedItems: =If(IsBlank(acnG.Category.Value),[],[acnG.Category])
+                        DisplayMode: =If(acnBusy,DisplayMode.Disabled,DisplayMode.Edit)
+                        FontSize: =16
+                        Height: =48
+                        InputTextPlaceholder: ="Search or clear selection"
+                        Items: =colDemoChoiceGuidesCategory
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnChange: =If(acnMode="Edit" && acnAuthorized && !acnBusy,UpdateContext({acnDirty:true}))
+            - conacnFieldStatus:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  FillPortions: =0
+                  Height: =88
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =8
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  Visible: =acnAuthorized && acnMode="Edit" && acnEntity="Guides"
+                Children:
+                  - lblacnStatusLabel:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =ColorValue("#14253D")
+                        Font: =Font.'Segoe UI'
+                        Height: =28
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =16
+                        Text: ="Publication status"
+                  - inpacnStatus:
+                      Control: ComboBox@0.0.51
+                      Properties:
+                        AccessibleLabel: ="Publication status"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        ContentLanguage: ="en-GB"
+                        DefaultSelectedItems: =If(IsBlank(acnG.PublicationStatus.Value),[],[acnG.PublicationStatus])
+                        DisplayMode: =If(acnBusy,DisplayMode.Disabled,DisplayMode.Edit)
+                        FontSize: =16
+                        Height: =48
+                        InputTextPlaceholder: ="Search or clear selection"
+                        Items: =colDemoChoiceGuidesPublicationStatus
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnChange: =If(acnMode="Edit" && acnAuthorized && !acnBusy,UpdateContext({acnDirty:true}))
+            - conacnFieldContent:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  FillPortions: =0
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =8
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  Visible: =acnAuthorized && acnMode="Edit" && acnEntity="Guides"
+                Children:
+                  - lblacnContentLabel:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =ColorValue("#14253D")
+                        Font: =Font.'Segoe UI'
+                        Height: =28
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =16
+                        Text: ="Content"
+                  - inpacnContent:
+                      Control: TextInput@0.0.54
+                      Properties:
+                        AccessibleLabel: ="Content"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        ContentLanguage: ="en-GB"
+                        DisplayMode: =If(acnBusy,DisplayMode.Disabled,DisplayMode.Edit)
+                        FontSize: =16
+                        Height: =160
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        Mode: ='TextInputCanvas.Mode'.Multiline
+                        OnChange: =If(acnMode="Edit" && acnAuthorized && !acnBusy,UpdateContext({acnDirty:true}))
+                        Placeholder: ="Enter text"
+                        TriggerOutput: ='TextInputCanvas.TriggerOutput'.Keypress
+                        Value: =acnG.Content
+            - conacnFieldLink:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  FillPortions: =0
+                  Height: =88
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =8
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  Visible: =acnAuthorized && acnMode="Edit" && acnEntity="Guides"
+                Children:
+                  - lblacnLinkLabel:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =ColorValue("#14253D")
+                        Font: =Font.'Segoe UI'
+                        Height: =28
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =16
+                        Text: ="Document link (optional)"
+                  - inpacnLink:
+                      Control: TextInput@0.0.54
+                      Properties:
+                        AccessibleLabel: ="Document link (optional)"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        ContentLanguage: ="en-GB"
+                        DisplayMode: =If(acnBusy,DisplayMode.Disabled,DisplayMode.Edit)
+                        FontSize: =16
+                        Height: =48
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        Mode: ='TextInputCanvas.Mode'.SingleLine
+                        OnChange: =If(acnMode="Edit" && acnAuthorized && !acnBusy,UpdateContext({acnDirty:true}))
+                        Placeholder: ="Enter text"
+                        TriggerOutput: ='TextInputCanvas.TriggerOutput'.Keypress
+                        Value: =acnG.DocumentUrl
+            - conacnFieldVersion:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  FillPortions: =0
+                  Height: =88
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =8
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  Visible: =acnAuthorized && acnMode="Edit" && acnEntity="Guides"
+                Children:
+                  - lblacnVersionLabel:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =ColorValue("#14253D")
+                        Font: =Font.'Segoe UI'
+                        Height: =28
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =16
+                        Text: ="Document version (optional)"
+                  - inpacnVersion:
+                      Control: TextInput@0.0.54
+                      Properties:
+                        AccessibleLabel: ="Document version (optional)"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        ContentLanguage: ="en-GB"
+                        DisplayMode: =If(acnBusy,DisplayMode.Disabled,DisplayMode.Edit)
+                        FontSize: =16
+                        Height: =48
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        Mode: ='TextInputCanvas.Mode'.SingleLine
+                        OnChange: =If(acnMode="Edit" && acnAuthorized && !acnBusy,UpdateContext({acnDirty:true}))
+                        Placeholder: ="Enter text"
+                        TriggerOutput: ='TextInputCanvas.TriggerOutput'.Keypress
+                        Value: =acnG.DocumentVersion
+            - conacnFieldChecked:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  FillPortions: =0
+                  Height: =88
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =8
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  Visible: =acnAuthorized && acnMode="Edit" && acnEntity="Guides"
+                Children:
+                  - lblacnCheckedLabel:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =ColorValue("#14253D")
+                        Font: =Font.'Segoe UI'
+                        Height: =28
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =16
+                        Text: ="Reviewed on (optional)"
+                  - inpacnChecked:
+                      Control: TextInput@0.0.54
+                      Properties:
+                        AccessibleLabel: ="Reviewed on (optional)"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        ContentLanguage: ="en-GB"
+                        DisplayMode: =If(acnBusy,DisplayMode.Disabled,DisplayMode.Edit)
+                        FontSize: =16
+                        Height: =48
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        Mode: ='TextInputCanvas.Mode'.SingleLine
+                        OnChange: =If(acnMode="Edit" && acnAuthorized && !acnBusy,UpdateContext({acnDirty:true}))
+                        Placeholder: ="Enter text"
+                        TriggerOutput: ='TextInputCanvas.TriggerOutput'.Keypress
+                        Value: =If(IsBlank(acnG.ReviewedOn),"",Text(acnG.ReviewedOn,"yyyy-mm-dd"))
+            - conacnFieldOwner:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  FillPortions: =0
+                  Height: =88+If(!IsEmpty(cmbacnOwnerAccount.SelectedItems),52,0)
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =8
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  Visible: =acnAuthorized && acnMode="Edit" && acnEntity="Guides"
+                Children:
+                  - lblacnOwnerLabel:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =ColorValue("#14253D")
+                        Font: =Font.'Segoe UI'
+                        Height: =28
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =16
+                        Text: ="Responsible person (optional)"
+                  - cmbacnOwnerAccount:
+                      Control: ModernCombobox@1.1.2
+                      Properties:
+                        AccessibleLabel: ="Responsible person (optional)"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        Appearance: =Appearance.Outline
+                        BasePaletteColor: =ColorValue("#C8102E")
+                        BorderColor: =ColorValue("#CBD5E1")
+                        BorderThickness: =1
+                        Color: =ColorValue("#14253D")
+                        ContentLanguage: ="en-GB"
+                        DefaultSelectedItems: =If(Coalesce(acnAuditClearOwner,false) || IsBlank(acnG.Owner.Email),[],AddColumns([acnG.Owner],Value1,DisplayName & " · " & Email))
+                        DisplayMode: =If(acnBusy,DisplayMode.Disabled,DisplayMode.Edit)
+                        Fill: =Color.White
+                        Height: =48
+                        InputTextPlaceholder: ="Search or clear selection"
+                        Items: =AddColumns(Filter(Filter(colDemoDirectory,IsBlank(Self.SearchText) || Self.SearchText in DisplayName || Self.SearchText in Email),!acnLoading && (acnAuthorized || acnBusy)),Value1,DisplayName & " · " & Email)
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnChange: =If(acnMode="Edit" && acnAuthorized && !acnBusy,UpdateContext({acnDirty:true}))
+                        SelectMultiple: =false
+                        Size: =16
+                  - btnAcnAuditClearOwner:
+                      Control: ModernButton@1.0.0
+                      Properties:
+                        AccessibleLabel: ="Remove responsible person"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        Appearance: =ButtonAppearance.Secondary
+                        BasePaletteColor: =ColorValue("#C8102E")
+                        DisplayMode: =If(acnBusy,DisplayMode.Disabled,DisplayMode.Edit)
+                        Height: =44
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnSelect: =If(acnAuthorized && !acnBusy && acnMode="Edit",UpdateContext({acnAuditClearOwner:true,acnDirty:true});Reset(cmbacnOwnerAccount))
+                        Text: ="Clear selection"
+                        Visible: =!IsEmpty(cmbacnOwnerAccount.SelectedItems)
+            - conacnFieldPerson:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  FillPortions: =0
+                  Height: =88+If(!IsEmpty(cmbacnPersonAccount.SelectedItems),52,0)
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =8
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  Visible: =acnAuthorized && acnMode="Edit" && acnEntity="Contacts"
+                Children:
+                  - lblacnPersonLabel:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =ColorValue("#14253D")
+                        Font: =Font.'Segoe UI'
+                        Height: =28
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =16
+                        Text: ="Person (optional)"
+                  - cmbacnPersonAccount:
+                      Control: ModernCombobox@1.1.2
+                      Properties:
+                        AccessibleLabel: ="Person (optional)"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        Appearance: =Appearance.Outline
+                        BasePaletteColor: =ColorValue("#C8102E")
+                        BorderColor: =ColorValue("#CBD5E1")
+                        BorderThickness: =1
+                        Color: =ColorValue("#14253D")
+                        ContentLanguage: ="en-GB"
+                        DefaultSelectedItems: =If(Coalesce(acnAuditClearPerson,false) || IsBlank(acnC.Person.Email),[],AddColumns([acnC.Person],Value1,DisplayName & " · " & Email))
+                        DisplayMode: =If(acnBusy,DisplayMode.Disabled,DisplayMode.Edit)
+                        Fill: =Color.White
+                        Height: =48
+                        InputTextPlaceholder: ="Search or clear selection"
+                        Items: =AddColumns(Filter(Filter(colDemoDirectory,IsBlank(Self.SearchText) || Self.SearchText in DisplayName || Self.SearchText in Email),!acnLoading && (acnAuthorized || acnBusy)),Value1,DisplayName & " · " & Email)
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnChange: =If(acnMode="Edit" && acnAuthorized && !acnBusy,UpdateContext({acnDirty:true}))
+                        SelectMultiple: =false
+                        Size: =16
+                  - btnAcnAuditClearPerson:
+                      Control: ModernButton@1.0.0
+                      Properties:
+                        AccessibleLabel: ="Remove contact person"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        Appearance: =ButtonAppearance.Secondary
+                        BasePaletteColor: =ColorValue("#C8102E")
+                        DisplayMode: =If(acnBusy,DisplayMode.Disabled,DisplayMode.Edit)
+                        Height: =44
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnSelect: =If(acnAuthorized && !acnBusy && acnMode="Edit",UpdateContext({acnAuditClearPerson:true,acnDirty:true});Reset(cmbacnPersonAccount))
+                        Text: ="Clear selection"
+                        Visible: =!IsEmpty(cmbacnPersonAccount.SelectedItems)
+            - conacnFieldFunction:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  FillPortions: =0
+                  Height: =88
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =8
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  Visible: =acnAuthorized && acnMode="Edit" && acnEntity="Contacts"
+                Children:
+                  - lblacnFunctionLabel:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =ColorValue("#14253D")
+                        Font: =Font.'Segoe UI'
+                        Height: =28
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =16
+                        Text: ="Role"
+                  - inpacnFunction:
+                      Control: ComboBox@0.0.51
+                      Properties:
+                        AccessibleLabel: ="Role"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        ContentLanguage: ="en-GB"
+                        DefaultSelectedItems: =If(IsBlank(acnC.Function.Value),[],[acnC.Function])
+                        DisplayMode: =If(acnBusy,DisplayMode.Disabled,DisplayMode.Edit)
+                        FontSize: =16
+                        Height: =48
+                        InputTextPlaceholder: ="Search or clear selection"
+                        Items: =colDemoChoiceContactsFunction
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnChange: =If(acnMode="Edit" && acnAuthorized && !acnBusy,UpdateContext({acnDirty:true}))
+            - conacnFieldPhone:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  FillPortions: =0
+                  Height: =88
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =8
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  Visible: =acnAuthorized && acnMode="Edit" && acnEntity="Contacts"
+                Children:
+                  - lblacnPhoneLabel:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =ColorValue("#14253D")
+                        Font: =Font.'Segoe UI'
+                        Height: =28
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =16
+                        Text: ="Phone"
+                  - inpacnPhone:
+                      Control: TextInput@0.0.54
+                      Properties:
+                        AccessibleLabel: ="Phone"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        ContentLanguage: ="en-GB"
+                        DisplayMode: =If(acnBusy,DisplayMode.Disabled,DisplayMode.Edit)
+                        FontSize: =16
+                        Height: =48
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        Mode: ='TextInputCanvas.Mode'.SingleLine
+                        OnChange: =If(acnMode="Edit" && acnAuthorized && !acnBusy,UpdateContext({acnDirty:true}))
+                        Placeholder: ="Enter text"
+                        TriggerOutput: ='TextInputCanvas.TriggerOutput'.Keypress
+                        Value: =acnC.Phone
+            - conacnFieldFromDate:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  FillPortions: =0
+                  Height: =88
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =8
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  Visible: =acnAuthorized && acnMode="Edit" && acnEntity="Contacts"
+                Children:
+                  - lblacnFromDateLabel:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =ColorValue("#14253D")
+                        Font: =Font.'Segoe UI'
+                        Height: =28
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =16
+                        Text: ="Valid from (optional)"
+                  - inpacnFromDate:
+                      Control: TextInput@0.0.54
+                      Properties:
+                        AccessibleLabel: ="Valid from (optional)"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        ContentLanguage: ="en-GB"
+                        DisplayMode: =If(acnBusy,DisplayMode.Disabled,DisplayMode.Edit)
+                        FontSize: =16
+                        Height: =48
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        Mode: ='TextInputCanvas.Mode'.SingleLine
+                        OnChange: =If(acnMode="Edit" && acnAuthorized && !acnBusy,UpdateContext({acnDirty:true}))
+                        Placeholder: ="Enter text"
+                        TriggerOutput: ='TextInputCanvas.TriggerOutput'.Keypress
+                        Value: =If(IsBlank(acnC.ValidFrom),"",Text(acnC.ValidFrom,"yyyy-mm-dd"))
+            - conacnFieldFromTime:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  FillPortions: =0
+                  Height: =88
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =8
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  Visible: =acnAuthorized && acnMode="Edit" && acnEntity="Contacts"
+                Children:
+                  - lblacnFromTimeLabel:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =ColorValue("#14253D")
+                        Font: =Font.'Segoe UI'
+                        Height: =28
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =16
+                        Text: ="Start time"
+                  - inpacnFromTime:
+                      Control: TextInput@0.0.54
+                      Properties:
+                        AccessibleLabel: ="Start time"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        ContentLanguage: ="en-GB"
+                        DisplayMode: =If(acnBusy,DisplayMode.Disabled,DisplayMode.Edit)
+                        FontSize: =16
+                        Height: =48
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        Mode: ='TextInputCanvas.Mode'.SingleLine
+                        OnChange: =If(acnMode="Edit" && acnAuthorized && !acnBusy,UpdateContext({acnDirty:true}))
+                        Placeholder: ="Enter text"
+                        TriggerOutput: ='TextInputCanvas.TriggerOutput'.Keypress
+                        Value: =If(IsBlank(acnC.ValidFrom),"",Text(acnC.ValidFrom,"HH:mm"))
+            - conacnFieldToDate:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  FillPortions: =0
+                  Height: =88
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =8
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  Visible: =acnAuthorized && acnMode="Edit" && acnEntity="Contacts"
+                Children:
+                  - lblacnToDateLabel:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =ColorValue("#14253D")
+                        Font: =Font.'Segoe UI'
+                        Height: =28
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =16
+                        Text: ="Valid until (optional)"
+                  - inpacnToDate:
+                      Control: TextInput@0.0.54
+                      Properties:
+                        AccessibleLabel: ="Valid until (optional)"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        ContentLanguage: ="en-GB"
+                        DisplayMode: =If(acnBusy,DisplayMode.Disabled,DisplayMode.Edit)
+                        FontSize: =16
+                        Height: =48
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        Mode: ='TextInputCanvas.Mode'.SingleLine
+                        OnChange: =If(acnMode="Edit" && acnAuthorized && !acnBusy,UpdateContext({acnDirty:true}))
+                        Placeholder: ="Enter text"
+                        TriggerOutput: ='TextInputCanvas.TriggerOutput'.Keypress
+                        Value: =If(IsBlank(acnC.ValidUntil),"",Text(acnC.ValidUntil,"yyyy-mm-dd"))
+            - conacnFieldToTime:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  FillPortions: =0
+                  Height: =88
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =8
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  Visible: =acnAuthorized && acnMode="Edit" && acnEntity="Contacts"
+                Children:
+                  - lblacnToTimeLabel:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =ColorValue("#14253D")
+                        Font: =Font.'Segoe UI'
+                        Height: =28
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =16
+                        Text: ="End time"
+                  - inpacnToTime:
+                      Control: TextInput@0.0.54
+                      Properties:
+                        AccessibleLabel: ="End time"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        ContentLanguage: ="en-GB"
+                        DisplayMode: =If(acnBusy,DisplayMode.Disabled,DisplayMode.Edit)
+                        FontSize: =16
+                        Height: =48
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        Mode: ='TextInputCanvas.Mode'.SingleLine
+                        OnChange: =If(acnMode="Edit" && acnAuthorized && !acnBusy,UpdateContext({acnDirty:true}))
+                        Placeholder: ="Enter text"
+                        TriggerOutput: ='TextInputCanvas.TriggerOutput'.Keypress
+                        Value: =If(IsBlank(acnC.ValidUntil),"",Text(acnC.ValidUntil,"HH:mm"))
+            - conacnFieldNotes:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  FillPortions: =0
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =8
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  Visible: =acnAuthorized && acnMode="Edit" && acnEntity="Contacts"
+                Children:
+                  - lblacnNotesLabel:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =ColorValue("#14253D")
+                        Font: =Font.'Segoe UI'
+                        Height: =28
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =16
+                        Text: ="Notes"
+                  - inpacnNotes:
+                      Control: TextInput@0.0.54
+                      Properties:
+                        AccessibleLabel: ="Notes"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        ContentLanguage: ="en-GB"
+                        DisplayMode: =If(acnBusy,DisplayMode.Disabled,DisplayMode.Edit)
+                        FontSize: =16
+                        Height: =160
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        Mode: ='TextInputCanvas.Mode'.Multiline
+                        OnChange: =If(acnMode="Edit" && acnAuthorized && !acnBusy,UpdateContext({acnDirty:true}))
+                        Placeholder: ="Enter text"
+                        TriggerOutput: ='TextInputCanvas.TriggerOutput'.Keypress
+                        Value: =acnC.Hints
+            - lblacnFormat:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =ColorValue("#14253D")
+                  Font: =Font.'Segoe UI'
+                  Height: =28
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: |-
+                    ="Date format YYYY-MM-DD; time HH:mm, local time zone. Optional: leave both date and time blank. Select people from the local demo directory or clear the selection."
+                  Visible: =acnAuthorized && acnMode="Edit"
+            - lblacnUnknown:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =ColorValue("#14253D")
+                  Font: =Font.'Segoe UI'
+                  Height: =28
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: |-
+                    ="The save result is unknown. Do not create the entry again: reload the list and check the title and content. Discard the draft only after checking carefully. If the ID is known, only read the saved entry again."
+                  Visible: =acnUnknown
+            - btnacnCancel:
+                Control: Button@0.0.45
+                Properties:
+                  AccessibleLabel: ="Cancel editing"
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Appearance: ='ButtonCanvas.Appearance'.Outline
+                  BasePaletteColor: =ColorValue("#C8102E")
+                  BorderColor: =ColorValue("#DDE5EF")
+                  BorderRadius: =16
+                  DisplayMode: =If(acnAuthorized && !acnBusy,DisplayMode.Edit,DisplayMode.Disabled)
+                  Font: =Font.'Segoe UI'
+                  FontColor: =ColorValue("#18283B")
+                  FontSize: =16
+                  Height: =48
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  OnSelect: =If(acnDirty,UpdateContext({acnPending:"Cancel"}),UpdateContext({acnMode:"Browse",acnSavedID:Blank(),acnError:Blank()}))
+                  Text: ="Cancel editing"
+                  Visible: =acnAuthorized && acnMode="Edit"
+                  Width: =Parent.Width
+            - lblacnValidation:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =ColorValue("#14253D")
+                  Font: =Font.'Segoe UI'
+                  Height: =28
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: =If(If(acnEntity="Guides",!IsBlank(Trim(inpacnTitle.Value)) && !IsBlank(inpacnCategory.Selected.Value) && !IsBlank(inpacnStatus.Selected.Value) && (IsBlank(Trim(inpacnLink.Value)) || IsMatch(Trim(inpacnLink.Value),"https://[^\s]+")) && (inpacnStatus.Selected.Value<>"Approved" || !IsBlank(Trim(inpacnContent.Value)) || !IsBlank(Trim(inpacnLink.Value))) && (IsBlank(inpacnChecked.Value) || IsMatch(inpacnChecked.Value,"[0-9]{4}-[0-9]{2}-[0-9]{2}") && !IsBlank(IfError(DateValue(inpacnChecked.Value,"en-US"),Blank()))),!IsBlank(Trim(inpacnTitle.Value)) && !IsBlank(inpacnFunction.Selected.Value) && (IsMatch(Trim(inpacnPhone.Value),"[+0-9() /.-]{5,}") && IsMatch(inpacnPhone.Value,".*[0-9].*") || !IsBlank(cmbacnPersonAccount.Selected.Email)) && (IsBlank(inpacnFromDate.Value) && IsBlank(inpacnFromTime.Value) || IsMatch(inpacnFromDate.Value,"[0-9]{4}-[0-9]{2}-[0-9]{2}") && !IsBlank(IfError(DateValue(inpacnFromDate.Value,"en-US"),Blank())) && IsMatch(inpacnFromTime.Value,"([01][0-9]|2[0-3]):[0-5][0-9]")) && (IsBlank(inpacnToDate.Value) && IsBlank(inpacnToTime.Value) || IsMatch(inpacnToDate.Value,"[0-9]{4}-[0-9]{2}-[0-9]{2}") && !IsBlank(IfError(DateValue(inpacnToDate.Value,"en-US"),Blank())) && IsMatch(inpacnToTime.Value,"([01][0-9]|2[0-3]):[0-5][0-9]")) && IfError(IsBlank(inpacnFromDate.Value) || IsBlank(inpacnToDate.Value) || If(IsBlank(inpacnFromDate.Value),Blank(),If(inpacnFromDate.Value=Text(acnC.ValidFrom,"yyyy-mm-dd") && inpacnFromTime.Value=Text(acnC.ValidFrom,"HH:mm"),acnC.ValidFrom,DateValue(inpacnFromDate.Value,"en-US")+TimeValue(inpacnFromTime.Value,"en-US")))<=If(IsBlank(inpacnToDate.Value),Blank(),If(inpacnToDate.Value=Text(acnC.ValidUntil,"yyyy-mm-dd") && inpacnToTime.Value=Text(acnC.ValidUntil,"HH:mm"),acnC.ValidUntil,DateValue(inpacnToDate.Value,"en-US")+TimeValue(inpacnToTime.Value,"en-US"))),false)),"The entries are ready to save.","Check the title, selections and contact details. Published guides need content or an HTTPS link. Dates must be valid and in chronological order.")
+                  Visible: =acnAuthorized && acnMode="Edit"
+            - btnacnSave:
+                Control: Button@0.0.45
+                Properties:
+                  AccessibleLabel: ="Save"
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Appearance: ='ButtonCanvas.Appearance'.Primary
+                  BasePaletteColor: =ColorValue("#C8102E")
+                  BorderRadius: =16
+                  DisplayMode: =If(acnAuthorized && !acnBusy && !acnUnknown && IsBlank(acnSavedID) && (If(acnEntity="Guides",!IsBlank(Trim(inpacnTitle.Value)) && !IsBlank(inpacnCategory.Selected.Value) && !IsBlank(inpacnStatus.Selected.Value) && (IsBlank(Trim(inpacnLink.Value)) || IsMatch(Trim(inpacnLink.Value),"https://[^\s]+")) && (inpacnStatus.Selected.Value<>"Approved" || !IsBlank(Trim(inpacnContent.Value)) || !IsBlank(Trim(inpacnLink.Value))) && (IsBlank(inpacnChecked.Value) || IsMatch(inpacnChecked.Value,"[0-9]{4}-[0-9]{2}-[0-9]{2}") && !IsBlank(IfError(DateValue(inpacnChecked.Value,"en-US"),Blank()))),!IsBlank(Trim(inpacnTitle.Value)) && !IsBlank(inpacnFunction.Selected.Value) && (IsMatch(Trim(inpacnPhone.Value),"[+0-9() /.-]{5,}") && IsMatch(inpacnPhone.Value,".*[0-9].*") || !IsBlank(cmbacnPersonAccount.Selected.Email)) && (IsBlank(inpacnFromDate.Value) && IsBlank(inpacnFromTime.Value) || IsMatch(inpacnFromDate.Value,"[0-9]{4}-[0-9]{2}-[0-9]{2}") && !IsBlank(IfError(DateValue(inpacnFromDate.Value,"en-US"),Blank())) && IsMatch(inpacnFromTime.Value,"([01][0-9]|2[0-3]):[0-5][0-9]")) && (IsBlank(inpacnToDate.Value) && IsBlank(inpacnToTime.Value) || IsMatch(inpacnToDate.Value,"[0-9]{4}-[0-9]{2}-[0-9]{2}") && !IsBlank(IfError(DateValue(inpacnToDate.Value,"en-US"),Blank())) && IsMatch(inpacnToTime.Value,"([01][0-9]|2[0-3]):[0-5][0-9]")) && IfError(IsBlank(inpacnFromDate.Value) || IsBlank(inpacnToDate.Value) || If(IsBlank(inpacnFromDate.Value),Blank(),If(inpacnFromDate.Value=Text(acnC.ValidFrom,"yyyy-mm-dd") && inpacnFromTime.Value=Text(acnC.ValidFrom,"HH:mm"),acnC.ValidFrom,DateValue(inpacnFromDate.Value,"en-US")+TimeValue(inpacnFromTime.Value,"en-US")))<=If(IsBlank(inpacnToDate.Value),Blank(),If(inpacnToDate.Value=Text(acnC.ValidUntil,"yyyy-mm-dd") && inpacnToTime.Value=Text(acnC.ValidUntil,"HH:mm"),acnC.ValidUntil,DateValue(inpacnToDate.Value,"en-US")+TimeValue(inpacnToTime.Value,"en-US"))),false))),DisplayMode.Edit,DisplayMode.Disabled)
+                  Font: =Font.'Segoe UI'
+                  FontColor: =Color.White
+                  FontSize: =16
+                  Height: =48
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  OnSelect: =If(!acnBusy && !acnUnknown && IsBlank(acnSavedID) && (If(acnEntity="Guides",!IsBlank(Trim(inpacnTitle.Value)) && !IsBlank(inpacnCategory.Selected.Value) && !IsBlank(inpacnStatus.Selected.Value) && (IsBlank(Trim(inpacnLink.Value)) || IsMatch(Trim(inpacnLink.Value),"https://[^\s]+")) && (inpacnStatus.Selected.Value<>"Approved" || !IsBlank(Trim(inpacnContent.Value)) || !IsBlank(Trim(inpacnLink.Value))) && (IsBlank(inpacnChecked.Value) || IsMatch(inpacnChecked.Value,"[0-9]{4}-[0-9]{2}-[0-9]{2}") && !IsBlank(IfError(DateValue(inpacnChecked.Value,"en-US"),Blank()))),!IsBlank(Trim(inpacnTitle.Value)) && !IsBlank(inpacnFunction.Selected.Value) && (IsMatch(Trim(inpacnPhone.Value),"[+0-9() /.-]{5,}") && IsMatch(inpacnPhone.Value,".*[0-9].*") || !IsBlank(cmbacnPersonAccount.Selected.Email)) && (IsBlank(inpacnFromDate.Value) && IsBlank(inpacnFromTime.Value) || IsMatch(inpacnFromDate.Value,"[0-9]{4}-[0-9]{2}-[0-9]{2}") && !IsBlank(IfError(DateValue(inpacnFromDate.Value,"en-US"),Blank())) && IsMatch(inpacnFromTime.Value,"([01][0-9]|2[0-3]):[0-5][0-9]")) && (IsBlank(inpacnToDate.Value) && IsBlank(inpacnToTime.Value) || IsMatch(inpacnToDate.Value,"[0-9]{4}-[0-9]{2}-[0-9]{2}") && !IsBlank(IfError(DateValue(inpacnToDate.Value,"en-US"),Blank())) && IsMatch(inpacnToTime.Value,"([01][0-9]|2[0-3]):[0-5][0-9]")) && IfError(IsBlank(inpacnFromDate.Value) || IsBlank(inpacnToDate.Value) || If(IsBlank(inpacnFromDate.Value),Blank(),If(inpacnFromDate.Value=Text(acnC.ValidFrom,"yyyy-mm-dd") && inpacnFromTime.Value=Text(acnC.ValidFrom,"HH:mm"),acnC.ValidFrom,DateValue(inpacnFromDate.Value,"en-US")+TimeValue(inpacnFromTime.Value,"en-US")))<=If(IsBlank(inpacnToDate.Value),Blank(),If(inpacnToDate.Value=Text(acnC.ValidUntil,"yyyy-mm-dd") && inpacnToTime.Value=Text(acnC.ValidUntil,"HH:mm"),acnC.ValidUntil,DateValue(inpacnToDate.Value,"en-US")+TimeValue(inpacnToTime.Value,"en-US"))),false))),UpdateContext({acnBusy:true,acnError:Blank(),acnAttempted:false,acnSavedID:Blank()}); IfError(UpdateContext({acnAuthorized:false}); true; Set(varOperator,LookUp(FleetMembers,Person.Email=varDemoUser.Email)); UpdateContext({acnAuthorized:!IsBlank(varOperator.ID) && varOperator.Active && (varOperator.Role.Value="Team lead" || varOperator.Role.Value="Administrator")}); If(!acnAuthorized,UpdateContext({acnError:"Permission is missing. Nothing was saved."}),If(acnEntity="Guides",true; UpdateContext({acnFreshG:LookUp(FleetGuides,ID=acnID)}); If(!IsBlank(acnID) && (IsBlank(acnFreshG.ID) || acnFreshG.Modified<>acnBaseModified),UpdateContext({acnError:"The entry was changed or removed. Your draft is retained. Cancel and reopen the entry."}),UpdateContext({acnAttempted:true}); UpdateContext({acnResultG:If(IsBlank(acnID),With({demoNewId:Coalesce(Max(FleetGuides,ID),0)+1,demoNow:Now()},Collect(FleetGuides,Patch(varDemoDefaultGuides,{Title:Trim(inpacnTitle.Value),Category:inpacnCategory.Selected,PublicationStatus:inpacnStatus.Selected,Content:inpacnContent.Value,DocumentUrl:Trim(inpacnLink.Value),DocumentVersion:inpacnVersion.Value,ReviewedOn:If(IsBlank(inpacnChecked.Value),Blank(),DateValue(inpacnChecked.Value,"en-US")),Owner:If(IsEmpty(cmbacnOwnerAccount.SelectedItems),Blank(),First(DropColumns(cmbacnOwnerAccount.SelectedItems,Value1)))},{ID:demoNewId,Created:demoNow,Modified:demoNow,Author:varDemoPerson,Editor:varDemoPerson}));LookUp(FleetGuides,ID=demoNewId)),Patch(FleetGuides,LookUp(FleetGuides,ID=acnID),{Title:Trim(inpacnTitle.Value),Category:inpacnCategory.Selected,PublicationStatus:inpacnStatus.Selected,Content:inpacnContent.Value,DocumentUrl:Trim(inpacnLink.Value),DocumentVersion:inpacnVersion.Value,ReviewedOn:If(IsBlank(inpacnChecked.Value),Blank(),DateValue(inpacnChecked.Value,"en-US")),Owner:If(IsEmpty(cmbacnOwnerAccount.SelectedItems),Blank(),First(DropColumns(cmbacnOwnerAccount.SelectedItems,Value1)))},{Modified:Now(),Editor:varDemoPerson}))}); UpdateContext({acnSavedID:acnResultG.ID}); If(IsBlank(acnSavedID),UpdateContext({acnUnknown:true,acnError:"No confirmed save result."}),true; UpdateContext({acnSavedG:LookUp(FleetGuides,ID=acnSavedID)}); If(IsBlank(acnSavedG.ID),UpdateContext({acnError:"The saved ID is known; read the confirmation again."}),UpdateContext({acnMode:"Receipt",acnDirty:false,acnUnknown:false,acnReceiptConfirmed:true})))),true; UpdateContext({acnFreshC:LookUp(FleetContacts,ID=acnID)}); If(!IsBlank(acnID) && (IsBlank(acnFreshC.ID) || acnFreshC.Modified<>acnBaseModified),UpdateContext({acnError:"The entry was changed or removed. Your draft is retained. Cancel and reopen the entry."}),UpdateContext({acnAttempted:true}); UpdateContext({acnResultC:If(IsBlank(acnID),With({demoNewId:Coalesce(Max(FleetContacts,ID),0)+1,demoNow:Now()},Collect(FleetContacts,Patch(varDemoDefaultContacts,{Title:Trim(inpacnTitle.Value),Person:If(IsEmpty(cmbacnPersonAccount.SelectedItems),Blank(),First(DropColumns(cmbacnPersonAccount.SelectedItems,Value1))),Function:inpacnFunction.Selected,Phone:Trim(inpacnPhone.Value),ValidFrom:If(IsBlank(inpacnFromDate.Value),Blank(),If(inpacnFromDate.Value=Text(acnC.ValidFrom,"yyyy-mm-dd") && inpacnFromTime.Value=Text(acnC.ValidFrom,"HH:mm"),acnC.ValidFrom,DateValue(inpacnFromDate.Value,"en-US")+TimeValue(inpacnFromTime.Value,"en-US"))),ValidUntil:If(IsBlank(inpacnToDate.Value),Blank(),If(inpacnToDate.Value=Text(acnC.ValidUntil,"yyyy-mm-dd") && inpacnToTime.Value=Text(acnC.ValidUntil,"HH:mm"),acnC.ValidUntil,DateValue(inpacnToDate.Value,"en-US")+TimeValue(inpacnToTime.Value,"en-US"))),Hints:inpacnNotes.Value},{ID:demoNewId,Created:demoNow,Modified:demoNow,Author:varDemoPerson,Editor:varDemoPerson}));LookUp(FleetContacts,ID=demoNewId)),Patch(FleetContacts,LookUp(FleetContacts,ID=acnID),{Title:Trim(inpacnTitle.Value),Person:If(IsEmpty(cmbacnPersonAccount.SelectedItems),Blank(),First(DropColumns(cmbacnPersonAccount.SelectedItems,Value1))),Function:inpacnFunction.Selected,Phone:Trim(inpacnPhone.Value),ValidFrom:If(IsBlank(inpacnFromDate.Value),Blank(),If(inpacnFromDate.Value=Text(acnC.ValidFrom,"yyyy-mm-dd") && inpacnFromTime.Value=Text(acnC.ValidFrom,"HH:mm"),acnC.ValidFrom,DateValue(inpacnFromDate.Value,"en-US")+TimeValue(inpacnFromTime.Value,"en-US"))),ValidUntil:If(IsBlank(inpacnToDate.Value),Blank(),If(inpacnToDate.Value=Text(acnC.ValidUntil,"yyyy-mm-dd") && inpacnToTime.Value=Text(acnC.ValidUntil,"HH:mm"),acnC.ValidUntil,DateValue(inpacnToDate.Value,"en-US")+TimeValue(inpacnToTime.Value,"en-US"))),Hints:inpacnNotes.Value},{Modified:Now(),Editor:varDemoPerson}))}); UpdateContext({acnSavedID:acnResultC.ID}); If(IsBlank(acnSavedID),UpdateContext({acnUnknown:true,acnError:"No confirmed save result."}),true; UpdateContext({acnSavedC:LookUp(FleetContacts,ID=acnSavedID)}); If(IsBlank(acnSavedC.ID),UpdateContext({acnError:"The saved ID is known; read the confirmation again."}),UpdateContext({acnMode:"Receipt",acnDirty:false,acnUnknown:false,acnReceiptConfirmed:true})))))),UpdateContext({acnReceiptConfirmed:false,acnSavedID:If(IsBlank(acnSavedID) && acnAttempted && !IsBlank(acnID),acnID,acnSavedID),acnUnknown:acnAttempted && IsBlank(acnSavedID) && IsBlank(acnID),acnError:If(acnAttempted && IsBlank(acnSavedID),"Save unconfirmed. Check the list before creating the entry again.",If(!IsBlank(acnSavedID),"The ID is known. Read the confirmation again; do not save again.","Data access failed. Your draft is retained."))})); UpdateContext({acnBusy:false}))
+                  Text: ="Save"
+                  Visible: =acnAuthorized && acnMode="Edit"
+                  Width: =Parent.Width
+            - btnacnReadReceipt:
+                Control: Button@0.0.45
+                Properties:
+                  AccessibleLabel: ="Read confirmation again"
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Appearance: ='ButtonCanvas.Appearance'.Outline
+                  BasePaletteColor: =ColorValue("#C8102E")
+                  BorderColor: =ColorValue("#DDE5EF")
+                  BorderRadius: =16
+                  DisplayMode: =If(acnAuthorized && !acnBusy,DisplayMode.Edit,DisplayMode.Disabled)
+                  Font: =Font.'Segoe UI'
+                  FontColor: =ColorValue("#18283B")
+                  FontSize: =16
+                  Height: =48
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  OnSelect: =UpdateContext({acnBusy:true,acnError:Blank()}); IfError(If(acnEntity="Guides",true; UpdateContext({acnSavedG:LookUp(FleetGuides,ID=acnSavedID)}),true; UpdateContext({acnSavedC:LookUp(FleetContacts,ID=acnSavedID)})); If(If(acnEntity="Guides",!IsBlank(acnSavedG.ID),!IsBlank(acnSavedC.ID)),UpdateContext({acnMode:"Receipt",acnDirty:false,acnUnknown:false}),UpdateContext({acnError:"The saved ID is currently unavailable."})),UpdateContext({acnError:"Confirmation could not be loaded."})); UpdateContext({acnBusy:false})
+                  Text: ="Read confirmation again"
+                  Visible: =acnAuthorized && !IsBlank(acnSavedID) && acnMode<>"Receipt"
+                  Width: =Parent.Width
+            - lblacnReceiptHead:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =ColorValue("#14253D")
+                  Font: =Font.'Segoe UI'
+                  Height: =28
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =18
+                  Text: =If(acnReceiptConfirmed,"Saved for this session · ID ","Check current data · ID ") & Text(acnSavedID)
+                  Visible: =acnAuthorized && acnMode="Receipt"
+            - lblacnReceiptG0:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =ColorValue("#14253D")
+                  Font: =Font.'Segoe UI'
+                  Height: =28
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: |-
+                    ="Title: " & Coalesce(acnSavedG.Title,"—")
+                  Visible: =acnAuthorized && acnMode="Receipt" && acnEntity="Guides" && acnSavedG.ID=acnSavedID
+            - lblacnReceiptG1:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =ColorValue("#14253D")
+                  Font: =Font.'Segoe UI'
+                  Height: =28
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: |-
+                    ="Category: " & Coalesce(acnSavedG.Category.Value,"—")
+                  Visible: =acnAuthorized && acnMode="Receipt" && acnEntity="Guides" && acnSavedG.ID=acnSavedID
+            - lblacnReceiptG2:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =ColorValue("#14253D")
+                  Font: =Font.'Segoe UI'
+                  Height: =28
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: |-
+                    ="Publication status: " & Coalesce(acnSavedG.PublicationStatus.Value,"—")
+                  Visible: =acnAuthorized && acnMode="Receipt" && acnEntity="Guides" && acnSavedG.ID=acnSavedID
+            - lblacnReceiptG3:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =ColorValue("#14253D")
+                  Font: =Font.'Segoe UI'
+                  Height: =28
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: |-
+                    ="Content: " & Coalesce(acnSavedG.Content,"—")
+                  Visible: =acnAuthorized && acnMode="Receipt" && acnEntity="Guides" && acnSavedG.ID=acnSavedID
+            - lblacnReceiptG4:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =ColorValue("#14253D")
+                  Font: =Font.'Segoe UI'
+                  Height: =28
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: |-
+                    ="Document link: " & Coalesce(acnSavedG.DocumentUrl,"—")
+                  Visible: =acnAuthorized && acnMode="Receipt" && acnEntity="Guides" && acnSavedG.ID=acnSavedID
+            - lblacnReceiptG5:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =ColorValue("#14253D")
+                  Font: =Font.'Segoe UI'
+                  Height: =28
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: |-
+                    ="Document version: " & Coalesce(acnSavedG.DocumentVersion,"—")
+                  Visible: =acnAuthorized && acnMode="Receipt" && acnEntity="Guides" && acnSavedG.ID=acnSavedID
+            - lblacnReceiptG6:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =ColorValue("#14253D")
+                  Font: =Font.'Segoe UI'
+                  Height: =28
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: |-
+                    ="Reviewed on: " & Coalesce(Text(acnSavedG.ReviewedOn,"yyyy-mm-dd"),"—")
+                  Visible: =acnAuthorized && acnMode="Receipt" && acnEntity="Guides" && acnSavedG.ID=acnSavedID
+            - lblacnReceiptG7:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =ColorValue("#14253D")
+                  Font: =Font.'Segoe UI'
+                  Height: =28
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: |-
+                    ="Responsible: " & Coalesce(acnSavedG.Owner.DisplayName & " " & acnSavedG.Owner.Email,"—")
+                  Visible: =acnAuthorized && acnMode="Receipt" && acnEntity="Guides" && acnSavedG.ID=acnSavedID
+            - lblacnReceiptC0:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =ColorValue("#14253D")
+                  Font: =Font.'Segoe UI'
+                  Height: =28
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: |-
+                    ="Name: " & Coalesce(acnSavedC.Title,"—")
+                  Visible: =acnAuthorized && acnMode="Receipt" && acnEntity="Contacts" && acnSavedC.ID=acnSavedID
+            - lblacnReceiptC1:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =ColorValue("#14253D")
+                  Font: =Font.'Segoe UI'
+                  Height: =28
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: |-
+                    ="Person: " & Coalesce(acnSavedC.Person.DisplayName & " " & acnSavedC.Person.Email,"—")
+                  Visible: =acnAuthorized && acnMode="Receipt" && acnEntity="Contacts" && acnSavedC.ID=acnSavedID
+            - lblacnReceiptC2:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =ColorValue("#14253D")
+                  Font: =Font.'Segoe UI'
+                  Height: =28
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: |-
+                    ="Role: " & Coalesce(acnSavedC.Function.Value,"—")
+                  Visible: =acnAuthorized && acnMode="Receipt" && acnEntity="Contacts" && acnSavedC.ID=acnSavedID
+            - lblacnReceiptC3:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =ColorValue("#14253D")
+                  Font: =Font.'Segoe UI'
+                  Height: =28
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: |-
+                    ="Phone: " & Coalesce(acnSavedC.Phone,"—")
+                  Visible: =acnAuthorized && acnMode="Receipt" && acnEntity="Contacts" && acnSavedC.ID=acnSavedID
+            - lblacnReceiptC4:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =ColorValue("#14253D")
+                  Font: =Font.'Segoe UI'
+                  Height: =28
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: |-
+                    ="Valid from (local): " & Coalesce(Text(acnSavedC.ValidFrom,"yyyy-mm-dd HH:mm:ss"),"—")
+                  Visible: =acnAuthorized && acnMode="Receipt" && acnEntity="Contacts" && acnSavedC.ID=acnSavedID
+            - lblacnReceiptC5:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =ColorValue("#14253D")
+                  Font: =Font.'Segoe UI'
+                  Height: =28
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: |-
+                    ="Valid until (local): " & Coalesce(Text(acnSavedC.ValidUntil,"yyyy-mm-dd HH:mm:ss"),"—")
+                  Visible: =acnAuthorized && acnMode="Receipt" && acnEntity="Contacts" && acnSavedC.ID=acnSavedID
+            - lblacnReceiptC6:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =ColorValue("#14253D")
+                  Font: =Font.'Segoe UI'
+                  Height: =28
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: |-
+                    ="Notes: " & Coalesce(acnSavedC.Hints,"—")
+                  Visible: =acnAuthorized && acnMode="Receipt" && acnEntity="Contacts" && acnSavedC.ID=acnSavedID
+            - lblacnStatusHelp:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =ColorValue("#14253D")
+                  Font: =Font.'Segoe UI'
+                  Height: =28
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: |-
+                    =If(acnReceiptConfirmed,"The current data confirms the save.","Unclear save result: the current data is shown. Check every field before editing again.") & " Only Published content is visible to members; contact validity is applied in Info."
+                  Visible: =acnAuthorized && acnMode="Receipt"
+            - btnacnContinue:
+                Control: Button@0.0.45
+                Properties:
+                  AccessibleLabel: = "Edit saved entry"
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Appearance: ='ButtonCanvas.Appearance'.Outline
+                  BasePaletteColor: =ColorValue("#C8102E")
+                  BorderColor: =ColorValue("#DDE5EF")
+                  BorderRadius: =16
+                  DisplayMode: =If(acnAuthorized && !acnBusy,DisplayMode.Edit,DisplayMode.Disabled)
+                  Font: =Font.'Segoe UI'
+                  FontColor: =ColorValue("#18283B")
+                  FontSize: =16
+                  Height: =48
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  OnSelect: =UpdateContext({acnBusy:true,acnError:Blank()}); IfError(If(acnEntity="Guides",true; UpdateContext({acnG:LookUp(FleetGuides,ID=acnSavedID)}); UpdateContext({acnID:acnG.ID,acnBaseModified:acnG.Modified}),true; UpdateContext({acnC:LookUp(FleetContacts,ID=acnSavedID)}); UpdateContext({acnID:acnC.ID,acnBaseModified:acnC.Modified})); If(IsBlank(acnID),UpdateContext({acnError:"The entry no longer exists."}),UpdateContext({acnMode:"Edit",acnSavedID:Blank(),acnDirty:false,acnUnknown:false}); Reset(inpacnSearch); Reset(inpacnTitle); Reset(inpacnCategory); Reset(inpacnStatus); Reset(inpacnContent); Reset(inpacnLink); Reset(inpacnVersion); Reset(inpacnChecked); UpdateContext({acnAuditClearOwner:false,acnAuditClearPerson:false}); Reset(cmbacnOwnerAccount); Reset(cmbacnPersonAccount); Reset(inpacnFunction); Reset(inpacnPhone); Reset(inpacnFromDate); Reset(inpacnFromTime); Reset(inpacnToDate); Reset(inpacnToTime); Reset(inpacnNotes)),UpdateContext({acnError:"The entry could not be read."})); UpdateContext({acnBusy:false})
+                  Text: = "Edit saved entry"
+                  Visible: =acnAuthorized && acnMode="Receipt"
+                  Width: =Parent.Width
+            - btnacnToList:
+                Control: Button@0.0.45
+                Properties:
+                  AccessibleLabel: ="Back to list"
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Appearance: ='ButtonCanvas.Appearance'.Outline
+                  BasePaletteColor: =ColorValue("#C8102E")
+                  BorderColor: =ColorValue("#DDE5EF")
+                  BorderRadius: =16
+                  DisplayMode: =If(acnAuthorized && !acnBusy,DisplayMode.Edit,DisplayMode.Disabled)
+                  Font: =Font.'Segoe UI'
+                  FontColor: =ColorValue("#18283B")
+                  FontSize: =16
+                  Height: =48
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  OnSelect: =UpdateContext({acnMode:"Browse",acnSavedID:Blank(),acnError:Blank()})
+                  Text: ="Back to list"
+                  Visible: =acnAuthorized && acnMode="Receipt"
+                  Width: =Parent.Width
+      - conacnBottomNav:
+          Control: GroupContainer@1.5.0
+          Variant: AutoLayout
+          Properties:
+            BorderColor: =ColorValue("#E5EAF1")
+            DropShadow: =DropShadow.None
+            Fill: =ColorValue("#10233F")
+            Height: =76
+            LayoutAlignItems: =LayoutAlignItems.Stretch
+            LayoutDirection: =LayoutDirection.Horizontal
+            LayoutGap: =4
+            PaddingBottom: =18
+            PaddingLeft: =8
+            PaddingRight: =8
+            PaddingTop: =10
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =26
+            RadiusTopRight: =26
+            Width: =Parent.Width
+            Y: =Parent.Height-Self.Height
+          Children:
+            - btnacnBottomNav0:
+                Control: ModernButton@1.0.0
+                Properties:
+                  AccessibleLabel: ="Vehicle"
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Appearance: =ButtonAppearance.Transparent
+                  BasePaletteColor: =ColorValue("#C8102E")
+                  BorderThickness: =0
+                  Color: =ColorValue("#CFDBEB")
+                  DisplayMode: =If(Coalesce(acnDirty,false) || Coalesce(acnBusy,false) || Coalesce(acnUnknown,false),DisplayMode.Disabled,DisplayMode.Edit)
+                  FillPortions: =1
+                  Font: =Font.'Segoe UI'
+                  FontWeight: =FontWeight.Semibold
+                  Height: =48
+                  Icon: ="VehicleCar"
+                  LayoutMinHeight: =44
+                  LayoutMinWidth: =0
+                  OnSelect: =Set(varInfoOrigin,"");Navigate(VehicleHome)
+                  PaddingBottom: =0
+                  PaddingLeft: =3
+                  PaddingRight: =3
+                  PaddingTop: =0
+                  RadiusBottomLeft: =16
+                  RadiusBottomRight: =16
+                  RadiusTopLeft: =16
+                  RadiusTopRight: =16
+                  Size: =12
+                  Text: ="Vehicle"
+                  Tooltip: =If(Coalesce(acnDirty,false) || Coalesce(acnBusy,false) || Coalesce(acnUnknown,false),"First finish the current action or cancel it using Back.","Vehicle")
+                  Width: =Max(44,(Parent.Width-28)/4)
+            - btnacnBottomNav1:
+                Control: ModernButton@1.0.0
+                Properties:
+                  AccessibleLabel: ="Damage"
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Appearance: =ButtonAppearance.Transparent
+                  BasePaletteColor: =ColorValue("#C8102E")
+                  BorderColor: =ColorValue("#E5EAF1")
+                  BorderThickness: =0
+                  Color: =If(Coalesce(varVehicleId,0)>0,ColorValue("#CFDBEB"),ColorValue("#8B95A5"))
+                  DisplayMode: =If(Coalesce(varVehicleId,0)>0,If(Coalesce(acnDirty,false) || Coalesce(acnBusy,false) || Coalesce(acnUnknown,false),DisplayMode.Disabled,DisplayMode.Edit),DisplayMode.Disabled)
+                  FillPortions: =1
+                  Font: =Font.'Segoe UI'
+                  FontWeight: =FontWeight.Semibold
+                  Height: =48
+                  Icon: ="Warning"
+                  LayoutMinHeight: =44
+                  LayoutMinWidth: =0
+                  OnSelect: =If(Coalesce(varVehicleId,0)>0,Navigate(DamageReports))
+                  PaddingBottom: =0
+                  PaddingLeft: =3
+                  PaddingRight: =3
+                  PaddingTop: =0
+                  RadiusBottomLeft: =16
+                  RadiusBottomRight: =16
+                  RadiusTopLeft: =16
+                  RadiusTopRight: =16
+                  Size: =12
+                  Text: ="Damage"
+                  Tooltip: =If(Coalesce(varVehicleId,0)>0,If(Coalesce(acnDirty,false) || Coalesce(acnBusy,false) || Coalesce(acnUnknown,false),"First finish the current action or cancel it using Back.","Damage"),"Select a vehicle first.")
+                  Width: =Max(44,(Parent.Width-28)/4)
+            - btnacnBottomNav2:
+                Control: ModernButton@1.0.0
+                Properties:
+                  AccessibleLabel: ="Tasks"
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Appearance: =ButtonAppearance.Transparent
+                  BasePaletteColor: =ColorValue("#C8102E")
+                  BorderColor: =ColorValue("#E5EAF1")
+                  BorderThickness: =0
+                  Color: =If(Coalesce(varVehicleId,0)>0,ColorValue("#CFDBEB"),ColorValue("#8B95A5"))
+                  DisplayMode: =If(Coalesce(varVehicleId,0)>0,If(Coalesce(acnDirty,false) || Coalesce(acnBusy,false) || Coalesce(acnUnknown,false),DisplayMode.Disabled,DisplayMode.Edit),DisplayMode.Disabled)
+                  FillPortions: =1
+                  Font: =Font.'Segoe UI'
+                  FontWeight: =FontWeight.Semibold
+                  Height: =48
+                  Icon: ="CheckmarkCircle"
+                  LayoutMinHeight: =44
+                  LayoutMinWidth: =0
+                  OnSelect: =If(Coalesce(varVehicleId,0)>0,Navigate(HygieneCheck))
+                  PaddingBottom: =0
+                  PaddingLeft: =3
+                  PaddingRight: =3
+                  PaddingTop: =0
+                  RadiusBottomLeft: =16
+                  RadiusBottomRight: =16
+                  RadiusTopLeft: =16
+                  RadiusTopRight: =16
+                  Size: =12
+                  Text: ="Tasks"
+                  Tooltip: =If(Coalesce(varVehicleId,0)>0,If(Coalesce(acnDirty,false) || Coalesce(acnBusy,false) || Coalesce(acnUnknown,false),"First finish the current action or cancel it using Back.","Hygiene"),"Select a vehicle first.")
+                  Width: =Max(44,(Parent.Width-28)/4)
+            - btnacnBottomNav3:
+                Control: ModernButton@1.0.0
+                Properties:
+                  AccessibleLabel: ="Info"
+                  AlignInContainer: =AlignInContainer.Stretch
+                  BasePaletteColor: =ColorValue("#C8102E")
+                  BorderColor: =ColorValue("#E5EAF1")
+                  BorderThickness: =0
+                  Color: =ColorValue("#CFDBEB")
+                  DisplayMode: =If(Coalesce(acnDirty,false) || Coalesce(acnBusy,false) || Coalesce(acnUnknown,false),DisplayMode.Disabled,DisplayMode.Edit)
+                  FillPortions: =1
+                  Font: =Font.'Segoe UI'
+                  FontWeight: =FontWeight.Semibold
+                  Height: =48
+                  Icon: ="Info"
+                  IconStyle: =IconStyle.Filled
+                  LayoutMinHeight: =44
+                  LayoutMinWidth: =0
+                  OnSelect: =Set(varInfoOrigin,"");Navigate(Information)
+                  PaddingBottom: =0
+                  PaddingLeft: =3
+                  PaddingRight: =3
+                  PaddingTop: =0
+                  RadiusBottomLeft: =16
+                  RadiusBottomRight: =16
+                  RadiusTopLeft: =16
+                  RadiusTopRight: =16
+                  Size: =12
+                  Text: ="Info"
+                  Tooltip: =If(Coalesce(acnDirty,false) || Coalesce(acnBusy,false) || Coalesce(acnUnknown,false),"First finish the current action or cancel it using Back.","Info")
+                  Width: =Max(44,(Parent.Width-28)/4)

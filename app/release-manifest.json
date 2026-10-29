@@ -1,0 +1,86 @@
+{
+  "edition": "English session demo",
+  "date": "2026-10-29",
+  "artifact": {
+    "path": "app/Fleet-Shift-Manager-English-Demo.msapp",
+    "bytes": 3266530,
+    "sha256": "37688801f3a83db9b3e3e4595860b33651a481390c28c8bd23429d90299b94a0"
+  },
+  "business_connections": 0,
+  "source_file_count": 9,
+  "screen_count": 7,
+  "metadata_cleanup_only": true,
+  "runtime_rules_preserved": true,
+  "embedded_images_preserved": true,
+  "checks": {
+    "archive_and_json": "passed",
+    "private_deny_list": "passed",
+    "source_and_rules_preservation": "passed",
+    "power_platform_cli_unpack": "passed",
+    "new_studio_import": "passed: separate unsaved session in source environment",
+    "fresh_environment_install": "not tested",
+    "physical_devices": "not tested",
+    "imported_formula_checker": "no errors found",
+    "imported_data_pane": "no connected data sources",
+    "imported_preview_smoke_test": "passed: vehicle, damage/photo, tasks/person picker, guides, shift leads, simulated role, handover choices and cancel",
+    "imported_copy_save_publish": "not tested"
+  },
+  "reviewed_media": [
+    {
+      "path": "assets/fleet-icon.svg",
+      "sha256": "ad7792c1b1b327379d066f466572acb0032ab0359b69dd5a74cc7a8f8cc97f1c"
+    },
+    {
+      "path": "assets/screenshots/damage-detail.png",
+      "sha256": "fee7189d462aa4a9666af62cab38c367b1f478e03870269bb2abcc2c3b1f9de4"
+    },
+    {
+      "path": "assets/screenshots/damage-map.png",
+      "sha256": "13f31ddbe03e3eebda2d63c36353ba7708a4c026589c42371cdcbfad8bbf1d6c"
+    },
+    {
+      "path": "assets/screenshots/damage-photo.png",
+      "sha256": "e7e68f8d483229ff07be8f29b518d912867d0c1013d985d6a8542656a7851d2c"
+    },
+    {
+      "path": "assets/screenshots/handover-types.png",
+      "sha256": "a794e9264dd08f57ff406b271c45171102035f547738142cc7162249200591b8"
+    },
+    {
+      "path": "assets/screenshots/information.png",
+      "sha256": "748602dc3d1c94202b93283b9c404a943a4b3d3b4bc3fe798b84e58525cc4ac4"
+    },
+    {
+      "path": "assets/screenshots/shift-leads.png",
+      "sha256": "60a5ef522a97dc9319ae725b515f86e121eac319954344f08794d0f59dd39805"
+    },
+    {
+      "path": "assets/screenshots/task-checklist.png",
+      "sha256": "bef4ffdd94015c31731adc7cc8fd317cff71ce00e07466c29092e6c645d0c45e"
+    },
+    {
+      "path": "assets/screenshots/tasks.png",
+      "sha256": "259213a83d18221c149b0148fc7160609fbf84bfe34c59d0a2f2162c3a88a665"
+    },
+    {
+      "path": "assets/screenshots/vehicle-picker.png",
+      "sha256": "bfbc746a7745e15b690bd9419e1c1f33c8029d34322a39b1441cd2b4ffb8ef22"
+    },
+    {
+      "path": "assets/showcase/cover.png",
+      "sha256": "42d8142e4a50344bebbb60604653901c858170a303a16cff6af182f8be749622"
+    },
+    {
+      "path": "assets/showcase/feature-tour.gif",
+      "sha256": "6feb3be0a8df0bfcaf0777c9d80642cb5cca88799f0107d679f68853f1160749"
+    },
+    {
+      "path": "assets/showcase/workflow-overview.png",
+      "sha256": "7de3489a88b75e3575a24a32e85b65c03d17897c22047f31c5dadb406fccde63"
+    },
+    {
+      "path": "assets/support/paypal-qr.png",
+      "sha256": "3460ecc156456e50673b2fcc98abac138b32b8394fe1287cdbca582044a5fb76"
+    }
+  ]
+}

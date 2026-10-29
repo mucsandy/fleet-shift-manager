@@ -8,7 +8,7 @@
 <p align="center">
   <img alt="Built with Power Apps" src="https://img.shields.io/badge/built_with-Power_Apps-76D9C3?style=flat-square&labelColor=14243D">
   <img alt="Power Fx" src="https://img.shields.io/badge/logic-Power_Fx-76D9C3?style=flat-square&labelColor=14243D">
-  <img alt="README preview" src="https://img.shields.io/badge/status-project_preview-C61F3A?style=flat-square&labelColor=14243D">
+  <img alt="Session demo" src="https://img.shields.io/badge/status-session_demo-C61F3A?style=flat-square&labelColor=14243D">
   <a href="#license"><img alt="MIT license" src="https://img.shields.io/badge/license-MIT-76D9C3?style=flat-square&labelColor=14243D"></a>
 </p>
 
@@ -68,7 +68,7 @@ I wanted the next driver to be able to answer a few simple questions:
 
 The answers were spread across a paper logbook, a folder in the vehicle and handover conversations. I built Fleet Shift Manager to bring that routine into one place, from choosing the vehicle to documenting what happened during the shift.
 
-It grew out of my volunteer work, but the workflow is useful anywhere a team shares vehicles. I'm preparing an anonymized English community edition so other teams can study it, adapt it and save themselves some of the work.
+It grew out of my volunteer work, but the workflow is useful anywhere a team shares vehicles. I'm sharing this anonymized English community edition so other teams can study it, adapt it and save themselves some of the work.
 
 ## What the app does
 
@@ -108,7 +108,7 @@ Damage reports link to points on vehicle diagrams, while leadership review and v
 
 ## The English demo
 
-The prepared demo is a separate Canvas app with seven English screens and nine typed local collections. It uses fictional people, vehicles, tasks and reports.
+The demo is a separate Canvas app with seven English screens and nine typed local collections. It uses fictional people, vehicles, tasks and reports.
 
 - Changes last for the current app session.
 - There are no business connectors, live directory lookups or email dispatch.
@@ -120,20 +120,25 @@ The connected workflow is designed around SharePoint. A real deployment needs it
 
 ## Setup & release status
 
-**This repository is currently a project preview with the README, app screenshots and an animated tour. The app source, separate guides and an importable app package have not been published here yet.**
+**The English session demo and its source are now included.** It runs with fictional local data; you do not need to create lists, configure email or reconnect an organization account to try the workflows.
 
-There is no installable download at this stage. A GitHub repository ZIP is not a Power Apps import package.
+<p>
+  <a href="https://github.com/mucsandy/fleet-shift-manager/raw/refs/heads/main/app/Fleet-Shift-Manager-English-Demo.msapp"><strong>Download the Power Apps demo (.msapp)</strong></a> ·
+  <a href="docs/INSTALLATION.md">Installation guide</a> ·
+  <a href="docs/USER_GUIDE.md">User guide</a> ·
+  <a href="docs/VALIDATION.md">What has been tested</a>
+</p>
 
-For a future deployment you will need:
+1. Download the `.msapp` file above.
+2. In [Power Apps](https://make.powerapps.com), choose your development environment, then **Apps → Import app → From file (.msapp)**.
+3. Open the downloaded file in Studio, run the app initialization if needed, then preview and select **DEMO-01**.
+4. Save it as a new app in your own environment when you want to keep your copy.
 
-- A Power Apps account, applicable licensing and permission to create/edit apps in your chosen environment.
-- A separate development app or environment for initial setup and testing.
-- For persistent shared records: a backend you control, with the required lists, connections and real data-source permissions.
-- Tests with ordinary driver and leadership accounts, plus the phones your team actually uses.
+You need a Power Apps account, applicable licensing and the **Environment Maker** role in the destination environment. This is a single app file, not a solution ZIP; GitHub's **Download ZIP** is not the file to import. See Microsoft's [single-app import instructions](https://learn.microsoft.com/en-us/power-apps/maker/canvas-apps/export-import-single-app).
 
-Installation instructions will accompany the reviewed release artifact. Microsoft documents [Canvas app package import](https://learn.microsoft.com/en-us/power-apps/maker/canvas-apps/export-import-app-package) and [Canvas source files](https://learn.microsoft.com/en-us/power-apps/maker/canvas-apps/power-apps-yaml); these are different from downloading a source repository.
+**Import checked:** the sanitized file opened in a separate Power Apps Studio session. Vehicle selection, the damage report and embedded sample photo, task-person selection, guides, shift leadership and the simulated role switch passed the import smoke test in iPhone SE preview. Formula checker reported no errors, and the Data pane contained no connected data sources. This is still an early session demo; cross-environment and physical-device tests remain open. See [validation notes](docs/VALIDATION.md).
 
-You can follow the project here on GitHub for the next update.
+The [`src-demo`](src-demo) folder contains the nine source files from this export. [`schema/demo-collections.json`](schema/demo-collections.json) describes the nine local tables. See [architecture](docs/ARCHITECTURE.md) and [anonymization](docs/ANONYMIZATION.md) for scope and limitations.
 
 ## A few boundaries
 
@@ -141,7 +146,7 @@ The community edition uses invented people and vehicles and contains no operatio
 
 **A damage entry in the app does not replace the required accident report or your organization's reporting procedure.**
 
-In a connected app, enforce access at the backing data source. Hiding an administration button is not a permission model. Full workshop/replacement regression tests, physical-device checks and a fresh-environment installation test remain part of the release work.
+In a connected app, enforce access at the backing data source. Hiding an administration button is not a permission model. Full workshop/replacement regression tests, physical-device checks and a clean-environment installation test remain outstanding.
 
 ## Feedback
 

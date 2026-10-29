@@ -1,0 +1,1949 @@
+# ************************************************************************************************
+# Warning: YAML source code for Canvas Apps should only be used to review changes made within Power Apps Studio and for minor edits (Preview).
+# Use the maker portal to create and edit your Power Apps.
+# 
+# The schema file for Canvas Apps is available at https://go.microsoft.com/fwlink/?linkid=2304907
+# 
+# For more information, visit https://go.microsoft.com/fwlink/?linkid=2292623
+# ************************************************************************************************
+Screens:
+  Administration:
+    Properties:
+      OnVisible: |-
+        =UpdateContext({admBusy:false,admError:"",admPending:"",admReceipt:false});
+        IfError(UpdateContext({admAuthorized:false});
+        true;
+        Set(varOperator,LookUp(FleetMembers,Person.Email=varDemoUser.Email));
+        UpdateContext({admAuthorized:!IsBlank(varOperator.ID) && varOperator.Active && (varOperator.Role.Value="Team lead" || varOperator.Role.Value="Administrator")}); true;
+        If(IsBlank(admMode) || !Coalesce(admDirty,false),UpdateContext({admDirty:false,admEntity:If(admEntry="Vehicles","Vehicles","Members"),admMode:If(admEntry="Members" || admEntry="Vehicles","Browse","Hub"),admSelectedID:Blank(),admUnknown:false}),UpdateContext({admPending:"Entry"}));true,
+        UpdateContext({admAuthorized:false,admError:"Membership or lists could not be loaded. Access is blocked."});false)
+    Children:
+      - conadmRoot:
+          Control: GroupContainer@1.5.0
+          Variant: AutoLayout
+          Properties:
+            DropShadow: =DropShadow.None
+            Fill: =ColorValue("#F2F5FA")
+            Height: =Max(0,Parent.Height-76)
+            LayoutAlignItems: =LayoutAlignItems.Stretch
+            LayoutDirection: =LayoutDirection.Vertical
+            LayoutGap: =12
+            LayoutOverflowY: =LayoutOverflow.Scroll
+            PaddingBottom: =16
+            PaddingLeft: =16
+            PaddingRight: =16
+            PaddingTop: =16
+            Width: =Parent.Width
+          Children:
+            - lbladmTitle:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Color: =ColorValue("#10233F")
+                  Fill: =Color.White
+                  Font: =Font.'Segoe UI'
+                  FontWeight: =FontWeight.Bold
+                  Height: =64
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =8
+                  PaddingLeft: =16
+                  PaddingRight: =12
+                  PaddingTop: =8
+                  Size: =If(Parent.Width<450,20,24)
+                  Text: ="DEMO · Administration"
+                  Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+                  Wrap: =false
+            - btnadmBack:
+                Control: Button@0.0.45
+                Properties:
+                  AccessibleLabel: ="Back"
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Appearance: ='ButtonCanvas.Appearance'.Outline
+                  BasePaletteColor: =ColorValue("#C8102E")
+                  BorderColor: =ColorValue("#DDE5EF")
+                  BorderRadius: =16
+                  DisplayMode: =If(!admBusy,DisplayMode.Edit,DisplayMode.Disabled)
+                  Font: =Font.'Segoe UI'
+                  FontColor: =ColorValue("#18283B")
+                  FontSize: =16
+                  Height: =48
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  OnSelect: =If(admDirty,UpdateContext({admPending:"Back"}),If(admMode="Hub" || !admAuthorized,Navigate(VehicleHome),UpdateContext({admMode:"Hub",admReceipt:false,admSavedID:Blank()})))
+                  Text: ="Back"
+                  Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+            - lbladmAccess:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =ColorValue("#14253D")
+                  Font: =Font.'Segoe UI'
+                  Height: =32
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: ="Access is limited to active team leads and administrators."
+                  Visible: =!admAuthorized
+                  Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+            - lbladmError:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =ColorValue("#14253D")
+                  Font: =Font.'Segoe UI'
+                  Height: =32
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: =admError
+                  Visible: =!IsBlank(admError)
+                  Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+            - btnadmRetry:
+                Control: Button@0.0.45
+                Properties:
+                  AccessibleLabel: ="Recheck access / data"
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Appearance: ='ButtonCanvas.Appearance'.Outline
+                  BasePaletteColor: =ColorValue("#C8102E")
+                  BorderColor: =ColorValue("#DDE5EF")
+                  BorderRadius: =16
+                  DisplayMode: =If(!admBusy,DisplayMode.Edit,DisplayMode.Disabled)
+                  Font: =Font.'Segoe UI'
+                  FontColor: =ColorValue("#18283B")
+                  FontSize: =16
+                  Height: =48
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  OnSelect: |-
+                    =UpdateContext({admBusy:true,admError:""});IfError(UpdateContext({admAuthorized:false});
+                    true;
+                    Set(varOperator,LookUp(FleetMembers,Person.Email=varDemoUser.Email));
+                    UpdateContext({admAuthorized:!IsBlank(varOperator.ID) && varOperator.Active && (varOperator.Role.Value="Team lead" || varOperator.Role.Value="Administrator")});true; true;true,UpdateContext({admAuthorized:false,admError:"Data is unavailable. Please try again."});false);UpdateContext({admBusy:false})
+                  Text: ="Recheck access / data"
+                  Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+            - btnadmHubHelpers:
+                Control: Button@0.0.45
+                Properties:
+                  AccessibleLabel: ="Volunteer"
+                  Align: =Align.Left
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Appearance: ='ButtonCanvas.Appearance'.Outline
+                  BasePaletteColor: =ColorValue("#C8102E")
+                  BorderColor: =ColorValue("#DFE6F0")
+                  BorderRadius: =20
+                  BorderThickness: =1
+                  DisplayMode: =If(!admBusy,DisplayMode.Edit,DisplayMode.Disabled)
+                  Font: =Font.'Segoe UI'
+                  FontColor: =ColorValue("#10233F")
+                  FontSize: =18
+                  FontWeight: =FontWeight.Semibold
+                  Height: =64
+                  Icon: ="ArrowRight"
+                  Layout: ='ButtonCanvas.Layout'.IconAfter
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  OnSelect: =UpdateContext({admEntity:"Members",admMode:"Browse"})
+                  PaddingLeft: =20
+                  PaddingRight: =16
+                  Text: ="Volunteer"
+                  Visible: =admAuthorized && admMode="Hub"
+                  Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+            - btnadmHubVehicles:
+                Control: Button@0.0.45
+                Properties:
+                  AccessibleLabel: ="Vehicles"
+                  Align: =Align.Left
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Appearance: ='ButtonCanvas.Appearance'.Outline
+                  BasePaletteColor: =ColorValue("#C8102E")
+                  BorderColor: =ColorValue("#DFE6F0")
+                  BorderRadius: =20
+                  BorderThickness: =1
+                  DisplayMode: =If(!admBusy,DisplayMode.Edit,DisplayMode.Disabled)
+                  Font: =Font.'Segoe UI'
+                  FontColor: =ColorValue("#10233F")
+                  FontSize: =18
+                  FontWeight: =FontWeight.Semibold
+                  Height: =64
+                  Icon: ="ArrowRight"
+                  Layout: ='ButtonCanvas.Layout'.IconAfter
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  OnSelect: =UpdateContext({admEntity:"Vehicles",admMode:"Browse"})
+                  PaddingLeft: =20
+                  PaddingRight: =16
+                  Text: ="Vehicles"
+                  Visible: =admAuthorized && admMode="Hub"
+                  Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+            - btnadmHubHygiene:
+                Control: Button@0.0.45
+                Properties:
+                  AccessibleLabel: ="Task plans"
+                  Align: =Align.Left
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Appearance: ='ButtonCanvas.Appearance'.Outline
+                  BasePaletteColor: =ColorValue("#C8102E")
+                  BorderColor: =ColorValue("#DFE6F0")
+                  BorderRadius: =20
+                  BorderThickness: =1
+                  DisplayMode: =If(!admBusy,DisplayMode.Edit,DisplayMode.Disabled)
+                  Font: =Font.'Segoe UI'
+                  FontColor: =ColorValue("#10233F")
+                  FontSize: =18
+                  FontWeight: =FontWeight.Semibold
+                  Height: =64
+                  Icon: ="ArrowRight"
+                  Layout: ='ButtonCanvas.Layout'.IconAfter
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  OnSelect: =Navigate(TaskPlanAdmin)
+                  PaddingLeft: =20
+                  PaddingRight: =16
+                  Text: ="Tasks"
+                  Visible: =admAuthorized && admMode="Hub"
+                  Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+            - btnadmHubGuides:
+                Control: Button@0.0.45
+                Properties:
+                  AccessibleLabel: ="Guides"
+                  Align: =Align.Left
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Appearance: ='ButtonCanvas.Appearance'.Outline
+                  BasePaletteColor: =ColorValue("#C8102E")
+                  BorderColor: =ColorValue("#DFE6F0")
+                  BorderRadius: =20
+                  BorderThickness: =1
+                  DisplayMode: =If(!admBusy,DisplayMode.Edit,DisplayMode.Disabled)
+                  Font: =Font.'Segoe UI'
+                  FontColor: =ColorValue("#10233F")
+                  FontSize: =18
+                  FontWeight: =FontWeight.Semibold
+                  Height: =64
+                  Icon: ="ArrowRight"
+                  Layout: ='ButtonCanvas.Layout'.IconAfter
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  OnSelect: =Navigate(ContentAdmin,ScreenTransition.None,{cntEntry:"Guides"})
+                  PaddingLeft: =20
+                  PaddingRight: =16
+                  Text: ="Guides"
+                  Visible: =admAuthorized && admMode="Hub"
+                  Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+            - btnadmHubContacts:
+                Control: Button@0.0.45
+                Properties:
+                  AccessibleLabel: ="Contacts"
+                  Align: =Align.Left
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Appearance: ='ButtonCanvas.Appearance'.Outline
+                  BasePaletteColor: =ColorValue("#C8102E")
+                  BorderColor: =ColorValue("#DFE6F0")
+                  BorderRadius: =20
+                  BorderThickness: =1
+                  DisplayMode: =If(!admBusy,DisplayMode.Edit,DisplayMode.Disabled)
+                  Font: =Font.'Segoe UI'
+                  FontColor: =ColorValue("#10233F")
+                  FontSize: =18
+                  FontWeight: =FontWeight.Semibold
+                  Height: =64
+                  Icon: ="ArrowRight"
+                  Layout: ='ButtonCanvas.Layout'.IconAfter
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  OnSelect: =Navigate(ContentAdmin,ScreenTransition.None,{cntEntry:"Contacts"})
+                  PaddingLeft: =20
+                  PaddingRight: =16
+                  Text: ="Contacts"
+                  Visible: =admAuthorized && admMode="Hub"
+                  Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+            - lbladmModule:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =ColorValue("#14253D")
+                  Font: =Font.'Segoe UI'
+                  Height: =32
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =18
+                  Text: =If(admEntity="Members","Volunteer","Vehicles")
+                  Visible: =admAuthorized && admMode<>"Hub"
+                  Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+            - btnadmNew:
+                Control: Button@0.0.45
+                Properties:
+                  AccessibleLabel: ="Create a new entry"
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Appearance: ='ButtonCanvas.Appearance'.Outline
+                  BasePaletteColor: =ColorValue("#C8102E")
+                  BorderColor: =ColorValue("#DDE5EF")
+                  BorderRadius: =16
+                  DisplayMode: =If(!admBusy,DisplayMode.Edit,DisplayMode.Disabled)
+                  Font: =Font.'Segoe UI'
+                  FontColor: =ColorValue("#18283B")
+                  FontSize: =16
+                  Height: =48
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  OnSelect: =UpdateContext({admSelectedID:Blank(),admHBase:Blank(),admVBase:Blank(),admDateFrom:Blank(),admDateTo:Blank(),admDirty:false,admMode:"Form"}); UpdateContext({admSavedID:Blank(),admReceipt:false,admError:"",admUnknown:false,admConflict:false,admCandidateID:Blank()}); Reset(txtadmHName); Reset(cmbadmAccount); Reset(cmbadmRole); Reset(togadmActive); Reset(txtadmTitle); Reset(txtadmPlate); Reset(txtadmModel); Reset(cmbadmStatus); Reset(togadmReplacement); Reset(datadmFrom); Reset(datadmTo); Reset(txtadmNotes); Reset(txtadmKm)
+                  Text: ="Create a new entry"
+                  Visible: =admAuthorized && admMode="Browse"
+                  Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+            - conadmSearch:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  FillPortions: =0
+                  Height: =92
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =8
+                  LayoutMinHeight: =lbladmSearchLabel.Height + 8 + txtadmSearch.Height
+                  LayoutMinWidth: =0
+                  Visible: =admAuthorized && admMode="Browse"
+                  Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+                Children:
+                  - lbladmSearchLabel:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =ColorValue("#14253D")
+                        Font: =Font.'Segoe UI'
+                        Height: =32
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =16
+                        Text: ="Search by name / title"
+                        Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+                  - txtadmSearch:
+                      Control: TextInput@0.0.54
+                      Properties:
+                        AccessibleLabel: ="Search"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        ContentLanguage: ="en-GB"
+                        FontColor: =ColorValue("#18283B")
+                        Height: =48
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        Placeholder: ="Enter text"
+                        TriggerOutput: ='TextInputCanvas.TriggerOutput'.Keypress
+                        Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+            - galadmH:
+                Control: Gallery@2.15.0
+                Variant: VariableHeight
+                Properties:
+                  AccessibleLabel: ="Member list"
+                  ContentLanguage: ="en-GB"
+                  FillPortions: =0
+                  Height: =360
+                  Items: =Filter(FleetMembers,StartsWith(Title,txtadmSearch.Value))
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  TabIndex: =0
+                  TemplatePadding: =8
+                  TemplateSize: =200
+                  Visible: =admAuthorized && admMode="Browse" && admEntity="Members"
+                  Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+                Children:
+                  - conadmRowH:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        DropShadow: =DropShadow.None
+                        Height: =Max(200, lbladmRowIdentityH.Height + 72)
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutGap: =8
+                        PaddingBottom: =8
+                        PaddingTop: =8
+                        Width: =Parent.TemplateWidth
+                      Children:
+                        - lbladmRowIdentityH:
+                            Control: Label@2.5.1
+                            Properties:
+                              AlignInContainer: =AlignInContainer.Stretch
+                              AutoHeight: =true
+                              Color: =ColorValue("#14253D")
+                              Font: =Font.'Segoe UI'
+                              Height: =32
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingRight: =0
+                              PaddingTop: =0
+                              Size: =16
+                              Text: =ThisItem.Title & Char(10) & ThisItem.Person.Email & Char(10) & ThisItem.Role.Value & " · " & If(ThisItem.Active,"Active","Inactive")
+                              Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+                        - btnadmEditH:
+                            Control: Button@0.0.45
+                            Properties:
+                              AccessibleLabel: ="Edit"
+                              AlignInContainer: =AlignInContainer.Stretch
+                              Appearance: ='ButtonCanvas.Appearance'.Outline
+                              BasePaletteColor: =ColorValue("#C8102E")
+                              BorderColor: =ColorValue("#DDE5EF")
+                              BorderRadius: =16
+                              DisplayMode: =If(!admBusy,DisplayMode.Edit,DisplayMode.Disabled)
+                              Font: =Font.'Segoe UI'
+                              FontColor: =ColorValue("#18283B")
+                              FontSize: =16
+                              Height: =48
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              OnSelect: =UpdateContext({admSelectedID:ThisItem.ID}); UpdateContext({admSavedID:Blank(),admReceipt:false,admError:"",admUnknown:false,admConflict:false,admCandidateID:Blank()}); IfError(If(admEntity="Members",true;UpdateContext({admHBase:LookUp(FleetMembers,ID=admSelectedID)});If(IsBlank(admHBase.ID),UpdateContext({admError:"The entry is missing. Your draft is retained.",admConflict:true}),UpdateContext({admBaseModified:admHBase.Modified,admMode:"Form",admDirty:false}); Reset(txtadmHName); Reset(cmbadmAccount); Reset(cmbadmRole); Reset(togadmActive); Reset(txtadmTitle); Reset(txtadmPlate); Reset(txtadmModel); Reset(cmbadmStatus); Reset(togadmReplacement); Reset(datadmFrom); Reset(datadmTo); Reset(txtadmNotes); Reset(txtadmKm)),true;UpdateContext({admVBase:LookUp(FleetVehicles,ID=admSelectedID)});If(IsBlank(admVBase.ID),UpdateContext({admError:"The vehicle is missing. Your draft is retained.",admConflict:true}),UpdateContext({admDateFrom:admVBase.AvailableFrom,admDateTo:admVBase.AvailableUntil,admBaseModified:admVBase.Modified,admMode:"Form",admDirty:false}); Reset(txtadmHName); Reset(cmbadmAccount); Reset(cmbadmRole); Reset(togadmActive); Reset(txtadmTitle); Reset(txtadmPlate); Reset(txtadmModel); Reset(cmbadmStatus); Reset(togadmReplacement); Reset(datadmFrom); Reset(datadmTo); Reset(txtadmNotes); Reset(txtadmKm)));true,UpdateContext({admError:"The entry could not be loaded. Please try again."});false)
+                              Text: ="Edit"
+                              Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+            - lbladmEmptyH:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =ColorValue("#14253D")
+                  Font: =Font.'Segoe UI'
+                  Height: =32
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: ="No matches. Create a new entry above."
+                  Visible: =admAuthorized && admMode="Browse" && admEntity="Members" && IsBlank(admError) && IsEmpty(Filter(FleetMembers,StartsWith(Title,txtadmSearch.Value)))
+                  Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+            - galadmV:
+                Control: Gallery@2.15.0
+                Variant: VariableHeight
+                Properties:
+                  AccessibleLabel: ="Vehicle list"
+                  ContentLanguage: ="en-GB"
+                  FillPortions: =0
+                  Height: =360
+                  Items: =Filter(FleetVehicles,StartsWith(Title,txtadmSearch.Value) || StartsWith(Registration,txtadmSearch.Value))
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  TabIndex: =0
+                  TemplatePadding: =8
+                  TemplateSize: =200
+                  Visible: =admAuthorized && admMode="Browse" && admEntity="Vehicles"
+                  Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+                Children:
+                  - conadmRowV:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        DropShadow: =DropShadow.None
+                        Height: =Max(200, lbladmRowIdentityV.Height + 72)
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutGap: =8
+                        PaddingBottom: =8
+                        PaddingTop: =8
+                        Width: =Parent.TemplateWidth
+                      Children:
+                        - lbladmRowIdentityV:
+                            Control: Label@2.5.1
+                            Properties:
+                              AlignInContainer: =AlignInContainer.Stretch
+                              AutoHeight: =true
+                              Color: =ColorValue("#14253D")
+                              Font: =Font.'Segoe UI'
+                              Height: =32
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingRight: =0
+                              PaddingTop: =0
+                              Size: =16
+                              Text: =ThisItem.Registration & Char(10) & ThisItem.Model & Char(10) & ThisItem.Status.Value
+                              Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+                        - btnadmEditV:
+                            Control: Button@0.0.45
+                            Properties:
+                              AccessibleLabel: ="Edit"
+                              AlignInContainer: =AlignInContainer.Stretch
+                              Appearance: ='ButtonCanvas.Appearance'.Outline
+                              BasePaletteColor: =ColorValue("#C8102E")
+                              BorderColor: =ColorValue("#DDE5EF")
+                              BorderRadius: =16
+                              DisplayMode: =If(!admBusy,DisplayMode.Edit,DisplayMode.Disabled)
+                              Font: =Font.'Segoe UI'
+                              FontColor: =ColorValue("#18283B")
+                              FontSize: =16
+                              Height: =48
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              OnSelect: =UpdateContext({admSelectedID:ThisItem.ID}); UpdateContext({admSavedID:Blank(),admReceipt:false,admError:"",admUnknown:false,admConflict:false,admCandidateID:Blank()}); IfError(If(admEntity="Members",true;UpdateContext({admHBase:LookUp(FleetMembers,ID=admSelectedID)});If(IsBlank(admHBase.ID),UpdateContext({admError:"The entry is missing. Your draft is retained.",admConflict:true}),UpdateContext({admBaseModified:admHBase.Modified,admMode:"Form",admDirty:false}); Reset(txtadmHName); Reset(cmbadmAccount); Reset(cmbadmRole); Reset(togadmActive); Reset(txtadmTitle); Reset(txtadmPlate); Reset(txtadmModel); Reset(cmbadmStatus); Reset(togadmReplacement); Reset(datadmFrom); Reset(datadmTo); Reset(txtadmNotes); Reset(txtadmKm)),true;UpdateContext({admVBase:LookUp(FleetVehicles,ID=admSelectedID)});If(IsBlank(admVBase.ID),UpdateContext({admError:"The vehicle is missing. Your draft is retained.",admConflict:true}),UpdateContext({admDateFrom:admVBase.AvailableFrom,admDateTo:admVBase.AvailableUntil,admBaseModified:admVBase.Modified,admMode:"Form",admDirty:false}); Reset(txtadmHName); Reset(cmbadmAccount); Reset(cmbadmRole); Reset(togadmActive); Reset(txtadmTitle); Reset(txtadmPlate); Reset(txtadmModel); Reset(cmbadmStatus); Reset(togadmReplacement); Reset(datadmFrom); Reset(datadmTo); Reset(txtadmNotes); Reset(txtadmKm)));true,UpdateContext({admError:"The entry could not be loaded. Please try again."});false)
+                              Text: ="Edit"
+                              Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+            - lbladmEmptyV:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =ColorValue("#14253D")
+                  Font: =Font.'Segoe UI'
+                  Height: =32
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: ="No matches. Create a new entry above."
+                  Visible: =admAuthorized && admMode="Browse" && admEntity="Vehicles" && IsBlank(admError) && IsEmpty(Filter(FleetVehicles,StartsWith(Title,txtadmSearch.Value) || StartsWith(Registration,txtadmSearch.Value)))
+                  Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+            - lbladmFormMode:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =ColorValue("#14253D")
+                  Font: =Font.'Segoe UI'
+                  Height: =32
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: =If(IsBlank(admSelectedID),"New entry","Edit · ID " & Text(admSelectedID))
+                  Visible: =admAuthorized && admMode="Form"
+                  Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+            - conadmFieldHName:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  FillPortions: =0
+                  Height: =92
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =8
+                  LayoutMinHeight: =lbladmHNameLabel.Height + 8 + txtadmHName.Height
+                  LayoutMinWidth: =0
+                  Visible: =admAuthorized && admMode="Form" && admEntity="Members"
+                  Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+                Children:
+                  - lbladmHNameLabel:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =ColorValue("#14253D")
+                        Font: =Font.'Segoe UI'
+                        Height: =32
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =16
+                        Text: ="Name (from the account)"
+                        Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+                  - txtadmHName:
+                      Control: TextInput@0.0.54
+                      Properties:
+                        AccessibleLabel: ="Name (automatic)"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        ContentLanguage: ="en-GB"
+                        DisplayMode: =DisplayMode.View
+                        FontColor: =ColorValue("#18283B")
+                        Height: =48
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnChange: =If(admMode="Form" && admAuthorized && !admBusy,UpdateContext({admDirty:true}))
+                        Placeholder: ="Filled from the selected account"
+                        Value: =Coalesce(cmbadmAccount.Selected.DisplayName,admHBase.Person.DisplayName,admHBase.Title,"")
+                        Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+            - conadmFieldPerson:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  FillPortions: =0
+                  Height: =92
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =8
+                  LayoutMinHeight: =lbladmPersonLabel.Height + 8 + cmbadmAccount.Height
+                  LayoutMinWidth: =0
+                  Visible: =admAuthorized && admMode="Form" && admEntity="Members"
+                  Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+                Children:
+                  - lbladmPersonLabel:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =ColorValue("#14253D")
+                        Font: =Font.'Segoe UI'
+                        Height: =32
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =16
+                        Text: ="Person (demo account)"
+                        Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+                  - cmbadmAccount:
+                      Control: ModernCombobox@1.1.2
+                      Properties:
+                        AccessibleLabel: ="Person from the local demo directory"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        Appearance: =Appearance.Outline
+                        BasePaletteColor: =ColorValue("#C8102E")
+                        BorderColor: =ColorValue("#CBD5E1")
+                        BorderThickness: =1
+                        Color: =ColorValue("#14253D")
+                        ContentLanguage: ="en-GB"
+                        DefaultSelectedItems: =If(IsBlank(admSelectedID),[],AddColumns([admHBase.Person],Value1,DisplayName & " · " & Email))
+                        DisplayMode: =If(admBusy,DisplayMode.Disabled,DisplayMode.Edit)
+                        Fill: =Color.White
+                        Height: =48
+                        InputTextPlaceholder: ="Search demo name or email"
+                        Items: =AddColumns(Filter(Filter(colDemoDirectory,IsBlank(Self.SearchText) || Self.SearchText in DisplayName || Self.SearchText in Email),admAuthorized || admBusy),Value1,DisplayName & " · " & Email)
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnChange: =If(admMode="Form" && admAuthorized && !admBusy,UpdateContext({admDirty:true});Reset(txtadmHName))
+                        SelectMultiple: =false
+                        Size: =16
+                        Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+            - lbladmDirectoryHelp:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =ColorValue("#14253D")
+                  Font: =Font.'Segoe UI'
+                  Height: =32
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: ="Search for a demo name or email in the local directory. The name is filled automatically."
+                  Visible: =admAuthorized && admMode="Form" && admEntity="Members"
+                  Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+            - conadmFieldRole:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  FillPortions: =0
+                  Height: =92
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =8
+                  LayoutMinHeight: =lbladmRoleLabel.Height + 8 + cmbadmRole.Height
+                  LayoutMinWidth: =0
+                  Visible: =admAuthorized && admMode="Form" && admEntity="Members"
+                  Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+                Children:
+                  - lbladmRoleLabel:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =ColorValue("#14253D")
+                        Font: =Font.'Segoe UI'
+                        Height: =32
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =16
+                        Text: ="Role"
+                        Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+                  - cmbadmRole:
+                      Control: ComboBox@0.0.51
+                      Properties:
+                        AccessibleLabel: ="Role"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        ContentLanguage: ="en-GB"
+                        DefaultSelectedItems: =If(IsBlank(admSelectedID),[],[admHBase.Role])
+                        DisplayMode: =If(admBusy,DisplayMode.Disabled,DisplayMode.Edit)
+                        FontColor: =ColorValue("#18283B")
+                        Height: =48
+                        IsSearchable: =false
+                        Items: =colDemoChoiceMembersRole
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnChange: =If(admMode="Form" && admAuthorized && !admBusy,UpdateContext({admDirty:true}))
+                        Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+            - conadmFieldActive:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  FillPortions: =0
+                  Height: =92
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =8
+                  LayoutMinHeight: =lbladmActiveLabel.Height + 8 + togadmActive.Height
+                  LayoutMinWidth: =0
+                  Visible: =admAuthorized && admMode="Form" && admEntity="Members"
+                  Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+                Children:
+                  - lbladmActiveLabel:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =ColorValue("#14253D")
+                        Font: =Font.'Segoe UI'
+                        Height: =32
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =16
+                        Text: ="Active"
+                        Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+                  - togadmActive:
+                      Control: Toggle@1.1.5
+                      Properties:
+                        AccessibleLabel: ="Active"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        Checked: =Coalesce(admHBase.Active,false)
+                        DisplayMode: =If(admBusy,DisplayMode.Disabled,DisplayMode.Edit)
+                        FontColor: =ColorValue("#18283B")
+                        Height: =48
+                        Label: =""
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnCheck: =If(admMode="Form" && admAuthorized && !admBusy,UpdateContext({admDirty:true}))
+                        OnUncheck: =If(admMode="Form" && admAuthorized && !admBusy,UpdateContext({admDirty:true}))
+                        Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+            - conadmFieldTitle:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  FillPortions: =0
+                  Height: =92
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =8
+                  LayoutMinHeight: =lbladmTitleLabel.Height + 8 + txtadmTitle.Height
+                  LayoutMinWidth: =0
+                  Visible: =admAuthorized && admMode="Form" && admEntity="Vehicles"
+                  Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+                Children:
+                  - lbladmTitleLabel:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =ColorValue("#14253D")
+                        Font: =Font.'Segoe UI'
+                        Height: =32
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =16
+                        Text: ="Title"
+                        Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+                  - txtadmTitle:
+                      Control: TextInput@0.0.54
+                      Properties:
+                        AccessibleLabel: ="Title"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        ContentLanguage: ="en-GB"
+                        DisplayMode: =If(admBusy,DisplayMode.Disabled,DisplayMode.Edit)
+                        FontColor: =ColorValue("#18283B")
+                        Height: =48
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnChange: =If(admMode="Form" && admAuthorized && !admBusy,UpdateContext({admDirty:true}))
+                        Placeholder: ="Enter text"
+                        Value: =Coalesce(admVBase.Title,"")
+                        Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+            - conadmFieldPlate:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  FillPortions: =0
+                  Height: =92
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =8
+                  LayoutMinHeight: =lbladmPlateLabel.Height + 8 + txtadmPlate.Height
+                  LayoutMinWidth: =0
+                  Visible: =admAuthorized && admMode="Form" && admEntity="Vehicles"
+                  Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+                Children:
+                  - lbladmPlateLabel:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =ColorValue("#14253D")
+                        Font: =Font.'Segoe UI'
+                        Height: =32
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =16
+                        Text: ="License plate"
+                        Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+                  - txtadmPlate:
+                      Control: TextInput@0.0.54
+                      Properties:
+                        AccessibleLabel: ="License plate"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        ContentLanguage: ="en-GB"
+                        DisplayMode: =If(admBusy,DisplayMode.Disabled,DisplayMode.Edit)
+                        FontColor: =ColorValue("#18283B")
+                        Height: =48
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnChange: =If(admMode="Form" && admAuthorized && !admBusy,UpdateContext({admDirty:true}))
+                        Placeholder: ="Enter text"
+                        Value: =Coalesce(admVBase.Registration,"")
+                        Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+            - conadmFieldModel:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  FillPortions: =0
+                  Height: =92
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =8
+                  LayoutMinHeight: =lbladmModelLabel.Height + 8 + txtadmModel.Height
+                  LayoutMinWidth: =0
+                  Visible: =admAuthorized && admMode="Form" && admEntity="Vehicles"
+                  Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+                Children:
+                  - lbladmModelLabel:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =ColorValue("#14253D")
+                        Font: =Font.'Segoe UI'
+                        Height: =32
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =16
+                        Text: ="Model"
+                        Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+                  - txtadmModel:
+                      Control: TextInput@0.0.54
+                      Properties:
+                        AccessibleLabel: ="Model"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        ContentLanguage: ="en-GB"
+                        DisplayMode: =If(admBusy,DisplayMode.Disabled,DisplayMode.Edit)
+                        FontColor: =ColorValue("#18283B")
+                        Height: =48
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnChange: =If(admMode="Form" && admAuthorized && !admBusy,UpdateContext({admDirty:true}))
+                        Placeholder: ="Enter text"
+                        Value: =Coalesce(admVBase.Model,"")
+                        Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+            - conadmFieldStatus:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  FillPortions: =0
+                  Height: =92
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =8
+                  LayoutMinHeight: =lbladmStatusLabel.Height + 8 + cmbadmStatus.Height
+                  LayoutMinWidth: =0
+                  Visible: =admAuthorized && admMode="Form" && admEntity="Vehicles"
+                  Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+                Children:
+                  - lbladmStatusLabel:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =ColorValue("#14253D")
+                        Font: =Font.'Segoe UI'
+                        Height: =32
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =16
+                        Text: ="Status"
+                        Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+                  - cmbadmStatus:
+                      Control: ComboBox@0.0.51
+                      Properties:
+                        AccessibleLabel: ="Status"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        ContentLanguage: ="en-GB"
+                        DefaultSelectedItems: =If(IsBlank(admSelectedID),[],[admVBase.Status])
+                        DisplayMode: =If(admBusy,DisplayMode.Disabled,DisplayMode.Edit)
+                        FontColor: =ColorValue("#18283B")
+                        Height: =48
+                        IsSearchable: =false
+                        Items: =colDemoChoiceVehiclesStatus
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnChange: =If(admMode="Form" && admAuthorized && !admBusy,UpdateContext({admDirty:true}))
+                        Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+            - conadmFieldReplacement:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  FillPortions: =0
+                  Height: =92
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =8
+                  LayoutMinHeight: =lbladmReplacementLabel.Height + 8 + togadmReplacement.Height
+                  LayoutMinWidth: =0
+                  Visible: =admAuthorized && admMode="Form" && admEntity="Vehicles"
+                  Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+                Children:
+                  - lbladmReplacementLabel:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =ColorValue("#14253D")
+                        Font: =Font.'Segoe UI'
+                        Height: =32
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =16
+                        Text: ="Replacement vehicle"
+                        Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+                  - togadmReplacement:
+                      Control: Toggle@1.1.5
+                      Properties:
+                        AccessibleLabel: ="Replacement vehicle"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        Checked: =Coalesce(admVBase.ReplacementVehicle,false)
+                        DisplayMode: =If(admBusy,DisplayMode.Disabled,DisplayMode.Edit)
+                        FontColor: =ColorValue("#18283B")
+                        Height: =48
+                        Label: =""
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnCheck: =If(admMode="Form" && admAuthorized && !admBusy,UpdateContext({admDirty:true}))
+                        OnUncheck: =If(admMode="Form" && admAuthorized && !admBusy,UpdateContext({admDirty:true}))
+                        Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+            - conadmFieldFrom:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  FillPortions: =0
+                  Height: =92
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =8
+                  LayoutMinHeight: =lbladmFromLabel.Height + 8 + datadmFrom.Height
+                  LayoutMinWidth: =0
+                  Visible: =admAuthorized && admMode="Form" && admEntity="Vehicles"
+                  Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+                Children:
+                  - lbladmFromLabel:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =ColorValue("#14253D")
+                        Font: =Font.'Segoe UI'
+                        Height: =32
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =16
+                        Text: ="In service from (optional)"
+                        Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+                  - datadmFrom:
+                      Control: DatePicker@0.0.46
+                      Properties:
+                        AccessibleLabel: ="In service from (optional)"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        ContentLanguage: ="en-GB"
+                        DisplayMode: =If(admBusy,DisplayMode.Disabled,DisplayMode.Edit)
+                        FontColor: =ColorValue("#18283B")
+                        Height: =48
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnChange: =If(admMode="Form" && admAuthorized && !admBusy,UpdateContext({admDirty:true}))
+                        SelectedDate: =admDateFrom
+                        Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+            - btnadmClearFrom:
+                Control: Button@0.0.45
+                Properties:
+                  AccessibleLabel: ="Clear service start date"
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Appearance: ='ButtonCanvas.Appearance'.Outline
+                  BasePaletteColor: =ColorValue("#C8102E")
+                  BorderColor: =ColorValue("#DDE5EF")
+                  BorderRadius: =16
+                  DisplayMode: =If(!admBusy,DisplayMode.Edit,DisplayMode.Disabled)
+                  Font: =Font.'Segoe UI'
+                  FontColor: =ColorValue("#18283B")
+                  FontSize: =16
+                  Height: =48
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  OnSelect: =UpdateContext({admDateFrom:Blank(),admDirty:true});Reset(datadmFrom)
+                  Text: ="Clear service start date"
+                  Visible: =admAuthorized && admMode="Form" && admEntity="Vehicles"
+                  Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+            - conadmFieldTo:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  FillPortions: =0
+                  Height: =92
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =8
+                  LayoutMinHeight: =lbladmToLabel.Height + 8 + datadmTo.Height
+                  LayoutMinWidth: =0
+                  Visible: =admAuthorized && admMode="Form" && admEntity="Vehicles"
+                  Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+                Children:
+                  - lbladmToLabel:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =ColorValue("#14253D")
+                        Font: =Font.'Segoe UI'
+                        Height: =32
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =16
+                        Text: ="In service until (optional)"
+                        Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+                  - datadmTo:
+                      Control: DatePicker@0.0.46
+                      Properties:
+                        AccessibleLabel: ="In service until (optional)"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        ContentLanguage: ="en-GB"
+                        DisplayMode: =If(admBusy,DisplayMode.Disabled,DisplayMode.Edit)
+                        FontColor: =ColorValue("#18283B")
+                        Height: =48
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnChange: =If(admMode="Form" && admAuthorized && !admBusy,UpdateContext({admDirty:true}))
+                        SelectedDate: =admDateTo
+                        Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+            - btnadmClearTo:
+                Control: Button@0.0.45
+                Properties:
+                  AccessibleLabel: ="Clear service end date"
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Appearance: ='ButtonCanvas.Appearance'.Outline
+                  BasePaletteColor: =ColorValue("#C8102E")
+                  BorderColor: =ColorValue("#DDE5EF")
+                  BorderRadius: =16
+                  DisplayMode: =If(!admBusy,DisplayMode.Edit,DisplayMode.Disabled)
+                  Font: =Font.'Segoe UI'
+                  FontColor: =ColorValue("#18283B")
+                  FontSize: =16
+                  Height: =48
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  OnSelect: =UpdateContext({admDateTo:Blank(),admDirty:true});Reset(datadmTo)
+                  Text: ="Clear service end date"
+                  Visible: =admAuthorized && admMode="Form" && admEntity="Vehicles"
+                  Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+            - conadmFieldNotes:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  FillPortions: =0
+                  Height: =164
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =8
+                  LayoutMinHeight: =lbladmNotesLabel.Height + 8 + txtadmNotes.Height
+                  LayoutMinWidth: =0
+                  Visible: =admAuthorized && admMode="Form" && admEntity="Vehicles"
+                  Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+                Children:
+                  - lbladmNotesLabel:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =ColorValue("#14253D")
+                        Font: =Font.'Segoe UI'
+                        Height: =32
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =16
+                        Text: ="Notes"
+                        Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+                  - txtadmNotes:
+                      Control: TextInput@0.0.54
+                      Properties:
+                        AccessibleLabel: ="Notes"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        ContentLanguage: ="en-GB"
+                        DisplayMode: =If(admBusy,DisplayMode.Disabled,DisplayMode.Edit)
+                        FontColor: =ColorValue("#18283B")
+                        Height: =120
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        Mode: ='TextInputCanvas.Mode'.Multiline
+                        OnChange: =If(admMode="Form" && admAuthorized && !admBusy,UpdateContext({admDirty:true}))
+                        Placeholder: ="Enter text"
+                        Value: =Coalesce(admVBase.Hints,"")
+                        Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+            - conadmFieldKm:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  FillPortions: =0
+                  Height: =116
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =8
+                  LayoutMinHeight: =lbladmKmLabel.Height + 8 + txtadmKm.Height
+                  LayoutMinWidth: =0
+                  Visible: =admAuthorized && admMode="Form" && admEntity="Vehicles"
+                  Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+                Children:
+                  - lbladmKmLabel:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =ColorValue("#14253D")
+                        Font: =Font.'Segoe UI'
+                        Height: =32
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =16
+                        Text: ="Vehicle odometer (optional)"
+                        Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+                  - txtadmKm:
+                      Control: TextInput@0.0.54
+                      Properties:
+                        AccessibleLabel: ="Vehicle odometer (optional)"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        ContentLanguage: ="en-GB"
+                        DisplayMode: =If(admBusy,DisplayMode.Disabled,DisplayMode.Edit)
+                        FontColor: =ColorValue("#18283B")
+                        Height: =48
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnChange: =If(admMode="Form" && admAuthorized && !admBusy,UpdateContext({admDirty:true}))
+                        Placeholder: ="Enter text"
+                        Value: =If(IsBlank(admVBase.Odometer),"",Text(admVBase.Odometer))
+                        Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+            - lbladmReference:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =ColorValue("#14253D")
+                  Font: =Font.'Segoe UI'
+                  Height: =32
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: |-
+                    =If(IsBlank(admSelectedID),"Last handover odometer (reference): no vehicle selected",IfError(With({r:First(SortByColumns(Filter(FleetTrips,VehicleKey=Text(admSelectedID)),"EndedAt",SortOrder.Descending,"Created",SortOrder.Descending,"ID",SortOrder.Descending))},"Last handover odometer (reference): " & If(IsBlank(r.ID),"no trip recorded",Text(r.EndOdometer))),"Last handover odometer (reference): data unavailable"))
+                  Visible: =admAuthorized && admMode="Form" && admEntity="Vehicles"
+                  Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+            - lbladmValidation:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =ColorValue("#14253D")
+                  Font: =Font.'Segoe UI'
+                  Height: =32
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: =If(admEntity="Members","Select a demo account and role. The name is filled automatically.","License plate, model and status are required. The optional odometer must be a whole number ≥ 0. The service start date must not follow the end date. A blank title is generated from the license plate and model.")
+                  Visible: =admAuthorized && admMode="Form"
+                  Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+            - btnadmSave:
+                Control: Button@0.0.45
+                Properties:
+                  AccessibleLabel: ="Save"
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Appearance: ='ButtonCanvas.Appearance'.Primary
+                  BasePaletteColor: =ColorValue("#C8102E")
+                  BorderRadius: =16
+                  DisplayMode: =If(!admBusy && IsBlank(admPending) && !admUnknown && IsBlank(admSavedID) && If(admEntity="Members",!IsBlank(Trim(txtadmHName.Value)) && !IsBlank(cmbadmAccount.Selected.Email) && EndsWith(Lower(cmbadmAccount.Selected.Email),"@example.invalid") && !IsBlank(cmbadmRole.Selected.Value),!IsBlank(Trim(txtadmPlate.Value)) && !IsBlank(Trim(txtadmModel.Value)) && !IsBlank(cmbadmStatus.Selected.Value) && (IsBlank(txtadmKm.Value) || IfError(Value(txtadmKm.Value)>=0 && Mod(Value(txtadmKm.Value),1)=0,false)) && (IsBlank(datadmFrom.SelectedDate) || IsBlank(datadmTo.SelectedDate) || datadmFrom.SelectedDate<=datadmTo.SelectedDate)),DisplayMode.Edit,DisplayMode.Disabled)
+                  Font: =Font.'Segoe UI'
+                  FontColor: =Color.White
+                  FontSize: =16
+                  Height: =48
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  OnSelect: |-
+                    =If(!admBusy && IsBlank(admPending) && !admUnknown && IsBlank(admSavedID),
+                    UpdateContext({admBusy:true,admError:"",admAttempted:false,admReceipt:false});
+                    IfError(UpdateContext({admAuthorized:false});
+                    true;
+                    Set(varOperator,LookUp(FleetMembers,Person.Email=varDemoUser.Email));
+                    UpdateContext({admAuthorized:!IsBlank(varOperator.ID) && varOperator.Active && (varOperator.Role.Value="Team lead" || varOperator.Role.Value="Administrator")});
+                    If(!admAuthorized,UpdateContext({admError:"You do not currently have administration permission. Your draft is retained."}),
+                    If(admEntity="Members",
+                    If(!(!IsBlank(Trim(txtadmHName.Value)) && !IsBlank(cmbadmAccount.Selected.Email) && EndsWith(Lower(cmbadmAccount.Selected.Email),"@example.invalid") && !IsBlank(cmbadmRole.Selected.Value)),UpdateContext({admError:"Provide a name, demo account and role."}),
+                    true;
+                    UpdateContext({admHCurrent:LookUp(FleetMembers,ID=admSelectedID)});UpdateContext({admHDuplicate:If(!IsBlank(admSelectedID) && cmbadmAccount.Selected.Email=admHCurrent.Person.Email,LookUp(FleetMembers,ID=0),LookUp(FleetMembers,Person.Email=cmbadmAccount.Selected.Email))});
+                    If(!IsBlank(admSelectedID) && (IsBlank(admHCurrent.ID) || admHCurrent.Modified<>admBaseModified),UpdateContext({admConflict:true,admError:"The entry was changed or deleted. Keep your draft or explicitly reload."}),
+                    !IsBlank(admHDuplicate.ID),UpdateContext({admError:"This account is already registered as a member."}),
+                    UpdateContext({admAttempted:true,admAttemptEntity:admEntity,admNaturalKey:If(admEntity="Members",cmbadmAccount.Selected.Email,Upper(Trim(txtadmPlate.Value)))});
+                    UpdateContext({admHResult:If(IsBlank(admSelectedID),With({demoNewId:Coalesce(Max(FleetMembers,ID),0)+1,demoNow:Now()},Collect(FleetMembers,Patch(varDemoDefaultMembers,{Title:Trim(txtadmHName.Value),Person:First(DropColumns(cmbadmAccount.SelectedItems,Value1)),Role:cmbadmRole.Selected,Active:togadmActive.Checked},{ID:demoNewId,Created:demoNow,Modified:demoNow,Author:varDemoPerson,Editor:varDemoPerson}));LookUp(FleetMembers,ID=demoNewId)),Patch(FleetMembers,LookUp(FleetMembers,ID=admSelectedID),{Title:Trim(txtadmHName.Value),Person:First(DropColumns(cmbadmAccount.SelectedItems,Value1)),Role:cmbadmRole.Selected,Active:togadmActive.Checked},{Modified:Now(),Editor:varDemoPerson}))});
+                    UpdateContext({admSavedID:admHResult.ID});
+                    UpdateContext({admAuthorized:false});
+                    true;
+                    Set(varOperator,LookUp(FleetMembers,Person.Email=varDemoUser.Email));
+                    UpdateContext({admAuthorized:!IsBlank(varOperator.ID) && varOperator.Active && (varOperator.Role.Value="Team lead" || varOperator.Role.Value="Administrator")});
+                    If(admEntity="Members",true;UpdateContext({admHReceipt:LookUp(FleetMembers,ID=admSavedID)});If(IsBlank(admHReceipt.ID),UpdateContext({admError:"The saved ID could not be read. Read it again without saving.",admReceipt:false}),UpdateContext({admReceipt:true,admMode:"Receipt",admDirty:false,admUnknown:false,admError:""})),true;UpdateContext({admVReceipt:LookUp(FleetVehicles,ID=admSavedID)});If(IsBlank(admVReceipt.ID),UpdateContext({admError:"The saved ID could not be read. Read it again without saving.",admReceipt:false}),If(admSavedID=varVehicleId,Set(varVehicle,admVReceipt));UpdateContext({admReceipt:true,admMode:"Receipt",admDirty:false,admUnknown:false,admError:""}))))),
+                    If(!(!IsBlank(Trim(txtadmPlate.Value)) && !IsBlank(Trim(txtadmModel.Value)) && !IsBlank(cmbadmStatus.Selected.Value) && (IsBlank(txtadmKm.Value) || IfError(Value(txtadmKm.Value)>=0 && Mod(Value(txtadmKm.Value),1)=0,false)) && (IsBlank(datadmFrom.SelectedDate) || IsBlank(datadmTo.SelectedDate) || datadmFrom.SelectedDate<=datadmTo.SelectedDate)),UpdateContext({admError:"License plate, model and status are required. The odometer must be blank or a whole number ≥ 0; check the date order."}),
+                    true;
+                    UpdateContext({admVCurrent:LookUp(FleetVehicles,ID=admSelectedID)});UpdateContext({admVDuplicate:If(!IsBlank(admSelectedID) && Upper(Trim(txtadmPlate.Value))=Upper(Trim(admVCurrent.Registration)),LookUp(FleetVehicles,ID=0),LookUp(FleetVehicles,Registration=Upper(Trim(txtadmPlate.Value))))});
+                    If(!IsBlank(admSelectedID) && (IsBlank(admVCurrent.ID) || admVCurrent.Modified<>admBaseModified),UpdateContext({admConflict:true,admError:"The vehicle was changed or deleted. Keep your draft or explicitly reload."}),
+                    !IsBlank(admVDuplicate.ID),UpdateContext({admError:"This license plate already exists."}),
+                    UpdateContext({admAttempted:true,admAttemptEntity:admEntity,admNaturalKey:If(admEntity="Members",cmbadmAccount.Selected.Email,Upper(Trim(txtadmPlate.Value)))});
+                    UpdateContext({admVResult:If(IsBlank(admSelectedID),With({demoNewId:Coalesce(Max(FleetVehicles,ID),0)+1,demoNow:Now()},Collect(FleetVehicles,Patch(varDemoDefaultVehicles,{Title:If(IsBlank(Trim(txtadmTitle.Value)),Upper(Trim(txtadmPlate.Value)) & " · " & Trim(txtadmModel.Value),Trim(txtadmTitle.Value)),Registration:Upper(Trim(txtadmPlate.Value)),Model:Trim(txtadmModel.Value),Status:cmbadmStatus.Selected,ReplacementVehicle:togadmReplacement.Checked,AvailableFrom:datadmFrom.SelectedDate,AvailableUntil:datadmTo.SelectedDate,Hints:txtadmNotes.Value,Odometer:If(IsBlank(txtadmKm.Value),Blank(),Value(txtadmKm.Value))},{ID:demoNewId,Created:demoNow,Modified:demoNow,Author:varDemoPerson,Editor:varDemoPerson}));LookUp(FleetVehicles,ID=demoNewId)),Patch(FleetVehicles,LookUp(FleetVehicles,ID=admSelectedID),{Title:If(IsBlank(Trim(txtadmTitle.Value)),Upper(Trim(txtadmPlate.Value)) & " · " & Trim(txtadmModel.Value),Trim(txtadmTitle.Value)),Registration:Upper(Trim(txtadmPlate.Value)),Model:Trim(txtadmModel.Value),Status:cmbadmStatus.Selected,ReplacementVehicle:togadmReplacement.Checked,AvailableFrom:datadmFrom.SelectedDate,AvailableUntil:datadmTo.SelectedDate,Hints:txtadmNotes.Value,Odometer:If(IsBlank(txtadmKm.Value),Blank(),Value(txtadmKm.Value))},{Modified:Now(),Editor:varDemoPerson}))});
+                    UpdateContext({admSavedID:admVResult.ID});If(admEntity="Members",true;UpdateContext({admHReceipt:LookUp(FleetMembers,ID=admSavedID)});If(IsBlank(admHReceipt.ID),UpdateContext({admError:"The saved ID could not be read. Read it again without saving.",admReceipt:false}),UpdateContext({admReceipt:true,admMode:"Receipt",admDirty:false,admUnknown:false,admError:""})),true;UpdateContext({admVReceipt:LookUp(FleetVehicles,ID=admSavedID)});If(IsBlank(admVReceipt.ID),UpdateContext({admError:"The saved ID could not be read. Read it again without saving.",admReceipt:false}),If(admSavedID=varVehicleId,Set(varVehicle,admVReceipt));UpdateContext({admReceipt:true,admMode:"Receipt",admDirty:false,admUnknown:false,admError:""}))))))),
+                    UpdateContext({admError:If(!IsBlank(admSavedID),"Saving returned an ID, but confirmation is currently unavailable. Read it again without saving.",If(admAttempted,"The save result is unclear. Do not save again; check the list for a possible duplicate.","Data is unavailable. Your draft is retained.")),admUnknown:admAttempted && IsBlank(admSavedID)});false,true);
+                    UpdateContext({admBusy:false}))
+                  Text: ="Save"
+                  Visible: =admAuthorized && admMode="Form"
+                  Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+            - btnadmCancel:
+                Control: Button@0.0.45
+                Properties:
+                  AccessibleLabel: ="Cancel draft"
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Appearance: ='ButtonCanvas.Appearance'.Outline
+                  BasePaletteColor: =ColorValue("#C8102E")
+                  BorderColor: =ColorValue("#DDE5EF")
+                  BorderRadius: =16
+                  DisplayMode: =If(!admBusy,DisplayMode.Edit,DisplayMode.Disabled)
+                  Font: =Font.'Segoe UI'
+                  FontColor: =ColorValue("#18283B")
+                  FontSize: =16
+                  Height: =48
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  OnSelect: =UpdateContext({admPending:"Cancel"})
+                  Text: ="Cancel draft"
+                  Visible: =admAuthorized && admMode="Form"
+                  Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+            - btnadmReload:
+                Control: Button@0.0.45
+                Properties:
+                  AccessibleLabel: ="Discard and reload"
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Appearance: ='ButtonCanvas.Appearance'.Outline
+                  BasePaletteColor: =ColorValue("#C8102E")
+                  BorderColor: =ColorValue("#DDE5EF")
+                  BorderRadius: =16
+                  DisplayMode: =If(!admBusy,DisplayMode.Edit,DisplayMode.Disabled)
+                  Font: =Font.'Segoe UI'
+                  FontColor: =ColorValue("#18283B")
+                  FontSize: =16
+                  Height: =48
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  OnSelect: =UpdateContext({admPending:"Reload"})
+                  Text: ="Discard and reload"
+                  Visible: =admAuthorized && admMode="Form" && admConflict
+                  Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+            - lbladmPending:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =ColorValue("#14253D")
+                  Font: =Font.'Segoe UI'
+                  Height: =32
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: ="Discard unsaved changes? Nothing will be saved."
+                  Visible: =!IsBlank(admPending)
+                  Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+            - btnadmKeep:
+                Control: Button@0.0.45
+                Properties:
+                  AccessibleLabel: ="Keep draft"
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Appearance: ='ButtonCanvas.Appearance'.Outline
+                  BasePaletteColor: =ColorValue("#C8102E")
+                  BorderColor: =ColorValue("#DDE5EF")
+                  BorderRadius: =16
+                  DisplayMode: =If(!admBusy,DisplayMode.Edit,DisplayMode.Disabled)
+                  Font: =Font.'Segoe UI'
+                  FontColor: =ColorValue("#18283B")
+                  FontSize: =16
+                  Height: =48
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  OnSelect: =UpdateContext({admPending:""})
+                  Text: ="Keep draft"
+                  Visible: =!IsBlank(admPending)
+                  Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+            - btnadmDiscard:
+                Control: Button@0.0.45
+                Properties:
+                  AccessibleLabel: ="Discard changes"
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Appearance: ='ButtonCanvas.Appearance'.Outline
+                  BasePaletteColor: =ColorValue("#C8102E")
+                  BorderColor: =ColorValue("#DDE5EF")
+                  BorderRadius: =16
+                  DisplayMode: =If(!admBusy,DisplayMode.Edit,DisplayMode.Disabled)
+                  Font: =Font.'Segoe UI'
+                  FontColor: =ColorValue("#18283B")
+                  FontSize: =16
+                  Height: =48
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  OnSelect: =If(!admAuthorized,UpdateContext({admDirty:false,admPending:"",admUnknown:false});Navigate(VehicleHome),UpdateContext({admDirty:false});If(admPending="Reload",UpdateContext({admSavedID:Blank(),admReceipt:false,admError:"",admUnknown:false,admConflict:false,admCandidateID:Blank()}); IfError(If(admEntity="Members",true;UpdateContext({admHBase:LookUp(FleetMembers,ID=admSelectedID)});If(IsBlank(admHBase.ID),UpdateContext({admError:"The entry is missing. Your draft is retained.",admConflict:true}),UpdateContext({admBaseModified:admHBase.Modified,admMode:"Form",admDirty:false}); Reset(txtadmHName); Reset(cmbadmAccount); Reset(cmbadmRole); Reset(togadmActive); Reset(txtadmTitle); Reset(txtadmPlate); Reset(txtadmModel); Reset(cmbadmStatus); Reset(togadmReplacement); Reset(datadmFrom); Reset(datadmTo); Reset(txtadmNotes); Reset(txtadmKm)),true;UpdateContext({admVBase:LookUp(FleetVehicles,ID=admSelectedID)});If(IsBlank(admVBase.ID),UpdateContext({admError:"The vehicle is missing. Your draft is retained.",admConflict:true}),UpdateContext({admDateFrom:admVBase.AvailableFrom,admDateTo:admVBase.AvailableUntil,admBaseModified:admVBase.Modified,admMode:"Form",admDirty:false}); Reset(txtadmHName); Reset(cmbadmAccount); Reset(cmbadmRole); Reset(togadmActive); Reset(txtadmTitle); Reset(txtadmPlate); Reset(txtadmModel); Reset(cmbadmStatus); Reset(togadmReplacement); Reset(datadmFrom); Reset(datadmTo); Reset(txtadmNotes); Reset(txtadmKm)));true,UpdateContext({admError:"The entry could not be loaded. Please try again."});false),admPending="Entry",UpdateContext({admEntity:If(admEntry="Vehicles","Vehicles","Members"),admMode:If(admEntry="Hub","Hub","Browse"),admReceipt:false,admSavedID:Blank()}),admPending="Back" && admMode="Hub",Navigate(VehicleHome),UpdateContext({admMode:If(admPending="Back","Hub","Browse"),admReceipt:false,admSavedID:Blank(),admUnknown:false}));UpdateContext({admPending:""}))
+                  Text: ="Discard changes"
+                  Visible: =!IsBlank(admPending)
+                  Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+            - btnadmReadReceipt:
+                Control: Button@0.0.45
+                Properties:
+                  AccessibleLabel: ="Read saved ID again"
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Appearance: ='ButtonCanvas.Appearance'.Outline
+                  BasePaletteColor: =ColorValue("#C8102E")
+                  BorderColor: =ColorValue("#DDE5EF")
+                  BorderRadius: =16
+                  DisplayMode: =If(!admBusy,DisplayMode.Edit,DisplayMode.Disabled)
+                  Font: =Font.'Segoe UI'
+                  FontColor: =ColorValue("#18283B")
+                  FontSize: =16
+                  Height: =48
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  OnSelect: =IfError(If(admEntity="Members",true;UpdateContext({admHReceipt:LookUp(FleetMembers,ID=admSavedID)});If(IsBlank(admHReceipt.ID),UpdateContext({admError:"The saved ID could not be read. Read it again without saving.",admReceipt:false}),UpdateContext({admReceipt:true,admMode:"Receipt",admDirty:false,admUnknown:false,admError:""})),true;UpdateContext({admVReceipt:LookUp(FleetVehicles,ID=admSavedID)});If(IsBlank(admVReceipt.ID),UpdateContext({admError:"The saved ID could not be read. Read it again without saving.",admReceipt:false}),If(admSavedID=varVehicleId,Set(varVehicle,admVReceipt));UpdateContext({admReceipt:true,admMode:"Receipt",admDirty:false,admUnknown:false,admError:""})));true,UpdateContext({admError:"Confirmation is still unavailable; nothing was saved again."});false)
+                  Text: ="Read saved ID again"
+                  Visible: =admAuthorized && !IsBlank(admSavedID) && !admReceipt
+                  Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+            - btnadmCheckUnknown:
+                Control: Button@0.0.45
+                Properties:
+                  AccessibleLabel: ="Check unclear result"
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Appearance: ='ButtonCanvas.Appearance'.Outline
+                  BasePaletteColor: =ColorValue("#C8102E")
+                  BorderColor: =ColorValue("#DDE5EF")
+                  BorderRadius: =16
+                  DisplayMode: =If(!admBusy,DisplayMode.Edit,DisplayMode.Disabled)
+                  Font: =Font.'Segoe UI'
+                  FontColor: =ColorValue("#18283B")
+                  FontSize: =16
+                  Height: =48
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  OnSelect: =IfError(If(admAttemptEntity="Members",true;UpdateContext({admCandidateID:LookUp(FleetMembers,Person.Email=admNaturalKey).ID}),true;UpdateContext({admCandidateID:LookUp(FleetVehicles,Registration=admNaturalKey).ID}));UpdateContext({admError:If(IsBlank(admCandidateID),"No match found. Check the list, cancel the draft and deliberately start again.","A potentially saved entry was found. ID " & Text(admCandidateID) & " explicitly adopt this entry or keep your draft.")});true,UpdateContext({admError:"Reconciliation is unavailable. Do not save again."});false)
+                  Text: ="Check unclear result"
+                  Visible: =admAuthorized && admUnknown
+                  Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+            - lbladmCandidate:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =ColorValue("#14253D")
+                  Font: =Font.'Segoe UI'
+                  Height: =32
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: |-
+                    =IfError(If(admEntity="Members",With({r:LookUp(FleetMembers,ID=admCandidateID)},"Entry found: " & r.Title & Char(10) & r.Person.Email & Char(10) & r.Role.Value & " · " & If(r.Active,"Active","Inactive")),With({r:LookUp(FleetVehicles,ID=admCandidateID)},"Vehicle found: " & r.Registration & Char(10) & r.Model & Char(10) & r.Status.Value)),"The entry found is currently unavailable. Nothing was saved again.")
+                  Visible: =admAuthorized && admUnknown && !IsBlank(admCandidateID)
+                  Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+            - btnadmAcceptCandidate:
+                Control: Button@0.0.45
+                Properties:
+                  AccessibleLabel: ="Open the entry found"
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Appearance: ='ButtonCanvas.Appearance'.Outline
+                  BasePaletteColor: =ColorValue("#C8102E")
+                  BorderColor: =ColorValue("#DDE5EF")
+                  BorderRadius: =16
+                  DisplayMode: =If(!admBusy,DisplayMode.Edit,DisplayMode.Disabled)
+                  Font: =Font.'Segoe UI'
+                  FontColor: =ColorValue("#18283B")
+                  FontSize: =16
+                  Height: =48
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  OnSelect: =UpdateContext({admEntity:admAttemptEntity,admSavedID:admCandidateID});IfError(If(admEntity="Members",true;UpdateContext({admHReceipt:LookUp(FleetMembers,ID=admSavedID)});If(IsBlank(admHReceipt.ID),UpdateContext({admError:"The saved ID could not be read. Read it again without saving.",admReceipt:false}),UpdateContext({admReceipt:true,admMode:"Receipt",admDirty:false,admUnknown:false,admError:""})),true;UpdateContext({admVReceipt:LookUp(FleetVehicles,ID=admSavedID)});If(IsBlank(admVReceipt.ID),UpdateContext({admError:"The saved ID could not be read. Read it again without saving.",admReceipt:false}),If(admSavedID=varVehicleId,Set(varVehicle,admVReceipt));UpdateContext({admReceipt:true,admMode:"Receipt",admDirty:false,admUnknown:false,admError:""})));true,UpdateContext({admError:"The candidate could not be read. Read it again without saving."});false)
+                  Text: ="Open the entry found"
+                  Visible: =admAuthorized && admUnknown && !IsBlank(admCandidateID)
+                  Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+            - lbladmReceiptHeading:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =ColorValue("#14253D")
+                  Font: =Font.'Segoe UI'
+                  Height: =32
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =18
+                  Text: ="Saved entry · ID " & Text(admSavedID)
+                  Visible: =admAuthorized && admMode="Receipt" && admReceipt
+                  Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+            - lbladmReceiptHTitle:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =ColorValue("#14253D")
+                  Font: =Font.'Segoe UI'
+                  Height: =32
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: |-
+                    ="Name: " & admHReceipt.Title
+                  Visible: =admAuthorized && admMode="Receipt" && admReceipt && admEntity="Members"
+                  Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+            - lbladmReceiptHPersonDisplayName:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =ColorValue("#14253D")
+                  Font: =Font.'Segoe UI'
+                  Height: =32
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: |-
+                    ="Person: " & admHReceipt.Person.DisplayName
+                  Visible: =admAuthorized && admMode="Receipt" && admReceipt && admEntity="Members"
+                  Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+            - lbladmReceiptHPersonEmail:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =ColorValue("#14253D")
+                  Font: =Font.'Segoe UI'
+                  Height: =32
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: |-
+                    ="Email: " & admHReceipt.Person.Email
+                  Visible: =admAuthorized && admMode="Receipt" && admReceipt && admEntity="Members"
+                  Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+            - lbladmReceiptHRoleValue:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =ColorValue("#14253D")
+                  Font: =Font.'Segoe UI'
+                  Height: =32
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: |-
+                    ="Role: " & admHReceipt.Role.Value
+                  Visible: =admAuthorized && admMode="Receipt" && admReceipt && admEntity="Members"
+                  Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+            - lbladmReceiptHActive:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =ColorValue("#14253D")
+                  Font: =Font.'Segoe UI'
+                  Height: =32
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: |-
+                    ="Active: " & If(admHReceipt.Active,"Yes","No")
+                  Visible: =admAuthorized && admMode="Receipt" && admReceipt && admEntity="Members"
+                  Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+            - lbladmReceiptVTitle:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =ColorValue("#14253D")
+                  Font: =Font.'Segoe UI'
+                  Height: =32
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: |-
+                    ="Title: " & admVReceipt.Title
+                  Visible: =admAuthorized && admMode="Receipt" && admReceipt && admEntity="Vehicles"
+                  Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+            - lbladmReceiptVRegistration:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =ColorValue("#14253D")
+                  Font: =Font.'Segoe UI'
+                  Height: =32
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: |-
+                    ="License plate: " & admVReceipt.Registration
+                  Visible: =admAuthorized && admMode="Receipt" && admReceipt && admEntity="Vehicles"
+                  Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+            - lbladmReceiptVModel:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =ColorValue("#14253D")
+                  Font: =Font.'Segoe UI'
+                  Height: =32
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: |-
+                    ="Model: " & admVReceipt.Model
+                  Visible: =admAuthorized && admMode="Receipt" && admReceipt && admEntity="Vehicles"
+                  Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+            - lbladmReceiptVStatusValue:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =ColorValue("#14253D")
+                  Font: =Font.'Segoe UI'
+                  Height: =32
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: |-
+                    ="Status: " & admVReceipt.Status.Value
+                  Visible: =admAuthorized && admMode="Receipt" && admReceipt && admEntity="Vehicles"
+                  Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+            - lbladmReceiptVReplacementVehicle:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =ColorValue("#14253D")
+                  Font: =Font.'Segoe UI'
+                  Height: =32
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: |-
+                    ="Replacement vehicle: " & If(admVReceipt.ReplacementVehicle,"Yes","No")
+                  Visible: =admAuthorized && admMode="Receipt" && admReceipt && admEntity="Vehicles"
+                  Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+            - lbladmReceiptVAvailableFrom:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =ColorValue("#14253D")
+                  Font: =Font.'Segoe UI'
+                  Height: =32
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: |-
+                    ="In service from: " & Text(admVReceipt.AvailableFrom)
+                  Visible: =admAuthorized && admMode="Receipt" && admReceipt && admEntity="Vehicles"
+                  Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+            - lbladmReceiptVAvailableUntil:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =ColorValue("#14253D")
+                  Font: =Font.'Segoe UI'
+                  Height: =32
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: |-
+                    ="In service until: " & Text(admVReceipt.AvailableUntil)
+                  Visible: =admAuthorized && admMode="Receipt" && admReceipt && admEntity="Vehicles"
+                  Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+            - lbladmReceiptVHints:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =ColorValue("#14253D")
+                  Font: =Font.'Segoe UI'
+                  Height: =32
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: |-
+                    ="Notes: " & admVReceipt.Hints
+                  Visible: =admAuthorized && admMode="Receipt" && admReceipt && admEntity="Vehicles"
+                  Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+            - lbladmReceiptVOdometer:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =ColorValue("#14253D")
+                  Font: =Font.'Segoe UI'
+                  Height: =32
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: |-
+                    ="Vehicle odometer: " & Text(admVReceipt.Odometer)
+                  Visible: =admAuthorized && admMode="Receipt" && admReceipt && admEntity="Vehicles"
+                  Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+            - btnadmContinue:
+                Control: Button@0.0.45
+                Properties:
+                  AccessibleLabel: ="Edit saved entry"
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Appearance: ='ButtonCanvas.Appearance'.Outline
+                  BasePaletteColor: =ColorValue("#C8102E")
+                  BorderColor: =ColorValue("#DDE5EF")
+                  BorderRadius: =16
+                  DisplayMode: =If(!admBusy,DisplayMode.Edit,DisplayMode.Disabled)
+                  Font: =Font.'Segoe UI'
+                  FontColor: =ColorValue("#18283B")
+                  FontSize: =14
+                  Height: =48
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  OnSelect: =UpdateContext({admSelectedID:admSavedID});UpdateContext({admSavedID:Blank(),admReceipt:false,admError:"",admUnknown:false,admConflict:false,admCandidateID:Blank()});IfError(If(admEntity="Members",true;UpdateContext({admHBase:LookUp(FleetMembers,ID=admSelectedID)});If(IsBlank(admHBase.ID),UpdateContext({admError:"The entry is missing. Your draft is retained.",admConflict:true}),UpdateContext({admBaseModified:admHBase.Modified,admMode:"Form",admDirty:false}); Reset(txtadmHName); Reset(cmbadmAccount); Reset(cmbadmRole); Reset(togadmActive); Reset(txtadmTitle); Reset(txtadmPlate); Reset(txtadmModel); Reset(cmbadmStatus); Reset(togadmReplacement); Reset(datadmFrom); Reset(datadmTo); Reset(txtadmNotes); Reset(txtadmKm)),true;UpdateContext({admVBase:LookUp(FleetVehicles,ID=admSelectedID)});If(IsBlank(admVBase.ID),UpdateContext({admError:"The vehicle is missing. Your draft is retained.",admConflict:true}),UpdateContext({admDateFrom:admVBase.AvailableFrom,admDateTo:admVBase.AvailableUntil,admBaseModified:admVBase.Modified,admMode:"Form",admDirty:false}); Reset(txtadmHName); Reset(cmbadmAccount); Reset(cmbadmRole); Reset(togadmActive); Reset(txtadmTitle); Reset(txtadmPlate); Reset(txtadmModel); Reset(cmbadmStatus); Reset(togadmReplacement); Reset(datadmFrom); Reset(datadmTo); Reset(txtadmNotes); Reset(txtadmKm)));true,UpdateContext({admError:"The entry could not be loaded. Please try again."});false)
+                  Text: ="Edit saved entry"
+                  Visible: =admAuthorized && admMode="Receipt" && admReceipt
+                  Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+            - btnadmReceiptList:
+                Control: Button@0.0.45
+                Properties:
+                  AccessibleLabel: ="Back to list"
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Appearance: ='ButtonCanvas.Appearance'.Outline
+                  BasePaletteColor: =ColorValue("#C8102E")
+                  BorderColor: =ColorValue("#DDE5EF")
+                  BorderRadius: =16
+                  DisplayMode: =If(!admBusy,DisplayMode.Edit,DisplayMode.Disabled)
+                  Font: =Font.'Segoe UI'
+                  FontColor: =ColorValue("#18283B")
+                  FontSize: =16
+                  Height: =48
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  OnSelect: =UpdateContext({admMode:"Browse",admReceipt:false,admSavedID:Blank()});true; true
+                  Text: ="Back to list"
+                  Visible: =admAuthorized && admMode="Receipt" && admReceipt
+                  Width: =Parent.Width - Parent.PaddingLeft - Parent.PaddingRight
+      - conadmBottomNav:
+          Control: GroupContainer@1.5.0
+          Variant: AutoLayout
+          Properties:
+            BorderColor: =ColorValue("#E5EAF1")
+            DropShadow: =DropShadow.None
+            Fill: =ColorValue("#10233F")
+            Height: =76
+            LayoutAlignItems: =LayoutAlignItems.Stretch
+            LayoutDirection: =LayoutDirection.Horizontal
+            LayoutGap: =4
+            PaddingBottom: =18
+            PaddingLeft: =8
+            PaddingRight: =8
+            PaddingTop: =10
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =26
+            RadiusTopRight: =26
+            Width: =Parent.Width
+            Y: =Parent.Height-Self.Height
+          Children:
+            - btnadmBottomNav0:
+                Control: ModernButton@1.0.0
+                Properties:
+                  AccessibleLabel: ="Vehicle"
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Appearance: =ButtonAppearance.Transparent
+                  BasePaletteColor: =ColorValue("#C8102E")
+                  BorderThickness: =0
+                  Color: =ColorValue("#CFDBEB")
+                  DisplayMode: =If(Coalesce(admDirty,false) || Coalesce(admBusy,false) || Coalesce(admUnknown,false),DisplayMode.Disabled,DisplayMode.Edit)
+                  FillPortions: =1
+                  Font: =Font.'Segoe UI'
+                  FontWeight: =FontWeight.Semibold
+                  Height: =48
+                  Icon: ="VehicleCar"
+                  LayoutMinHeight: =44
+                  LayoutMinWidth: =0
+                  OnSelect: =Set(varInfoOrigin,"");Navigate(VehicleHome)
+                  PaddingBottom: =0
+                  PaddingLeft: =3
+                  PaddingRight: =3
+                  PaddingTop: =0
+                  RadiusBottomLeft: =16
+                  RadiusBottomRight: =16
+                  RadiusTopLeft: =16
+                  RadiusTopRight: =16
+                  Size: =12
+                  Text: ="Vehicle"
+                  Tooltip: =If(Coalesce(admDirty,false) || Coalesce(admBusy,false) || Coalesce(admUnknown,false),"First finish the current action or cancel it using Back.","Vehicle")
+                  Width: =Max(44,(Parent.Width-28)/4)
+            - btnadmBottomNav1:
+                Control: ModernButton@1.0.0
+                Properties:
+                  AccessibleLabel: ="Damage"
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Appearance: =ButtonAppearance.Transparent
+                  BasePaletteColor: =ColorValue("#C8102E")
+                  BorderColor: =ColorValue("#E5EAF1")
+                  BorderThickness: =0
+                  Color: =If(Coalesce(varVehicleId,0)>0,ColorValue("#CFDBEB"),ColorValue("#8B95A5"))
+                  DisplayMode: =If(Coalesce(varVehicleId,0)>0,If(Coalesce(admDirty,false) || Coalesce(admBusy,false) || Coalesce(admUnknown,false),DisplayMode.Disabled,DisplayMode.Edit),DisplayMode.Disabled)
+                  FillPortions: =1
+                  Font: =Font.'Segoe UI'
+                  FontWeight: =FontWeight.Semibold
+                  Height: =48
+                  Icon: ="Warning"
+                  LayoutMinHeight: =44
+                  LayoutMinWidth: =0
+                  OnSelect: =If(Coalesce(varVehicleId,0)>0,Navigate(DamageReports))
+                  PaddingBottom: =0
+                  PaddingLeft: =3
+                  PaddingRight: =3
+                  PaddingTop: =0
+                  RadiusBottomLeft: =16
+                  RadiusBottomRight: =16
+                  RadiusTopLeft: =16
+                  RadiusTopRight: =16
+                  Size: =12
+                  Text: ="Damage"
+                  Tooltip: =If(Coalesce(varVehicleId,0)>0,If(Coalesce(admDirty,false) || Coalesce(admBusy,false) || Coalesce(admUnknown,false),"First finish the current action or cancel it using Back.","Damage"),"Select a vehicle first.")
+                  Width: =Max(44,(Parent.Width-28)/4)
+            - btnadmBottomNav2:
+                Control: ModernButton@1.0.0
+                Properties:
+                  AccessibleLabel: ="Tasks"
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Appearance: =ButtonAppearance.Transparent
+                  BasePaletteColor: =ColorValue("#C8102E")
+                  BorderColor: =ColorValue("#E5EAF1")
+                  BorderThickness: =0
+                  Color: =If(Coalesce(varVehicleId,0)>0,ColorValue("#CFDBEB"),ColorValue("#8B95A5"))
+                  DisplayMode: =If(Coalesce(varVehicleId,0)>0,If(Coalesce(admDirty,false) || Coalesce(admBusy,false) || Coalesce(admUnknown,false),DisplayMode.Disabled,DisplayMode.Edit),DisplayMode.Disabled)
+                  FillPortions: =1
+                  Font: =Font.'Segoe UI'
+                  FontWeight: =FontWeight.Semibold
+                  Height: =48
+                  Icon: ="CheckmarkCircle"
+                  LayoutMinHeight: =44
+                  LayoutMinWidth: =0
+                  OnSelect: =If(Coalesce(varVehicleId,0)>0,Navigate(HygieneCheck))
+                  PaddingBottom: =0
+                  PaddingLeft: =3
+                  PaddingRight: =3
+                  PaddingTop: =0
+                  RadiusBottomLeft: =16
+                  RadiusBottomRight: =16
+                  RadiusTopLeft: =16
+                  RadiusTopRight: =16
+                  Size: =12
+                  Text: ="Tasks"
+                  Tooltip: =If(Coalesce(varVehicleId,0)>0,If(Coalesce(admDirty,false) || Coalesce(admBusy,false) || Coalesce(admUnknown,false),"First finish the current action or cancel it using Back.","Hygiene"),"Select a vehicle first.")
+                  Width: =Max(44,(Parent.Width-28)/4)
+            - btnadmBottomNav3:
+                Control: ModernButton@1.0.0
+                Properties:
+                  AccessibleLabel: ="Info"
+                  AlignInContainer: =AlignInContainer.Stretch
+                  BasePaletteColor: =ColorValue("#C8102E")
+                  BorderColor: =ColorValue("#E5EAF1")
+                  BorderThickness: =0
+                  Color: =ColorValue("#CFDBEB")
+                  DisplayMode: =If(Coalesce(admDirty,false) || Coalesce(admBusy,false) || Coalesce(admUnknown,false),DisplayMode.Disabled,DisplayMode.Edit)
+                  FillPortions: =1
+                  Font: =Font.'Segoe UI'
+                  FontWeight: =FontWeight.Semibold
+                  Height: =48
+                  Icon: ="Info"
+                  IconStyle: =IconStyle.Filled
+                  LayoutMinHeight: =44
+                  LayoutMinWidth: =0
+                  OnSelect: =Set(varInfoOrigin,"");Navigate(Information)
+                  PaddingBottom: =0
+                  PaddingLeft: =3
+                  PaddingRight: =3
+                  PaddingTop: =0
+                  RadiusBottomLeft: =16
+                  RadiusBottomRight: =16
+                  RadiusTopLeft: =16
+                  RadiusTopRight: =16
+                  Size: =12
+                  Text: ="Info"
+                  Tooltip: =If(Coalesce(admDirty,false) || Coalesce(admBusy,false) || Coalesce(admUnknown,false),"First finish the current action or cancel it using Back.","Info")
+                  Width: =Max(44,(Parent.Width-28)/4)

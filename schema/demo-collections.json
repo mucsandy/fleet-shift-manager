@@ -1,0 +1,1796 @@
+{
+  "FleetTasks": {
+    "InstructionSnapshot": {
+      "type": "String"
+    },
+    "Author": {
+      "type": "Record",
+      "fields": {
+        "Claims": {
+          "type": "String"
+        },
+        "Department": {
+          "type": "String"
+        },
+        "DisplayName": {
+          "type": "String"
+        },
+        "Email": {
+          "type": "String"
+        },
+        "JobTitle": {
+          "type": "String"
+        },
+        "Picture": {
+          "type": "Image"
+        }
+      }
+    },
+    "Notes": {
+      "type": "String"
+    },
+    "ComplianceAssetId": {
+      "type": "String"
+    },
+    "Created": {
+      "type": "DateTime"
+    },
+    "Editor": {
+      "type": "Record",
+      "fields": {
+        "Claims": {
+          "type": "String"
+        },
+        "Department": {
+          "type": "String"
+        },
+        "DisplayName": {
+          "type": "String"
+        },
+        "Email": {
+          "type": "String"
+        },
+        "JobTitle": {
+          "type": "String"
+        },
+        "Picture": {
+          "type": "Image"
+        }
+      }
+    },
+    "RemindedAt": {
+      "type": "DateTime"
+    },
+    "ReminderStatus": {
+      "type": "String"
+    },
+    "CompletedAt": {
+      "type": "DateTime"
+    },
+    "CompletedBy": {
+      "type": "Record",
+      "fields": {
+        "Claims": {
+          "type": "String"
+        },
+        "Department": {
+          "type": "String"
+        },
+        "DisplayName": {
+          "type": "String"
+        },
+        "Email": {
+          "type": "String"
+        },
+        "JobTitle": {
+          "type": "String"
+        },
+        "Picture": {
+          "type": "Image"
+        }
+      }
+    },
+    "DueAt": {
+      "type": "DateTime"
+    },
+    "Vehicle": {
+      "type": "Record",
+      "fields": {
+        "Id": {
+          "type": "Number"
+        },
+        "Value": {
+          "type": "String"
+        }
+      }
+    },
+    "VehicleKey": {
+      "type": "String"
+    },
+    "ID": {
+      "type": "Number"
+    },
+    "Modified": {
+      "type": "DateTime"
+    },
+    "OData__ColorTag": {
+      "type": "String"
+    },
+    "Shift": {
+      "type": "Record",
+      "fields": {
+        "Id": {
+          "type": "Number"
+        },
+        "Value": {
+          "type": "String"
+        }
+      }
+    },
+    "Status": {
+      "type": "Record",
+      "fields": {
+        "Value": {
+          "type": "String"
+        }
+      }
+    },
+    "Title": {
+      "type": "String"
+    },
+    "OperationKey": {
+      "type": "String"
+    },
+    "Template": {
+      "type": "Record",
+      "fields": {
+        "Id": {
+          "type": "Number"
+        },
+        "Value": {
+          "type": "String"
+        }
+      }
+    },
+    "TemplateKey": {
+      "type": "String"
+    },
+    "AssignedTo": {
+      "type": "Record",
+      "fields": {
+        "Claims": {
+          "type": "String"
+        },
+        "Department": {
+          "type": "String"
+        },
+        "DisplayName": {
+          "type": "String"
+        },
+        "Email": {
+          "type": "String"
+        },
+        "JobTitle": {
+          "type": "String"
+        },
+        "Picture": {
+          "type": "Image"
+        }
+      }
+    },
+    "{Attachments}": {
+      "type": "LazyTable",
+      "fields": {
+        "AbsoluteUri": {
+          "type": "Hyperlink"
+        },
+        "DisplayName": {
+          "type": "String"
+        },
+        "Id": {
+          "type": "String"
+        },
+        "Value": {
+          "type": "Hyperlink"
+        }
+      }
+    },
+    "{ContentType}": {
+      "type": "Record",
+      "fields": {
+        "Id": {
+          "type": "String"
+        },
+        "Name": {
+          "type": "String"
+        }
+      }
+    },
+    "{FilenameWithExtension}": {
+      "type": "String"
+    },
+    "{FullPath}": {
+      "type": "String"
+    },
+    "{HasAttachments}": {
+      "type": "Boolean"
+    },
+    "{Identifier}": {
+      "type": "String"
+    },
+    "{IsFolder}": {
+      "type": "Boolean"
+    },
+    "{Link}": {
+      "type": "String"
+    },
+    "{ModerationComment}": {
+      "type": "String"
+    },
+    "{ModerationStatus}": {
+      "type": "String"
+    },
+    "{Name}": {
+      "type": "String"
+    },
+    "{Path}": {
+      "type": "String"
+    },
+    "{TriggerWindowEndToken}": {
+      "type": "String"
+    },
+    "{TriggerWindowStartToken}": {
+      "type": "String"
+    },
+    "{VersionNumber}": {
+      "type": "String"
+    }
+  },
+  "FleetTaskTemplates": {
+    "Active": {
+      "type": "Boolean"
+    },
+    "Instructions": {
+      "type": "String"
+    },
+    "Author": {
+      "type": "Record",
+      "fields": {
+        "Claims": {
+          "type": "String"
+        },
+        "Department": {
+          "type": "String"
+        },
+        "DisplayName": {
+          "type": "String"
+        },
+        "Email": {
+          "type": "String"
+        },
+        "JobTitle": {
+          "type": "String"
+        },
+        "Picture": {
+          "type": "Image"
+        }
+      }
+    },
+    "ComplianceAssetId": {
+      "type": "String"
+    },
+    "Created": {
+      "type": "DateTime"
+    },
+    "Editor": {
+      "type": "Record",
+      "fields": {
+        "Claims": {
+          "type": "String"
+        },
+        "Department": {
+          "type": "String"
+        },
+        "DisplayName": {
+          "type": "String"
+        },
+        "Email": {
+          "type": "String"
+        },
+        "JobTitle": {
+          "type": "String"
+        },
+        "Picture": {
+          "type": "Image"
+        }
+      }
+    },
+    "ReminderRecipient": {
+      "type": "Record",
+      "fields": {
+        "Claims": {
+          "type": "String"
+        },
+        "Department": {
+          "type": "String"
+        },
+        "DisplayName": {
+          "type": "String"
+        },
+        "Email": {
+          "type": "String"
+        },
+        "JobTitle": {
+          "type": "String"
+        },
+        "Picture": {
+          "type": "Image"
+        }
+      }
+    },
+    "FirstDueDate": {
+      "type": "DateTime"
+    },
+    "Vehicle": {
+      "type": "Record",
+      "fields": {
+        "Id": {
+          "type": "Number"
+        },
+        "Value": {
+          "type": "String"
+        }
+      }
+    },
+    "VehicleKey": {
+      "type": "String"
+    },
+    "ID": {
+      "type": "Number"
+    },
+    "Interval": {
+      "type": "Record",
+      "fields": {
+        "Value": {
+          "type": "String"
+        }
+      }
+    },
+    "Category": {
+      "type": "Record",
+      "fields": {
+        "Value": {
+          "type": "String"
+        }
+      }
+    },
+    "Modified": {
+      "type": "DateTime"
+    },
+    "OData__ColorTag": {
+      "type": "String"
+    },
+    "Mandatory": {
+      "type": "Boolean"
+    },
+    "Title": {
+      "type": "String"
+    },
+    "RecurrenceDays": {
+      "type": "Number"
+    },
+    "{Attachments}": {
+      "type": "LazyTable",
+      "fields": {
+        "AbsoluteUri": {
+          "type": "Hyperlink"
+        },
+        "DisplayName": {
+          "type": "String"
+        },
+        "Id": {
+          "type": "String"
+        },
+        "Value": {
+          "type": "Hyperlink"
+        }
+      }
+    },
+    "{ContentType}": {
+      "type": "Record",
+      "fields": {
+        "Id": {
+          "type": "String"
+        },
+        "Name": {
+          "type": "String"
+        }
+      }
+    },
+    "{FilenameWithExtension}": {
+      "type": "String"
+    },
+    "{FullPath}": {
+      "type": "String"
+    },
+    "{HasAttachments}": {
+      "type": "Boolean"
+    },
+    "{Identifier}": {
+      "type": "String"
+    },
+    "{IsFolder}": {
+      "type": "Boolean"
+    },
+    "{Link}": {
+      "type": "String"
+    },
+    "{ModerationComment}": {
+      "type": "String"
+    },
+    "{ModerationStatus}": {
+      "type": "String"
+    },
+    "{Name}": {
+      "type": "String"
+    },
+    "{Path}": {
+      "type": "String"
+    },
+    "{TriggerWindowEndToken}": {
+      "type": "String"
+    },
+    "{TriggerWindowStartToken}": {
+      "type": "String"
+    },
+    "{VersionNumber}": {
+      "type": "String"
+    }
+  },
+  "FleetVehicles": {
+    "Author": {
+      "type": "Record",
+      "fields": {
+        "Claims": {
+          "type": "String"
+        },
+        "Department": {
+          "type": "String"
+        },
+        "DisplayName": {
+          "type": "String"
+        },
+        "Email": {
+          "type": "String"
+        },
+        "JobTitle": {
+          "type": "String"
+        },
+        "Picture": {
+          "type": "Image"
+        }
+      }
+    },
+    "ComplianceAssetId": {
+      "type": "String"
+    },
+    "Created": {
+      "type": "DateTime"
+    },
+    "Editor": {
+      "type": "Record",
+      "fields": {
+        "Claims": {
+          "type": "String"
+        },
+        "Department": {
+          "type": "String"
+        },
+        "DisplayName": {
+          "type": "String"
+        },
+        "Email": {
+          "type": "String"
+        },
+        "JobTitle": {
+          "type": "String"
+        },
+        "Picture": {
+          "type": "Image"
+        }
+      }
+    },
+    "AvailableUntil": {
+      "type": "Date"
+    },
+    "AvailableFrom": {
+      "type": "Date"
+    },
+    "ReplacementVehicle": {
+      "type": "Boolean"
+    },
+    "Hints": {
+      "type": "String"
+    },
+    "ID": {
+      "type": "Number"
+    },
+    "Registration": {
+      "type": "String"
+    },
+    "Odometer": {
+      "type": "Number"
+    },
+    "Model": {
+      "type": "String"
+    },
+    "Modified": {
+      "type": "DateTime"
+    },
+    "OData__ColorTag": {
+      "type": "String"
+    },
+    "Status": {
+      "type": "Record",
+      "fields": {
+        "Value": {
+          "type": "String"
+        }
+      }
+    },
+    "Title": {
+      "type": "String"
+    },
+    "{Attachments}": {
+      "type": "LazyTable",
+      "fields": {
+        "AbsoluteUri": {
+          "type": "Hyperlink"
+        },
+        "DisplayName": {
+          "type": "String"
+        },
+        "Id": {
+          "type": "String"
+        },
+        "Value": {
+          "type": "Hyperlink"
+        }
+      }
+    },
+    "{ContentType}": {
+      "type": "Record",
+      "fields": {
+        "Id": {
+          "type": "String"
+        },
+        "Name": {
+          "type": "String"
+        }
+      }
+    },
+    "{FilenameWithExtension}": {
+      "type": "String"
+    },
+    "{FullPath}": {
+      "type": "String"
+    },
+    "{HasAttachments}": {
+      "type": "Boolean"
+    },
+    "{Identifier}": {
+      "type": "String"
+    },
+    "{IsFolder}": {
+      "type": "Boolean"
+    },
+    "{Link}": {
+      "type": "String"
+    },
+    "{ModerationComment}": {
+      "type": "String"
+    },
+    "{ModerationStatus}": {
+      "type": "String"
+    },
+    "{Name}": {
+      "type": "String"
+    },
+    "{Path}": {
+      "type": "String"
+    },
+    "{TriggerWindowEndToken}": {
+      "type": "String"
+    },
+    "{TriggerWindowStartToken}": {
+      "type": "String"
+    },
+    "{VersionNumber}": {
+      "type": "String"
+    }
+  },
+  "FleetGuides": {
+    "Author": {
+      "type": "Record",
+      "fields": {
+        "Claims": {
+          "type": "String"
+        },
+        "Department": {
+          "type": "String"
+        },
+        "DisplayName": {
+          "type": "String"
+        },
+        "Email": {
+          "type": "String"
+        },
+        "JobTitle": {
+          "type": "String"
+        },
+        "Picture": {
+          "type": "Image"
+        }
+      }
+    },
+    "ComplianceAssetId": {
+      "type": "String"
+    },
+    "Created": {
+      "type": "DateTime"
+    },
+    "DocumentUrl": {
+      "type": "Hyperlink"
+    },
+    "DocumentVersion": {
+      "type": "String"
+    },
+    "Editor": {
+      "type": "Record",
+      "fields": {
+        "Claims": {
+          "type": "String"
+        },
+        "Department": {
+          "type": "String"
+        },
+        "DisplayName": {
+          "type": "String"
+        },
+        "Email": {
+          "type": "String"
+        },
+        "JobTitle": {
+          "type": "String"
+        },
+        "Picture": {
+          "type": "Image"
+        }
+      }
+    },
+    "PublicationStatus": {
+      "type": "Record",
+      "fields": {
+        "Value": {
+          "type": "String"
+        }
+      }
+    },
+    "ReviewedOn": {
+      "type": "Date"
+    },
+    "ID": {
+      "type": "Number"
+    },
+    "Content": {
+      "type": "String"
+    },
+    "Category": {
+      "type": "Record",
+      "fields": {
+        "Value": {
+          "type": "String"
+        }
+      }
+    },
+    "Modified": {
+      "type": "DateTime"
+    },
+    "OData__ColorTag": {
+      "type": "String"
+    },
+    "Title": {
+      "type": "String"
+    },
+    "Owner": {
+      "type": "Record",
+      "fields": {
+        "Claims": {
+          "type": "String"
+        },
+        "Department": {
+          "type": "String"
+        },
+        "DisplayName": {
+          "type": "String"
+        },
+        "Email": {
+          "type": "String"
+        },
+        "JobTitle": {
+          "type": "String"
+        },
+        "Picture": {
+          "type": "Image"
+        }
+      }
+    },
+    "{Attachments}": {
+      "type": "LazyTable",
+      "fields": {
+        "AbsoluteUri": {
+          "type": "Hyperlink"
+        },
+        "DisplayName": {
+          "type": "String"
+        },
+        "Id": {
+          "type": "String"
+        },
+        "Value": {
+          "type": "Hyperlink"
+        }
+      }
+    },
+    "{ContentType}": {
+      "type": "Record",
+      "fields": {
+        "Id": {
+          "type": "String"
+        },
+        "Name": {
+          "type": "String"
+        }
+      }
+    },
+    "{FilenameWithExtension}": {
+      "type": "String"
+    },
+    "{FullPath}": {
+      "type": "String"
+    },
+    "{HasAttachments}": {
+      "type": "Boolean"
+    },
+    "{Identifier}": {
+      "type": "String"
+    },
+    "{IsFolder}": {
+      "type": "Boolean"
+    },
+    "{Link}": {
+      "type": "String"
+    },
+    "{ModerationComment}": {
+      "type": "String"
+    },
+    "{ModerationStatus}": {
+      "type": "String"
+    },
+    "{Name}": {
+      "type": "String"
+    },
+    "{Path}": {
+      "type": "String"
+    },
+    "{TriggerWindowEndToken}": {
+      "type": "String"
+    },
+    "{TriggerWindowStartToken}": {
+      "type": "String"
+    },
+    "{VersionNumber}": {
+      "type": "String"
+    }
+  },
+  "FleetContacts": {
+    "Author": {
+      "type": "Record",
+      "fields": {
+        "Claims": {
+          "type": "String"
+        },
+        "Department": {
+          "type": "String"
+        },
+        "DisplayName": {
+          "type": "String"
+        },
+        "Email": {
+          "type": "String"
+        },
+        "JobTitle": {
+          "type": "String"
+        },
+        "Picture": {
+          "type": "Image"
+        }
+      }
+    },
+    "ComplianceAssetId": {
+      "type": "String"
+    },
+    "Created": {
+      "type": "DateTime"
+    },
+    "Editor": {
+      "type": "Record",
+      "fields": {
+        "Claims": {
+          "type": "String"
+        },
+        "Department": {
+          "type": "String"
+        },
+        "DisplayName": {
+          "type": "String"
+        },
+        "Email": {
+          "type": "String"
+        },
+        "JobTitle": {
+          "type": "String"
+        },
+        "Picture": {
+          "type": "Image"
+        }
+      }
+    },
+    "Function": {
+      "type": "Record",
+      "fields": {
+        "Value": {
+          "type": "String"
+        }
+      }
+    },
+    "ValidUntil": {
+      "type": "DateTime"
+    },
+    "ValidFrom": {
+      "type": "DateTime"
+    },
+    "Hints": {
+      "type": "String"
+    },
+    "ID": {
+      "type": "Number"
+    },
+    "Modified": {
+      "type": "DateTime"
+    },
+    "OData__ColorTag": {
+      "type": "String"
+    },
+    "Person": {
+      "type": "Record",
+      "fields": {
+        "Claims": {
+          "type": "String"
+        },
+        "Department": {
+          "type": "String"
+        },
+        "DisplayName": {
+          "type": "String"
+        },
+        "Email": {
+          "type": "String"
+        },
+        "JobTitle": {
+          "type": "String"
+        },
+        "Picture": {
+          "type": "Image"
+        }
+      }
+    },
+    "Phone": {
+      "type": "String"
+    },
+    "Title": {
+      "type": "String"
+    },
+    "{Attachments}": {
+      "type": "LazyTable",
+      "fields": {
+        "AbsoluteUri": {
+          "type": "Hyperlink"
+        },
+        "DisplayName": {
+          "type": "String"
+        },
+        "Id": {
+          "type": "String"
+        },
+        "Value": {
+          "type": "Hyperlink"
+        }
+      }
+    },
+    "{ContentType}": {
+      "type": "Record",
+      "fields": {
+        "Id": {
+          "type": "String"
+        },
+        "Name": {
+          "type": "String"
+        }
+      }
+    },
+    "{FilenameWithExtension}": {
+      "type": "String"
+    },
+    "{FullPath}": {
+      "type": "String"
+    },
+    "{HasAttachments}": {
+      "type": "Boolean"
+    },
+    "{Identifier}": {
+      "type": "String"
+    },
+    "{IsFolder}": {
+      "type": "Boolean"
+    },
+    "{Link}": {
+      "type": "String"
+    },
+    "{ModerationComment}": {
+      "type": "String"
+    },
+    "{ModerationStatus}": {
+      "type": "String"
+    },
+    "{Name}": {
+      "type": "String"
+    },
+    "{Path}": {
+      "type": "String"
+    },
+    "{TriggerWindowEndToken}": {
+      "type": "String"
+    },
+    "{TriggerWindowStartToken}": {
+      "type": "String"
+    },
+    "{VersionNumber}": {
+      "type": "String"
+    }
+  },
+  "FleetDamageDecisions": {
+    "Author": {
+      "type": "Record",
+      "fields": {
+        "Claims": {
+          "type": "String"
+        },
+        "Department": {
+          "type": "String"
+        },
+        "DisplayName": {
+          "type": "String"
+        },
+        "Email": {
+          "type": "String"
+        },
+        "JobTitle": {
+          "type": "String"
+        },
+        "Picture": {
+          "type": "Image"
+        }
+      }
+    },
+    "DecisionNotes": {
+      "type": "String"
+    },
+    "NotificationRecipient": {
+      "type": "String"
+    },
+    "NotificationStatus": {
+      "type": "Record",
+      "fields": {
+        "Value": {
+          "type": "String"
+        }
+      }
+    },
+    "ComplianceAssetId": {
+      "type": "String"
+    },
+    "Created": {
+      "type": "DateTime"
+    },
+    "Editor": {
+      "type": "Record",
+      "fields": {
+        "Claims": {
+          "type": "String"
+        },
+        "Department": {
+          "type": "String"
+        },
+        "DisplayName": {
+          "type": "String"
+        },
+        "Email": {
+          "type": "String"
+        },
+        "JobTitle": {
+          "type": "String"
+        },
+        "Picture": {
+          "type": "Image"
+        }
+      }
+    },
+    "DecidedAt": {
+      "type": "DateTime"
+    },
+    "CompletedAt": {
+      "type": "DateTime"
+    },
+    "VehicleRelease": {
+      "type": "Record",
+      "fields": {
+        "Value": {
+          "type": "String"
+        }
+      }
+    },
+    "ID": {
+      "type": "Number"
+    },
+    "Modified": {
+      "type": "DateTime"
+    },
+    "OData__ColorTag": {
+      "type": "String"
+    },
+    "DamageReport": {
+      "type": "Record",
+      "fields": {
+        "Id": {
+          "type": "Number"
+        },
+        "Value": {
+          "type": "String"
+        }
+      }
+    },
+    "DamageKey": {
+      "type": "String"
+    },
+    "Status": {
+      "type": "Record",
+      "fields": {
+        "Value": {
+          "type": "String"
+        }
+      }
+    },
+    "Title": {
+      "type": "String"
+    },
+    "Responsible": {
+      "type": "Record",
+      "fields": {
+        "Claims": {
+          "type": "String"
+        },
+        "Department": {
+          "type": "String"
+        },
+        "DisplayName": {
+          "type": "String"
+        },
+        "Email": {
+          "type": "String"
+        },
+        "JobTitle": {
+          "type": "String"
+        },
+        "Picture": {
+          "type": "Image"
+        }
+      }
+    },
+    "{Attachments}": {
+      "type": "LazyTable",
+      "fields": {
+        "AbsoluteUri": {
+          "type": "Hyperlink"
+        },
+        "DisplayName": {
+          "type": "String"
+        },
+        "Id": {
+          "type": "String"
+        },
+        "Value": {
+          "type": "Hyperlink"
+        }
+      }
+    },
+    "{ContentType}": {
+      "type": "Record",
+      "fields": {
+        "Id": {
+          "type": "String"
+        },
+        "Name": {
+          "type": "String"
+        }
+      }
+    },
+    "{FilenameWithExtension}": {
+      "type": "String"
+    },
+    "{FullPath}": {
+      "type": "String"
+    },
+    "{HasAttachments}": {
+      "type": "Boolean"
+    },
+    "{Identifier}": {
+      "type": "String"
+    },
+    "{IsFolder}": {
+      "type": "Boolean"
+    },
+    "{Link}": {
+      "type": "String"
+    },
+    "{ModerationComment}": {
+      "type": "String"
+    },
+    "{ModerationStatus}": {
+      "type": "String"
+    },
+    "{Name}": {
+      "type": "String"
+    },
+    "{Path}": {
+      "type": "String"
+    },
+    "{TriggerWindowEndToken}": {
+      "type": "String"
+    },
+    "{TriggerWindowStartToken}": {
+      "type": "String"
+    },
+    "{VersionNumber}": {
+      "type": "String"
+    }
+  },
+  "FleetMembers": {
+    "Active": {
+      "type": "Boolean"
+    },
+    "Author": {
+      "type": "Record",
+      "fields": {
+        "Claims": {
+          "type": "String"
+        },
+        "Department": {
+          "type": "String"
+        },
+        "DisplayName": {
+          "type": "String"
+        },
+        "Email": {
+          "type": "String"
+        },
+        "JobTitle": {
+          "type": "String"
+        },
+        "Picture": {
+          "type": "Image"
+        }
+      }
+    },
+    "ComplianceAssetId": {
+      "type": "String"
+    },
+    "Created": {
+      "type": "DateTime"
+    },
+    "Editor": {
+      "type": "Record",
+      "fields": {
+        "Claims": {
+          "type": "String"
+        },
+        "Department": {
+          "type": "String"
+        },
+        "DisplayName": {
+          "type": "String"
+        },
+        "Email": {
+          "type": "String"
+        },
+        "JobTitle": {
+          "type": "String"
+        },
+        "Picture": {
+          "type": "Image"
+        }
+      }
+    },
+    "ID": {
+      "type": "Number"
+    },
+    "Modified": {
+      "type": "DateTime"
+    },
+    "OData__ColorTag": {
+      "type": "String"
+    },
+    "Person": {
+      "type": "Record",
+      "fields": {
+        "Claims": {
+          "type": "String"
+        },
+        "Department": {
+          "type": "String"
+        },
+        "DisplayName": {
+          "type": "String"
+        },
+        "Email": {
+          "type": "String"
+        },
+        "JobTitle": {
+          "type": "String"
+        },
+        "Picture": {
+          "type": "Image"
+        }
+      }
+    },
+    "Role": {
+      "type": "Record",
+      "fields": {
+        "Value": {
+          "type": "String"
+        }
+      }
+    },
+    "Title": {
+      "type": "String"
+    },
+    "{Attachments}": {
+      "type": "LazyTable",
+      "fields": {
+        "AbsoluteUri": {
+          "type": "Hyperlink"
+        },
+        "DisplayName": {
+          "type": "String"
+        },
+        "Id": {
+          "type": "String"
+        },
+        "Value": {
+          "type": "Hyperlink"
+        }
+      }
+    },
+    "{ContentType}": {
+      "type": "Record",
+      "fields": {
+        "Id": {
+          "type": "String"
+        },
+        "Name": {
+          "type": "String"
+        }
+      }
+    },
+    "{FilenameWithExtension}": {
+      "type": "String"
+    },
+    "{FullPath}": {
+      "type": "String"
+    },
+    "{HasAttachments}": {
+      "type": "Boolean"
+    },
+    "{Identifier}": {
+      "type": "String"
+    },
+    "{IsFolder}": {
+      "type": "Boolean"
+    },
+    "{Link}": {
+      "type": "String"
+    },
+    "{ModerationComment}": {
+      "type": "String"
+    },
+    "{ModerationStatus}": {
+      "type": "String"
+    },
+    "{Name}": {
+      "type": "String"
+    },
+    "{Path}": {
+      "type": "String"
+    },
+    "{TriggerWindowEndToken}": {
+      "type": "String"
+    },
+    "{TriggerWindowStartToken}": {
+      "type": "String"
+    },
+    "{VersionNumber}": {
+      "type": "String"
+    }
+  },
+  "FleetDamageReports": {
+    "View": {
+      "type": "Record",
+      "fields": {
+        "Value": {
+          "type": "String"
+        }
+      }
+    },
+    "Author": {
+      "type": "Record",
+      "fields": {
+        "Claims": {
+          "type": "String"
+        },
+        "Department": {
+          "type": "String"
+        },
+        "DisplayName": {
+          "type": "String"
+        },
+        "Email": {
+          "type": "String"
+        },
+        "JobTitle": {
+          "type": "String"
+        },
+        "Picture": {
+          "type": "Image"
+        }
+      }
+    },
+    "DecisionNotes": {
+      "type": "String"
+    },
+    "Area": {
+      "type": "Record",
+      "fields": {
+        "Value": {
+          "type": "String"
+        }
+      }
+    },
+    "Description": {
+      "type": "String"
+    },
+    "ComplianceAssetId": {
+      "type": "String"
+    },
+    "Created": {
+      "type": "DateTime"
+    },
+    "Editor": {
+      "type": "Record",
+      "fields": {
+        "Claims": {
+          "type": "String"
+        },
+        "Department": {
+          "type": "String"
+        },
+        "DisplayName": {
+          "type": "String"
+        },
+        "Email": {
+          "type": "String"
+        },
+        "JobTitle": {
+          "type": "String"
+        },
+        "Picture": {
+          "type": "Image"
+        }
+      }
+    },
+    "CompletedAt": {
+      "type": "DateTime"
+    },
+    "Vehicle": {
+      "type": "Record",
+      "fields": {
+        "Id": {
+          "type": "Number"
+        },
+        "Value": {
+          "type": "String"
+        }
+      }
+    },
+    "VehicleRelease": {
+      "type": "Record",
+      "fields": {
+        "Value": {
+          "type": "String"
+        }
+      }
+    },
+    "VehicleKey": {
+      "type": "String"
+    },
+    "ReportedAt": {
+      "type": "DateTime"
+    },
+    "ReportedBy": {
+      "type": "Record",
+      "fields": {
+        "Claims": {
+          "type": "String"
+        },
+        "Department": {
+          "type": "String"
+        },
+        "DisplayName": {
+          "type": "String"
+        },
+        "Email": {
+          "type": "String"
+        },
+        "JobTitle": {
+          "type": "String"
+        },
+        "Picture": {
+          "type": "Image"
+        }
+      }
+    },
+    "ID": {
+      "type": "Number"
+    },
+    "MailRecipient": {
+      "type": "String"
+    },
+    "MailError": {
+      "type": "String"
+    },
+    "MailStatus": {
+      "type": "String"
+    },
+    "MailAt": {
+      "type": "DateTime"
+    },
+    "Modified": {
+      "type": "DateTime"
+    },
+    "OData__ColorTag": {
+      "type": "String"
+    },
+    "PositionX": {
+      "type": "Number"
+    },
+    "PositionY": {
+      "type": "Number"
+    },
+    "ReportType": {
+      "type": "Record",
+      "fields": {
+        "Value": {
+          "type": "String"
+        }
+      }
+    },
+    "Shift": {
+      "type": "Record",
+      "fields": {
+        "Id": {
+          "type": "Number"
+        },
+        "Value": {
+          "type": "String"
+        }
+      }
+    },
+    "Severity": {
+      "type": "Record",
+      "fields": {
+        "Value": {
+          "type": "String"
+        }
+      }
+    },
+    "Status": {
+      "type": "Record",
+      "fields": {
+        "Value": {
+          "type": "String"
+        }
+      }
+    },
+    "Title": {
+      "type": "String"
+    },
+    "Responsible": {
+      "type": "Record",
+      "fields": {
+        "Claims": {
+          "type": "String"
+        },
+        "Department": {
+          "type": "String"
+        },
+        "DisplayName": {
+          "type": "String"
+        },
+        "Email": {
+          "type": "String"
+        },
+        "JobTitle": {
+          "type": "String"
+        },
+        "Picture": {
+          "type": "Image"
+        }
+      }
+    },
+    "{Attachments}": {
+      "type": "LazyTable",
+      "fields": {
+        "AbsoluteUri": {
+          "type": "Hyperlink"
+        },
+        "DisplayName": {
+          "type": "String"
+        },
+        "Id": {
+          "type": "String"
+        },
+        "Value": {
+          "type": "Hyperlink"
+        }
+      }
+    },
+    "{ContentType}": {
+      "type": "Record",
+      "fields": {
+        "Id": {
+          "type": "String"
+        },
+        "Name": {
+          "type": "String"
+        }
+      }
+    },
+    "{FilenameWithExtension}": {
+      "type": "String"
+    },
+    "{FullPath}": {
+      "type": "String"
+    },
+    "{HasAttachments}": {
+      "type": "Boolean"
+    },
+    "{Identifier}": {
+      "type": "String"
+    },
+    "{IsFolder}": {
+      "type": "Boolean"
+    },
+    "{Link}": {
+      "type": "String"
+    },
+    "{ModerationComment}": {
+      "type": "String"
+    },
+    "{ModerationStatus}": {
+      "type": "String"
+    },
+    "{Name}": {
+      "type": "String"
+    },
+    "{Path}": {
+      "type": "String"
+    },
+    "{TriggerWindowEndToken}": {
+      "type": "String"
+    },
+    "{TriggerWindowStartToken}": {
+      "type": "String"
+    },
+    "{VersionNumber}": {
+      "type": "String"
+    }
+  },
+  "FleetTrips": {
+    "ID": {
+      "type": "Number"
+    },
+    "Title": {
+      "type": "String"
+    },
+    "Vehicle": {
+      "type": "Record",
+      "fields": {
+        "Id": {
+          "type": "Number"
+        },
+        "Value": {
+          "type": "String"
+        }
+      }
+    },
+    "VehicleKey": {
+      "type": "String"
+    },
+    "Driver": {
+      "type": "Record",
+      "fields": {
+        "Claims": {
+          "type": "String"
+        },
+        "Department": {
+          "type": "String"
+        },
+        "DisplayName": {
+          "type": "String"
+        },
+        "Email": {
+          "type": "String"
+        },
+        "JobTitle": {
+          "type": "String"
+        },
+        "Picture": {
+          "type": "Image"
+        }
+      }
+    },
+    "Receiver": {
+      "type": "Record",
+      "fields": {
+        "Claims": {
+          "type": "String"
+        },
+        "Department": {
+          "type": "String"
+        },
+        "DisplayName": {
+          "type": "String"
+        },
+        "Email": {
+          "type": "String"
+        },
+        "JobTitle": {
+          "type": "String"
+        },
+        "Picture": {
+          "type": "Image"
+        }
+      }
+    },
+    "Author": {
+      "type": "Record",
+      "fields": {
+        "Claims": {
+          "type": "String"
+        },
+        "Department": {
+          "type": "String"
+        },
+        "DisplayName": {
+          "type": "String"
+        },
+        "Email": {
+          "type": "String"
+        },
+        "JobTitle": {
+          "type": "String"
+        },
+        "Picture": {
+          "type": "Image"
+        }
+      }
+    },
+    "Editor": {
+      "type": "Record",
+      "fields": {
+        "Claims": {
+          "type": "String"
+        },
+        "Department": {
+          "type": "String"
+        },
+        "DisplayName": {
+          "type": "String"
+        },
+        "Email": {
+          "type": "String"
+        },
+        "JobTitle": {
+          "type": "String"
+        },
+        "Picture": {
+          "type": "Image"
+        }
+      }
+    },
+    "StartedAt": {
+      "type": "DateTime"
+    },
+    "EndedAt": {
+      "type": "DateTime"
+    },
+    "Created": {
+      "type": "DateTime"
+    },
+    "Modified": {
+      "type": "DateTime"
+    },
+    "StartOdometer": {
+      "type": "Number"
+    },
+    "EndOdometer": {
+      "type": "Number"
+    },
+    "Purpose": {
+      "type": "String"
+    },
+    "HandoverDetails": {
+      "type": "String"
+    },
+    "Shift": {
+      "type": "Record",
+      "fields": {
+        "Id": {
+          "type": "Number"
+        },
+        "Value": {
+          "type": "String"
+        }
+      }
+    },
+    "{Attachments}": {
+      "type": "LazyTable",
+      "fields": {
+        "AbsoluteUri": {
+          "type": "Hyperlink"
+        },
+        "DisplayName": {
+          "type": "String"
+        },
+        "Id": {
+          "type": "String"
+        },
+        "Value": {
+          "type": "Hyperlink"
+        }
+      }
+    },
+    "{Link}": {
+      "type": "String"
+    }
+  }
+}

@@ -1,0 +1,1515 @@
+# ************************************************************************************************
+# Warning: YAML source code for Canvas Apps should only be used to review changes made within Power Apps Studio and for minor edits (Preview).
+# Use the maker portal to create and edit your Power Apps.
+# 
+# The schema file for Canvas Apps is available at https://go.microsoft.com/fwlink/?linkid=2304907
+# 
+# For more information, visit https://go.microsoft.com/fwlink/?linkid=2292623
+# ************************************************************************************************
+Screens:
+  HygieneCheck:
+    Properties:
+      Fill: =ColorValue("#F3F5F9")
+      OnHidden: =If(hRunning,UpdateContext({hRunning:false,hBusy:false});Set(varHygieneState,"Not checked"))
+      OnVisible: =Set(varOperator,LookUp(FleetMembers,Lower(Trim(Person.Email))=Lower(Trim(varDemoUser.Email))));If(hPerson.ID>0,UpdateContext({hPerson:LookUp(FleetMembers,ID=hPerson.ID)}));UpdateContext({HygTaskPhotoPending:false,HygTaskPhotoBusy:false});If(varTaskId<=0 && (hMode="Detail"||hMode="Person"),UpdateContext({hMode:"Due",hSelected:LookUp(FleetTasks,ID=0),hPerson:LookUp(FleetMembers,ID=0),hSaved:LookUp(FleetTasks,ID=0),hNote:"",hError:""}));If(varTaskId>0 && hSelected.ID=varTaskId,UpdateContext({hSelected:LookUp(FleetTasks,ID=varTaskId)});If(IsBlank(hSelected.ID)||hSelected.Vehicle.Id<>varVehicleId,Set(varTaskId,0);UpdateContext({hMode:"Due",hSelected:LookUp(FleetTasks,ID=0),hSaved:LookUp(FleetTasks,ID=0),hPerson:LookUp(FleetMembers,ID=0),hNote:""}),If(hSaved.ID=varTaskId,UpdateContext({hSaved:LookUp(FleetTasks,ID=varTaskId)}))));UpdateContext({hDueBoundary:DateAdd(Today(),1,TimeUnit.Days)});If(!IsBlank(hSelected.ID) && hSelected.Vehicle.Id<>varVehicleId,Set(varTaskId,0);UpdateContext({hMode:"Due",hSelected:LookUp(FleetTasks,ID=0)}));If(varTaskId>0 && (IsBlank(hSelected.ID)||hSelected.ID<>varTaskId),UpdateContext({hSelected:LookUp(FleetTasks,ID=varTaskId),hMode:"Detail",hPerson:LookUp(FleetMembers,ID=0),hNote:"",hError:"",hSaved:LookUp(FleetTasks,ID=0)}));If(IsBlank(hMode),UpdateContext({hMode:"Due",hSaving:false,hNote:"",hError:""}));If(varVehicleId>0 || varHygieneState<>"Checked",UpdateContext({hDueBoundary:DateAdd(Today(),1,TimeUnit.Days),hRunning:false,hBusy:false,hEvalVehicle:varVehicleId,hPlanCursor:1,hPhase:"Global",hTaskCursor:1,hMode:Coalesce(hMode,"Due"),hError:""}); Set(varHygieneError,""); Set(varHygieneState,"Checking hygiene"); Set(varHygieneVehicleId,varVehicleId); Set(varHygieneDueTask,LookUp(FleetTasks,ID=0)); If(varVehicleId<=0, Set(varHygieneState,"Not checked"); Set(varHygieneError,"Select a vehicle first."), IfError(true;true;UpdateContext({hPlanMax:Coalesce(First(SortByColumns(FleetTaskTemplates,"ID",SortOrder.Descending)).ID,0),hTaskMax:Coalesce(First(SortByColumns(FleetTasks,"ID",SortOrder.Descending)).ID,0)});Reset(HygEvaluator);UpdateContext({hRunning:true}),Set(varHygieneState,"Check failed");Set(varHygieneError,FirstError.Message))));If(!Coalesce(HygTaskPhotoBusy,false)&&(Coalesce(HygTaskPhotoTaskId,0)<>Coalesce(hSelected.ID,0)||HygTaskPhotoTaskRecord.Vehicle.Id<>varVehicleId),UpdateContext({HygTaskPhotoTaskId:hSelected.ID,HygTaskPhotoTaskRecord:LookUp(FleetTasks,ID=hSelected.ID),HygTaskPhotoPending:false,HygTaskPhotoBusy:false,HygTaskPhotoError:"",HygTaskPhotoReceipt:LookUp(FleetTasks,ID=0),HygTaskPhotoSubmitId:0});ResetForm(HygTaskPhotoForm))
+    Children:
+      - HygRoot:
+          Control: GroupContainer@1.5.0
+          Variant: AutoLayout
+          Properties:
+            DropShadow: =DropShadow.None
+            Fill: =ColorValue("#F2F5FA")
+            Height: =Parent.Height
+            LayoutAlignItems: =LayoutAlignItems.Stretch
+            LayoutDirection: =LayoutDirection.Vertical
+            Width: =Parent.Width
+          Children:
+            - HygHeader:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  BorderColor: =ColorValue("#E8EBF1")
+                  DropShadow: =DropShadow.None
+                  Fill: =Color.White
+                  FillPortions: =0
+                  Height: =64
+                  LayoutAlignItems: =LayoutAlignItems.Center
+                  LayoutDirection: =LayoutDirection.Horizontal
+                  LayoutGap: =8
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingLeft: =12
+                  PaddingRight: =12
+                Children:
+                  - HygBack:
+                      Control: ModernButton@1.0.0
+                      Properties:
+                        AccessibleLabel: ="Back"
+                        AlignInContainer: =AlignInContainer.Center
+                        Appearance: =ButtonAppearance.Transparent
+                        BasePaletteColor: =ColorValue("#C8102E")
+                        BorderColor: =ColorValue("#E5EAF1")
+                        BorderThickness: =0
+                        Color: =ColorValue("#10233F")
+                        DisplayMode: =If(hSaving,DisplayMode.Disabled,DisplayMode.Edit)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =48
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnSelect: =If(Coalesce(HygTaskPhotoBusy,false),false,If(Coalesce(HygTaskPhotoPending,false)&&hMode<>"Person",UpdateContext({HygTaskPhotoError:"First save the selected photo or discard the selection."}),If(hMode="Detail"||hMode="Person"||hMode="PlanDetail",UpdateContext({hMode:If(hMode="Person","Detail","Due")}),Set(varHygieneReturnToVehicle,false);Navigate(VehicleHome))))
+                        RadiusBottomLeft: =16
+                        RadiusBottomRight: =16
+                        RadiusTopLeft: =16
+                        RadiusTopRight: =16
+                        Size: =16
+                        Text: ="Back"
+                        Width: =88
+                  - HygHeading:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        Color: =ColorValue("#10233F")
+                        FillPortions: =1
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Bold
+                        Height: =48
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =If(App.Width<600,14,18)
+                        Text: ="DEMO · Tasks"
+                        Wrap: =false
+            - HygContext:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  FillPortions: =0
+                  Height: =If(hMode="Due"||hMode="History"||hMode="Plan",120,72)
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingLeft: =12
+                  PaddingRight: =12
+                Children:
+                  - HygVehicle:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        Color: =ColorValue("#14253D")
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =24
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =16
+                        Text: =If(varVehicleId>0,varVehicle.Registration,"No vehicle selected")
+                        Wrap: =false
+                  - HygEvaluation:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        Color: =ColorValue("#14253D")
+                        Font: =Font.'Segoe UI'
+                        Height: =48
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        Live: =Live.Polite
+                        OnSelect: =If(Coalesce(HygTaskPhotoBusy,false)||Coalesce(HygTaskPhotoPending,false),UpdateContext({HygTaskPhotoError:"First save the selected photo or discard the selection."}),If(!IsBlank(varHygieneDueTask.ID) && varHygieneVehicleId=varVehicleId,Set(varTaskId,varHygieneDueTask.ID);UpdateContext({hSelected:LookUp(FleetTasks,ID=varTaskId),hMode:"Detail",hPerson:LookUp(FleetMembers,ID=0),hNote:"",hError:"",hSaved:LookUp(FleetTasks,ID=0)});Reset(HygNote);UpdateContext({HygTaskPhotoTaskId:hSelected.ID,HygTaskPhotoTaskRecord:LookUp(FleetTasks,ID=hSelected.ID),HygTaskPhotoPending:false,HygTaskPhotoBusy:false,HygTaskPhotoError:"",HygTaskPhotoReceipt:LookUp(FleetTasks,ID=0),HygTaskPhotoSubmitId:0});ResetForm(HygTaskPhotoForm)))
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =14
+                        TabIndex: =If(IsBlank(varHygieneDueTask.ID),-1,0)
+                        Text: |-
+                          =If(hRunning,"Checking · Plan ID "&Text(hPlanCursor)&" / "&Text(hPlanMax),If(varHygieneState="Check failed",varHygieneError,If(varHygieneState<>"Checked","Task check is not yet complete",If(IsBlank(varHygieneDueTask.ID),"No task is due today",If(DateValue(varHygieneDueTask.DueAt)<Today(),"Overdue: ","Due today: ")&varHygieneDueTask.Title))))
+                        Tooltip: ="View due task"
+                  - HygScopes:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        DropShadow: =DropShadow.None
+                        FillPortions: =0
+                        Height: =48
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutDirection: =LayoutDirection.Horizontal
+                        LayoutGap: =8
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        Visible: =hMode="Due"||hMode="History"||hMode="Plan"
+                      Children:
+                        - HygScope0:
+                            Control: ModernButton@1.0.0
+                            Properties:
+                              AccessibleLabel: ="Due"
+                              AlignInContainer: =AlignInContainer.Stretch
+                              Appearance: =If(hMode="Due",ButtonAppearance.Primary,ButtonAppearance.Secondary)
+                              BasePaletteColor: =ColorValue("#C8102E")
+                              BorderThickness: =0
+                              Color: =If(hMode="Due",Color.White,ColorValue("#18283B"))
+                              FillPortions: =1
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =48
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              OnSelect: =UpdateContext({hMode:"Due"});Reset(HygDue);Reset(HygHistory);Reset(HygPlans)
+                              RadiusBottomLeft: =16
+                              RadiusBottomRight: =16
+                              RadiusTopLeft: =16
+                              RadiusTopRight: =16
+                              Size: =14
+                              Text: ="Due"
+                        - HygScope1:
+                            Control: ModernButton@1.0.0
+                            Properties:
+                              AccessibleLabel: ="History"
+                              AlignInContainer: =AlignInContainer.Stretch
+                              Appearance: =If(hMode="History",ButtonAppearance.Primary,ButtonAppearance.Secondary)
+                              BasePaletteColor: =ColorValue("#C8102E")
+                              BorderThickness: =0
+                              Color: =If(hMode="History",Color.White,ColorValue("#18283B"))
+                              FillPortions: =1
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =48
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              OnSelect: =UpdateContext({hMode:"History"});Reset(HygDue);Reset(HygHistory);Reset(HygPlans)
+                              RadiusBottomLeft: =16
+                              RadiusBottomRight: =16
+                              RadiusTopLeft: =16
+                              RadiusTopRight: =16
+                              Size: =14
+                              Text: ="History"
+                        - HygScope2:
+                            Control: ModernButton@1.0.0
+                            Properties:
+                              AccessibleLabel: ="Plan"
+                              AlignInContainer: =AlignInContainer.Stretch
+                              Appearance: =If(hMode="Plan",ButtonAppearance.Primary,ButtonAppearance.Secondary)
+                              BasePaletteColor: =ColorValue("#C8102E")
+                              BorderThickness: =0
+                              Color: =If(hMode="Plan",Color.White,ColorValue("#18283B"))
+                              FillPortions: =1
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =48
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              OnSelect: =UpdateContext({hMode:"Plan"});Reset(HygDue);Reset(HygHistory);Reset(HygPlans)
+                              RadiusBottomLeft: =16
+                              RadiusBottomRight: =16
+                              RadiusTopLeft: =16
+                              RadiusTopRight: =16
+                              Size: =14
+                              Text: ="Plan"
+            - HygEvaluator:
+                Control: Timer@2.1.0
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  DisplayMode: =DisplayMode.View
+                  Duration: =100
+                  Height: =0
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  OnTimerEnd: =If(hRunning && !hBusy && App.ActiveScreen=HygieneCheck && hEvalVehicle=varVehicleId,UpdateContext({hBusy:true});IfError(If(hPhase="Global",If(hTaskCursor>hTaskMax,UpdateContext({hPhase:"Plan"}),UpdateContext({hScanned:LookUp(FleetTasks,ID=hTaskCursor)});If(!IsBlank(hScanned.ID) && hScanned.Vehicle.Id=hEvalVehicle && hScanned.Status.Value<>"Completed" && DateValue(hScanned.DueAt)<=Today() && (IsBlank(varHygieneDueTask.ID)||hScanned.DueAt<varHygieneDueTask.DueAt),Set(varHygieneDueTask,hScanned));UpdateContext({hTaskCursor:hTaskCursor+1})),If(hPhase="Plan",If(hPlanCursor>hPlanMax,UpdateContext({hRunning:false,hBusy:false});Set(varHygieneVehicleId,hEvalVehicle);Set(varHygieneState,"Checked");If(varHygieneReturnToVehicle,Set(varHygieneReturnToVehicle,false);Navigate(VehicleHome)),UpdateContext({hPlan:LookUp(FleetTaskTemplates,ID=hPlanCursor)});If(!IsBlank(hPlan.ID) && hPlan.VehicleKey<>"ALL" && !IsBlank(hPlan.Vehicle.Id) && hPlan.VehicleKey<>Text(hPlan.Vehicle.Id),UpdateContext({hPlan:Patch(FleetTaskTemplates,LookUp(FleetTaskTemplates,ID=hPlan.ID),{VehicleKey:Text(hPlan.Vehicle.Id)},{Modified:Now(),Editor:varDemoPerson})}));If(!IsBlank(hPlan.ID) && hPlan.Active && (hPlan.VehicleKey="ALL" || hPlan.Vehicle.Id=hEvalVehicle),If(IsBlank(hPlan.FirstDueDate)||hPlan.RecurrenceDays<=0||IsBlank(hPlan.RecurrenceDays)||IsBlank(hPlan.Instructions),Error({Kind:ErrorKind.Validation,Message:"The hygiene plan needs a first due date, a positive repeat interval in days and instructions."}),UpdateContext({hTaskCursor:1,hPending:LookUp(FleetTasks,ID=0),hCompleted:LookUp(FleetTasks,ID=0),hPhase:"Tasks"})),UpdateContext({hPlanCursor:hPlanCursor+1}))),If(hTaskCursor>hTaskMax,If(!IsBlank(hPending.ID),If(DateValue(hPending.DueAt)<=Today() && (IsBlank(varHygieneDueTask.ID) || hPending.DueAt<varHygieneDueTask.DueAt),Set(varHygieneDueTask,hPending)),With({due:If(IsBlank(hCompleted.ID),hPlan.FirstDueDate,With({reference:If(Now()>hCompleted.CompletedAt,Now(),hCompleted.CompletedAt)},If(reference<hPlan.FirstDueDate,hPlan.FirstDueDate,DateAdd(hPlan.FirstDueDate,(Max(0,RoundDown(DateDiff(hPlan.FirstDueDate,reference,TimeUnit.Days)/hPlan.RecurrenceDays,0))+1)*hPlan.RecurrenceDays,TimeUnit.Days))))},With({key:Text(hPlan.ID,"0")&":"&Text(hEvalVehicle,"0")&":"&Text(DateAdd(due,TimeZoneOffset(due),TimeUnit.Minutes),"yyyy-mm-ddThh:mm:ssZ")},IfError(UpdateContext({hCreated:With({demoExistingTask:LookUp(FleetTasks,OperationKey=key)},If(!IsBlank(demoExistingTask.ID),demoExistingTask,With({demoNewId:Coalesce(Max(FleetTasks,ID),0)+1,demoNow:Now()},Collect(FleetTasks,Patch(varDemoDefaultTasks,{Title:hPlan.Title,VehicleKey:Text(hEvalVehicle),TemplateKey:Text(hPlan.ID),Vehicle:{Id:hEvalVehicle,Value:varVehicle.Registration},Template:{Id:hPlan.ID,Value:hPlan.Title},DueAt:due,Status:{Value:"Open"},OperationKey:key,InstructionSnapshot:hPlan.Instructions},{ID:demoNewId,Created:demoNow,Modified:demoNow,Author:varDemoPerson,Editor:varDemoPerson}));LookUp(FleetTasks,ID=demoNewId))))}),UpdateContext({hCreated:LookUp(FleetTasks,OperationKey=key)});If(IsBlank(hCreated.ID),Error({Kind:ErrorKind.Unknown,Message:FirstError.Message})));If(DateValue(hCreated.DueAt)<=Today() && (IsBlank(varHygieneDueTask.ID) || hCreated.DueAt<varHygieneDueTask.DueAt),Set(varHygieneDueTask,hCreated))))); UpdateContext({hPlanCursor:hPlanCursor+1,hPhase:"Plan"}),UpdateContext({hScanned:LookUp(FleetTasks,ID=hTaskCursor)});If(!IsBlank(hScanned.ID) && hScanned.Vehicle.Id=hEvalVehicle && hScanned.Template.Id=hPlan.ID,If(hScanned.Status.Value="Completed",If(IsBlank(hCompleted.ID)||hScanned.CompletedAt>hCompleted.CompletedAt,UpdateContext({hCompleted:hScanned})),If(IsBlank(hPending.ID)||hScanned.DueAt<hPending.DueAt,UpdateContext({hPending:hScanned}))));UpdateContext({hTaskCursor:hTaskCursor+1})))),UpdateContext({hRunning:false});Set(varHygieneState,"Check failed");Set(varHygieneError,FirstError.Message));UpdateContext({hBusy:false}))
+                  Repeat: =true
+                  Reset: =!hRunning
+                  Start: =hRunning && App.ActiveScreen=HygieneCheck
+                  TabIndex: =-1
+                  Visible: =false
+                  Width: =0
+            - HygSearchLabel:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Color: =ColorValue("#14253D")
+                  Font: =Font.'Segoe UI'
+                  Height: =24
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: ="Find a person"
+                  Visible: =hMode="Person"
+            - HygPersonSearch:
+                Control: ModernTextInput@1.1.2
+                Properties:
+                  AccessibleLabel: ="Name starts with"
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Appearance: =Appearance.Outline
+                  BasePaletteColor: =ColorValue("#C8102E")
+                  BorderColor: =ColorValue("#DCE2EB")
+                  BorderThickness: =1
+                  ContentLanguage: ="en-GB"
+                  Fill: =Color.White
+                  Height: =48
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  Placeholder: ="Enter text"
+                  RadiusBottomLeft: =12
+                  RadiusBottomRight: =12
+                  RadiusTopLeft: =12
+                  RadiusTopRight: =12
+                  Type: =TextInputType.Search
+                  Visible: =hMode="Person"
+                  Width: =Parent.Width
+            - HygDue:
+                Control: Gallery@2.15.0
+                Variant: Vertical
+                Properties:
+                  AccessibleLabel: ="Vehicle tasks"
+                  ContentLanguage: ="en-GB"
+                  Default: =LookUp(FleetTasks,ID=0)
+                  FillPortions: =0
+                  Height: =Max(48,HygRoot.Height-HygHeader.Height-HygNav.Height-HygContext.Height-If(hMode="Person",72,48)-If(hMode="Plan" && (varOperator.Role.Value="Team lead"||varOperator.Role.Value="Administrator"),48,0))
+                  Items: =SortByColumns(Filter(FleetTasks,VehicleKey=Text(varVehicleId) && (Status.Value="Open" || Status.Value="Not possible" || Status.Value="Issue reported") && DueAt<hDueBoundary),"DueAt",SortOrder.Ascending)
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  TabIndex: =0
+                  TemplatePadding: =8
+                  TemplateSize: =180
+                  Visible: =hMode="Due"
+                  Width: =Parent.Width
+                Children:
+                  - HygTaskRow:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        BorderColor: =ColorValue("#E2E9F2")
+                        BorderThickness: =1
+                        Fill: =If("wipe disinfection" in Lower(ThisItem.Title),ColorValue("#FFF4CC"),If("exterior wash" in Lower(ThisItem.Title),ColorValue("#E6F3D8"),If("vacuuming" in Lower(ThisItem.Title) || "interior cleaning" in Lower(ThisItem.Title),ColorValue("#E1F0FC"),Color.White)))
+                        Height: =Parent.TemplateHeight
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutGap: =4
+                        PaddingBottom: =8
+                        PaddingLeft: =12
+                        PaddingRight: =12
+                        PaddingTop: =8
+                        RadiusBottomLeft: =24
+                        RadiusBottomRight: =24
+                        RadiusTopLeft: =24
+                        RadiusTopRight: =24
+                        Width: =Parent.TemplateWidth
+                      Children:
+                        - HygTaskTitle:
+                            Control: Label@2.5.1
+                            Properties:
+                              AlignInContainer: =AlignInContainer.Stretch
+                              Color: =ColorValue("#14253D")
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =60
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingRight: =0
+                              PaddingTop: =0
+                              Size: =18
+                              Text: =ThisItem.Title
+                        - HygTaskMeta:
+                            Control: Label@2.5.1
+                            Properties:
+                              AlignInContainer: =AlignInContainer.Stretch
+                              Color: =ColorValue("#14253D")
+                              Font: =Font.'Segoe UI'
+                              Height: =48
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingRight: =0
+                              PaddingTop: =0
+                              Size: =14
+                              Text: |-
+                                ="Due: "&Text(ThisItem.DueAt,"dd.mm.yyyy")&" · "&If(DateValue(ThisItem.DueAt)<Today(),"Overdue",ThisItem.Status.Value)
+                        - HygTaskOpen:
+                            Control: ModernButton@1.0.0
+                            Properties:
+                              AccessibleLabel: ="View"
+                              AlignInContainer: =AlignInContainer.Stretch
+                              Appearance: =ButtonAppearance.Subtle
+                              BasePaletteColor: =ColorValue("#C8102E")
+                              BorderColor: =ColorValue("#E5EAF1")
+                              BorderThickness: =0
+                              Color: =ColorValue("#C8102E")
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =48
+                              Icon: ="ArrowRight"
+                              Layout: =ButtonLayout.IconAfter
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              OnSelect: =If(Coalesce(HygTaskPhotoBusy,false)||Coalesce(HygTaskPhotoPending,false),UpdateContext({HygTaskPhotoError:"First save the selected photo or discard the selection."}),Set(varTaskId,ThisItem.ID);UpdateContext({hSelected:LookUp(FleetTasks,ID=ThisItem.ID),hMode:"Detail",hPerson:LookUp(FleetMembers,ID=0),hNote:"",hError:"",hSaved:LookUp(FleetTasks,ID=0)});Reset(HygNote);UpdateContext({HygTaskPhotoTaskId:hSelected.ID,HygTaskPhotoTaskRecord:LookUp(FleetTasks,ID=hSelected.ID),HygTaskPhotoPending:false,HygTaskPhotoBusy:false,HygTaskPhotoError:"",HygTaskPhotoReceipt:LookUp(FleetTasks,ID=0),HygTaskPhotoSubmitId:0});ResetForm(HygTaskPhotoForm))
+                              RadiusBottomLeft: =16
+                              RadiusBottomRight: =16
+                              RadiusTopLeft: =16
+                              RadiusTopRight: =16
+                              Size: =16
+                              Text: ="View"
+                              Width: =Parent.Width
+            - HygHistory:
+                Control: Gallery@2.15.0
+                Variant: Vertical
+                Properties:
+                  AccessibleLabel: ="Vehicle tasks"
+                  ContentLanguage: ="en-GB"
+                  Default: =LookUp(FleetTasks,ID=0)
+                  FillPortions: =0
+                  Height: =Max(48,HygRoot.Height-HygHeader.Height-HygNav.Height-HygContext.Height-If(hMode="Person",72,48)-If(hMode="Plan" && (varOperator.Role.Value="Team lead"||varOperator.Role.Value="Administrator"),48,0))
+                  Items: =SortByColumns(Filter(FleetTasks,VehicleKey=Text(varVehicleId) && Status.Value="Completed"),"CompletedAt",SortOrder.Descending)
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  TabIndex: =0
+                  TemplatePadding: =8
+                  TemplateSize: =180
+                  Visible: =hMode="History"
+                  Width: =Parent.Width
+                Children:
+                  - HygPastRow:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        BorderColor: =ColorValue("#E2E9F2")
+                        BorderThickness: =1
+                        Fill: =Color.White
+                        Height: =Parent.TemplateHeight
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutGap: =4
+                        PaddingBottom: =8
+                        PaddingLeft: =12
+                        PaddingRight: =12
+                        PaddingTop: =8
+                        RadiusBottomLeft: =24
+                        RadiusBottomRight: =24
+                        RadiusTopLeft: =24
+                        RadiusTopRight: =24
+                        Width: =Parent.TemplateWidth
+                      Children:
+                        - HygPastTitle:
+                            Control: Label@2.5.1
+                            Properties:
+                              AlignInContainer: =AlignInContainer.Stretch
+                              Color: =ColorValue("#14253D")
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =60
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingRight: =0
+                              PaddingTop: =0
+                              Size: =18
+                              Text: =ThisItem.Title
+                        - HygPastMeta:
+                            Control: Label@2.5.1
+                            Properties:
+                              AlignInContainer: =AlignInContainer.Stretch
+                              Color: =ColorValue("#14253D")
+                              Font: =Font.'Segoe UI'
+                              Height: =48
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingRight: =0
+                              PaddingTop: =0
+                              Size: =14
+                              Text: =ThisItem.CompletedBy.DisplayName&" · "&Text(ThisItem.CompletedAt,"dd.mm.yyyy hh:mm")
+                        - HygPastOpen:
+                            Control: ModernButton@1.0.0
+                            Properties:
+                              AccessibleLabel: ="View"
+                              AlignInContainer: =AlignInContainer.Stretch
+                              Appearance: =ButtonAppearance.Subtle
+                              BasePaletteColor: =ColorValue("#C8102E")
+                              BorderColor: =ColorValue("#E5EAF1")
+                              BorderThickness: =0
+                              Color: =ColorValue("#C8102E")
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =48
+                              Icon: ="ArrowRight"
+                              Layout: =ButtonLayout.IconAfter
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              OnSelect: =If(Coalesce(HygTaskPhotoBusy,false)||Coalesce(HygTaskPhotoPending,false),UpdateContext({HygTaskPhotoError:"First save the selected photo or discard the selection."}),Set(varTaskId,ThisItem.ID);UpdateContext({hSelected:LookUp(FleetTasks,ID=ThisItem.ID),hMode:"Detail",hPerson:LookUp(FleetMembers,ID=0),hNote:"",hError:"",hSaved:LookUp(FleetTasks,ID=0)});Reset(HygNote);UpdateContext({HygTaskPhotoTaskId:hSelected.ID,HygTaskPhotoTaskRecord:LookUp(FleetTasks,ID=hSelected.ID),HygTaskPhotoPending:false,HygTaskPhotoBusy:false,HygTaskPhotoError:"",HygTaskPhotoReceipt:LookUp(FleetTasks,ID=0),HygTaskPhotoSubmitId:0});ResetForm(HygTaskPhotoForm))
+                              RadiusBottomLeft: =16
+                              RadiusBottomRight: =16
+                              RadiusTopLeft: =16
+                              RadiusTopRight: =16
+                              Size: =16
+                              Text: ="View"
+                              Width: =Parent.Width
+            - HygPlans:
+                Control: Gallery@2.15.0
+                Variant: Vertical
+                Properties:
+                  AccessibleLabel: ="Task plan for all vehicles and this vehicle"
+                  ContentLanguage: ="en-GB"
+                  Default: =LookUp(FleetTaskTemplates,ID=0)
+                  FillPortions: =0
+                  Height: =Max(48,HygRoot.Height-HygHeader.Height-HygNav.Height-HygContext.Height-If(hMode="Person",72,48)-If(hMode="Plan" && (varOperator.Role.Value="Team lead"||varOperator.Role.Value="Administrator"),48,0))
+                  Items: =SortByColumns(Filter(FleetTaskTemplates,Active && (VehicleKey="ALL" || VehicleKey=Text(varVehicleId))),"ID",SortOrder.Ascending)
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  TabIndex: =0
+                  TemplatePadding: =8
+                  TemplateSize: =256
+                  Visible: =hMode="Plan"
+                  Width: =Parent.Width
+                Children:
+                  - HygPlanRow:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        BorderColor: =ColorValue("#E2E9F2")
+                        BorderThickness: =1
+                        Fill: =If("wipe disinfection" in Lower(ThisItem.Title),ColorValue("#FFF4CC"),If("exterior wash" in Lower(ThisItem.Title),ColorValue("#E6F3D8"),If("vacuuming" in Lower(ThisItem.Title) || "interior cleaning" in Lower(ThisItem.Title),ColorValue("#E1F0FC"),Color.White)))
+                        Height: =Parent.TemplateHeight
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutGap: =4
+                        PaddingBottom: =8
+                        PaddingLeft: =12
+                        PaddingRight: =12
+                        PaddingTop: =8
+                        RadiusBottomLeft: =24
+                        RadiusBottomRight: =24
+                        RadiusTopLeft: =24
+                        RadiusTopRight: =24
+                        Width: =Parent.TemplateWidth
+                      Children:
+                        - HygPlanRowTitle:
+                            Control: Label@2.5.1
+                            Properties:
+                              AlignInContainer: =AlignInContainer.Stretch
+                              Color: =ColorValue("#14253D")
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =60
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingRight: =0
+                              PaddingTop: =0
+                              Size: =18
+                              Text: |-
+                                ="What: "&ThisItem.Title
+                        - HygPlanMeta:
+                            Control: Label@2.5.1
+                            Properties:
+                              AlignInContainer: =AlignInContainer.Stretch
+                              Color: =ColorValue("#14253D")
+                              Font: =Font.'Segoe UI'
+                              Height: =116
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingRight: =0
+                              PaddingTop: =0
+                              Size: =14
+                              Text: |-
+                                =If(ThisItem.VehicleKey="ALL","All vehicles",Coalesce(ThisItem.Vehicle.Value,"Selected vehicle"))&Char(10)&"First due: "&Text(ThisItem.FirstDueDate,"dd.mm.yyyy")&Char(10)&"Recurrence: every "&Text(ThisItem.RecurrenceDays)&" days"&If(ThisItem.RecurrenceDays=7," · "&Text(ThisItem.FirstDueDate,"dddd","en-GB"),"")
+                        - HygPlanOpen:
+                            Control: ModernButton@1.0.0
+                            Properties:
+                              AccessibleLabel: ="View"
+                              AlignInContainer: =AlignInContainer.Stretch
+                              Appearance: =ButtonAppearance.Subtle
+                              BasePaletteColor: =ColorValue("#C8102E")
+                              BorderColor: =ColorValue("#E5EAF1")
+                              BorderThickness: =0
+                              Color: =ColorValue("#C8102E")
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =48
+                              Icon: ="ArrowRight"
+                              Layout: =ButtonLayout.IconAfter
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              OnSelect: =UpdateContext({hChosenPlan:LookUp(FleetTaskTemplates,ID=ThisItem.ID),hMode:"PlanDetail"})
+                              RadiusBottomLeft: =16
+                              RadiusBottomRight: =16
+                              RadiusTopLeft: =16
+                              RadiusTopRight: =16
+                              Size: =16
+                              Text: ="View"
+                              Width: =Parent.Width
+            - HygPeople:
+                Control: Gallery@2.15.0
+                Variant: Vertical
+                Properties:
+                  AccessibleLabel: ="Vehicle tasks"
+                  ContentLanguage: ="en-GB"
+                  Default: =LookUp(FleetMembers,ID=0)
+                  FillPortions: =0
+                  Height: =Max(48,HygRoot.Height-HygHeader.Height-HygNav.Height-HygContext.Height-If(hMode="Person",72,48)-If(hMode="Plan" && (varOperator.Role.Value="Team lead"||varOperator.Role.Value="Administrator"),48,0))
+                  Items: =SortByColumns(Filter(FleetMembers,Active && (IsBlank(HygPersonSearch.Text) || StartsWith(Person.DisplayName,HygPersonSearch.Text))),"ID",SortOrder.Ascending)
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  TabIndex: =0
+                  TemplatePadding: =8
+                  TemplateSize: =180
+                  Visible: =hMode="Person"
+                  Width: =Parent.Width
+                Children:
+                  - HygPersonRow:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        BorderColor: =ColorValue("#E2E9F2")
+                        BorderThickness: =1
+                        Fill: =Color.White
+                        Height: =Parent.TemplateHeight
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutGap: =4
+                        PaddingBottom: =8
+                        PaddingLeft: =12
+                        PaddingRight: =12
+                        PaddingTop: =8
+                        RadiusBottomLeft: =24
+                        RadiusBottomRight: =24
+                        RadiusTopLeft: =24
+                        RadiusTopRight: =24
+                        Width: =Parent.TemplateWidth
+                      Children:
+                        - HygPersonTitle:
+                            Control: Label@2.5.1
+                            Properties:
+                              AlignInContainer: =AlignInContainer.Stretch
+                              Color: =ColorValue("#14253D")
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =60
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingRight: =0
+                              PaddingTop: =0
+                              Size: =18
+                              Text: =ThisItem.Person.DisplayName
+                        - HygPersonMeta:
+                            Control: Label@2.5.1
+                            Properties:
+                              AlignInContainer: =AlignInContainer.Stretch
+                              Color: =ColorValue("#14253D")
+                              Font: =Font.'Segoe UI'
+                              Height: =48
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingRight: =0
+                              PaddingTop: =0
+                              Size: =14
+                              Text: =ThisItem.Person.Email
+                        - HygPersonOpen:
+                            Control: ModernButton@1.0.0
+                            Properties:
+                              AccessibleLabel: ="View"
+                              AlignInContainer: =AlignInContainer.Stretch
+                              Appearance: =ButtonAppearance.Outline
+                              BasePaletteColor: =ColorValue("#C8102E")
+                              BorderColor: =ColorValue("#DDE5EF")
+                              BorderThickness: =1
+                              Color: =ColorValue("#14253D")
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =48
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              OnSelect: =UpdateContext({hPerson:ThisItem,hMode:"Detail"})
+                              RadiusBottomLeft: =16
+                              RadiusBottomRight: =16
+                              RadiusTopLeft: =16
+                              RadiusTopRight: =16
+                              Size: =16
+                              Text: ="View"
+                              Width: =Parent.Width
+            - HygDetailPage:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  AlignInContainer: =AlignInContainer.Center
+                  DropShadow: =DropShadow.None
+                  Fill: =If("wipe disinfection" in Lower(hSelected.Title),ColorValue("#FFF4CC"),If("exterior wash" in Lower(hSelected.Title),ColorValue("#E6F3D8"),If("vacuuming" in Lower(hSelected.Title) || "interior cleaning" in Lower(hSelected.Title),ColorValue("#E1F0FC"),Color.White)))
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =12
+                  LayoutMaxWidth: =640
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  LayoutOverflowY: =LayoutOverflow.Scroll
+                  PaddingBottom: =12
+                  PaddingLeft: =12
+                  PaddingRight: =12
+                  PaddingTop: =12
+                  Visible: =hMode="Detail"
+                  Width: =Min(640,Parent.Width)
+                Children:
+                  - HygDetailTitle:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =ColorValue("#14253D")
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Bold
+                        Height: =60
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =20
+                        Text: =hSelected.Title
+                  - HygDetailDue:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =ColorValue("#14253D")
+                        Font: =Font.'Segoe UI'
+                        Height: =96
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =16
+                        Text: |-
+                          ="Vehicle: "&hSelected.Vehicle.Value&Char(10)&"Originally due: "&Text(hSelected.DueAt,"dd.mm.yyyy hh:mm")&Char(10)&"Status: "&hSelected.Status.Value&If(hSelected.Status.Value<>"Completed" && DateValue(hSelected.DueAt)<Today()," · Overdue","")
+                  - HygInstructionLabel:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        Color: =ColorValue("#14253D")
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =24
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =16
+                        Text: ="Instructions"
+                  - HygInstruction:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =ColorValue("#14253D")
+                        Font: =Font.'Segoe UI'
+                        Height: =96
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =16
+                        Text: =Coalesce(hSelected.InstructionSnapshot,"No instructions available.")
+                  - HygPersonLabel:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        Color: =ColorValue("#14253D")
+                        Font: =Font.'Segoe UI'
+                        Height: =24
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =16
+                        Text: ="Person completing the task"
+                        Visible: =hSelected.Status.Value<>"Completed"
+                  - HygChoosePerson:
+                      Control: ModernButton@1.0.0
+                      Properties:
+                        AccessibleLabel: ="Select person"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        Appearance: =ButtonAppearance.Outline
+                        BasePaletteColor: =ColorValue("#C8102E")
+                        BorderColor: =ColorValue("#DDE5EF")
+                        BorderThickness: =1
+                        Color: =ColorValue("#14253D")
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =48
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnSelect: =If(!Coalesce(HygTaskPhotoBusy,false),UpdateContext({hMode:"Person"});Reset(HygPeople))
+                        RadiusBottomLeft: =16
+                        RadiusBottomRight: =16
+                        RadiusTopLeft: =16
+                        RadiusTopRight: =16
+                        Size: =16
+                        Text: ="Select person"
+                        Visible: =hSelected.Status.Value<>"Completed"
+                        Width: =Parent.Width
+                  - HygChosenPerson:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =ColorValue("#14253D")
+                        Font: =Font.'Segoe UI'
+                        Height: =48
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =16
+                        Text: =If(IsBlank(hPerson.ID),"No person selected yet",hPerson.Person.DisplayName&Char(10)&hPerson.Person.Email)
+                        Visible: =hSelected.Status.Value<>"Completed"
+                  - HygNoteLabel:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =ColorValue("#14253D")
+                        Font: =Font.'Segoe UI'
+                        Height: =48
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =16
+                        Text: ="Note / reason for an issue"
+                        Visible: =hSelected.Status.Value<>"Completed"
+                  - HygNote:
+                      Control: ModernTextInput@1.1.2
+                      Properties:
+                        AccessibleLabel: ="Reason for the task issue"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        Appearance: =Appearance.Outline
+                        BasePaletteColor: =ColorValue("#C8102E")
+                        BorderColor: =ColorValue("#DCE2EB")
+                        BorderThickness: =1
+                        Color: =ColorValue("#14253D")
+                        ContentLanguage: ="en-GB"
+                        Default: =Coalesce(hNote,"")
+                        Fill: =Color.White
+                        Height: =96
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnChange: =UpdateContext({hNote:Self.Text})
+                        Placeholder: ="Enter text"
+                        RadiusBottomLeft: =12
+                        RadiusBottomRight: =12
+                        RadiusTopLeft: =12
+                        RadiusTopRight: =12
+                        Size: =16
+                        Type: =TextInputType.Multiline
+                        Visible: =hSelected.Status.Value<>"Completed"
+                        Width: =Parent.Width
+                  - HygTaskPhotoPhotoLabel:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =ColorValue("#14253D")
+                        FocusedBorderThickness: =2
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =48
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =16
+                        TabIndex: =0
+                        Text: |-
+                          ="Photo (optional) · DEMO: Upload unavailable"
+                        Visible: =hMode="Detail"&&hSelected.ID>0&&hSelected.ID=varTaskId&&hSelected.Vehicle.Id=varVehicleId&&Lower(Trim(hSelected.Title))="bring transport materials to the station"&&HygTaskPhotoTaskId=hSelected.ID
+                  - HygTaskPhotoHelp:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =ColorValue("#14253D")
+                        FocusedBorderThickness: =2
+                        Font: =Font.'Segoe UI'
+                        Height: =48
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =14
+                        TabIndex: =0
+                        Text: |-
+                          ="DEMO: Photo uploads are unavailable. Reports and tasks are saved only for this session."
+                        Visible: =hMode="Detail"&&hSelected.ID>0&&hSelected.ID=varTaskId&&hSelected.Vehicle.Id=varVehicleId&&Lower(Trim(hSelected.Title))="bring transport materials to the station"&&HygTaskPhotoTaskId=hSelected.ID
+                  - HygTaskPhotoForm:
+                      Control: Form@2.4.4
+                      Variant: Classic
+                      Layout: Vertical
+                      Properties:
+                        DataSource: =FleetTasks
+                        DefaultMode: =FormMode.View
+                        FillPortions: =0
+                        Height: =220
+                        Item: =HygTaskPhotoTaskRecord
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnFailure: |-
+                          =UpdateContext({HygTaskPhotoPending:false,HygTaskPhotoBusy:false,HygTaskPhotoError:"DEMO: Photo uploads are unavailable.",HygTaskPhotoReceipt:LookUp(FleetTasks,ID=0),HygTaskPhotoSubmitId:0})
+                        OnSuccess: |-
+                          =UpdateContext({HygTaskPhotoPending:false,HygTaskPhotoBusy:false,HygTaskPhotoError:"DEMO: Photo uploads are unavailable.",HygTaskPhotoReceipt:LookUp(FleetTasks,ID=0),HygTaskPhotoSubmitId:0})
+                        Visible: =hMode="Detail"&&hSelected.ID>0&&hSelected.ID=varTaskId&&hSelected.Vehicle.Id=varVehicleId&&Lower(Trim(hSelected.Title))="bring transport materials to the station"&&HygTaskPhotoTaskId=hSelected.ID
+                        Width: =Parent.Width-24
+                      Children:
+                        - HygTaskPhotoPhotoCard:
+                            Control: TypedDataCard@1.0.7
+                            Variant: ClassicAttachmentsEdit
+                            Properties:
+                              DataField: ="{Attachments}"
+                              Default: =ThisItem.'{Attachments}'
+                              DisplayName: ="Photo (optional)"
+                              Height: =220
+                              Required: =false
+                              Update: =HygTaskPhotoFiles.Attachments
+                              Width: =Parent.Width
+                              WidthFit: =true
+                              X: =0
+                              Y: =0
+                            Children:
+                              - HygTaskPhotoFiles:
+                                  Control: Attachments@2.3.0
+                                  Properties:
+                                    AccessibleLabel: |-
+                                      ="Photos for task documentation: "&hSelected.Title
+                                    AddAttachmentText: |-
+                                      ="DEMO: Upload unavailable"
+                                    BorderColor: =ColorValue("#DCE2EB")
+                                    BorderThickness: =1
+                                    Color: =ColorValue("#14253D")
+                                    DisplayMode: =DisplayMode.Disabled
+                                    Fill: =Color.White
+                                    Font: =Font.'Segoe UI'
+                                    Height: =204
+                                    Items: =Parent.Default
+                                    MaxAttachments: =Max(6,CountRows(HygTaskPhotoTaskRecord.'{Attachments}')+1)
+                                    NoAttachmentsText: |-
+                                      ="DEMO: Photo uploads are unavailable."
+                                    OnAddFile: |-
+                                      =UpdateContext({HygTaskPhotoPending:false,HygTaskPhotoBusy:false,HygTaskPhotoError:"DEMO: Photo uploads are unavailable.",HygTaskPhotoReceipt:LookUp(FleetTasks,ID=0),HygTaskPhotoSubmitId:0})
+                                    OnRemoveFile: |-
+                                      =UpdateContext({HygTaskPhotoPending:false,HygTaskPhotoBusy:false,HygTaskPhotoError:"DEMO: Photo uploads are unavailable.",HygTaskPhotoReceipt:LookUp(FleetTasks,ID=0),HygTaskPhotoSubmitId:0})
+                                    OnUndoRemoveFile: |-
+                                      =UpdateContext({HygTaskPhotoPending:false,HygTaskPhotoBusy:false,HygTaskPhotoError:"DEMO: Photo uploads are unavailable.",HygTaskPhotoReceipt:LookUp(FleetTasks,ID=0),HygTaskPhotoSubmitId:0})
+                                    Size: =14
+                                    Width: =Max(1,Parent.Width-16)
+                                    X: =8
+                                    Y: =8
+                  - HygTaskPhotoSave:
+                      Control: ModernButton@1.0.0
+                      Properties:
+                        AccessibleLabel: |-
+                          ="DEMO: Photo upload unavailable"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        BasePaletteColor: =ColorValue("#C8102E")
+                        BorderColor: =ColorValue("#DDE5EF")
+                        BorderThickness: =1
+                        Color: =Color.White
+                        DisplayMode: =DisplayMode.Disabled
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =48
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnSelect: |-
+                          =UpdateContext({HygTaskPhotoPending:false,HygTaskPhotoBusy:false,HygTaskPhotoError:"DEMO: Photo uploads are unavailable.",HygTaskPhotoReceipt:LookUp(FleetTasks,ID=0),HygTaskPhotoSubmitId:0})
+                        RadiusBottomLeft: =12
+                        RadiusBottomRight: =12
+                        RadiusTopLeft: =12
+                        RadiusTopRight: =12
+                        Size: =16
+                        Text: |-
+                          ="Save photo (DEMO: unavailable)"
+                        Visible: =hMode="Detail"&&hSelected.ID>0&&hSelected.ID=varTaskId&&hSelected.Vehicle.Id=varVehicleId&&Lower(Trim(hSelected.Title))="bring transport materials to the station"&&HygTaskPhotoTaskId=hSelected.ID&&hSelected.Status.Value<>"Completed"&&Coalesce(HygTaskPhotoPending,false)
+                        Width: =Parent.Width-24
+                  - HygTaskPhotoDiscard:
+                      Control: ModernButton@1.0.0
+                      Properties:
+                        AccessibleLabel: ="Discard selection"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        Appearance: =ButtonAppearance.Outline
+                        BasePaletteColor: =ColorValue("#C8102E")
+                        BorderColor: =ColorValue("#DDE5EF")
+                        BorderThickness: =1
+                        Color: =ColorValue("#14253D")
+                        DisplayMode: =If(Coalesce(HygTaskPhotoBusy,false)||hSaving,DisplayMode.Disabled,DisplayMode.Edit)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =48
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnSelect: =If(!Coalesce(HygTaskPhotoBusy,false)&&!hSaving,ResetForm(HygTaskPhotoForm);UpdateContext({HygTaskPhotoPending:false,HygTaskPhotoError:"",HygTaskPhotoReceipt:LookUp(FleetTasks,ID=0)}))
+                        RadiusBottomLeft: =12
+                        RadiusBottomRight: =12
+                        RadiusTopLeft: =12
+                        RadiusTopRight: =12
+                        Size: =16
+                        Text: ="Discard selection"
+                        Visible: =hMode="Detail"&&hSelected.ID>0&&hSelected.ID=varTaskId&&hSelected.Vehicle.Id=varVehicleId&&Lower(Trim(hSelected.Title))="bring transport materials to the station"&&HygTaskPhotoTaskId=hSelected.ID&&hSelected.Status.Value<>"Completed"&&Coalesce(HygTaskPhotoPending,false)
+                        Width: =Parent.Width-24
+                  - HygTaskPhotoErrorText:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =ColorValue("#C8102E")
+                        FocusedBorderThickness: =2
+                        Font: =Font.'Segoe UI'
+                        Height: =48
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        Live: =Live.Assertive
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =14
+                        TabIndex: =0
+                        Text: =HygTaskPhotoError
+                        Visible: =hMode="Detail"&&hSelected.ID>0&&hSelected.ID=varTaskId&&hSelected.Vehicle.Id=varVehicleId&&Lower(Trim(hSelected.Title))="bring transport materials to the station"&&HygTaskPhotoTaskId=hSelected.ID&&!IsBlank(HygTaskPhotoError)
+                  - HygTaskPhotoReceiptText:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =ColorValue("#166534")
+                        FocusedBorderThickness: =2
+                        Font: =Font.'Segoe UI'
+                        Height: =48
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =14
+                        TabIndex: =0
+                        Text: |-
+                          ="DEMO: Photo uploads are unavailable."
+                        Visible: =false
+                  - HygSavedReceipt:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =ColorValue("#166534")
+                        Font: =Font.'Segoe UI'
+                        Height: =180
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =16
+                        Text: |-
+                          =If(!IsBlank(hSaved.ID),"Saved for this session: "&hSaved.Title&Char(10)&"Vehicle: "&hSaved.Vehicle.Value&Char(10)&"Result: "&hSaved.Status.Value&Char(10)&"Person: "&hSaved.CompletedBy.DisplayName&" · "&hSaved.CompletedBy.Email&Char(10)&"Time: "&Text(hSaved.CompletedAt,"dd.mm.yyyy hh:mm")&Char(10)&"Recorded by: "&hSaved.Editor.DisplayName&Char(10)&"Note: "&hSaved.Notes,"")
+                        Visible: =!IsBlank(hSaved.ID) && hSaved.ID=varTaskId && hSaved.ID=hSelected.ID && hSaved.Vehicle.Id=varVehicleId
+                  - HygHistoryReceipt:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =ColorValue("#14253D")
+                        Font: =Font.'Segoe UI'
+                        Height: =144
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =16
+                        Text: |-
+                          ="Person: "&hSelected.CompletedBy.DisplayName&" · "&hSelected.CompletedBy.Email&Char(10)&"Documented: "&Text(hSelected.CompletedAt,"dd.mm.yyyy hh:mm")&Char(10)&"Recorded by: "&hSelected.Editor.DisplayName&Char(10)&"Note: "&hSelected.Notes
+                        Visible: =hSelected.Status.Value="Completed" && IsBlank(hSaved.ID)
+                  - HygMutationError:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =ColorValue("#C8102E")
+                        Font: =Font.'Segoe UI'
+                        Height: =48
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        Live: =Live.Assertive
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =16
+                        Text: =hError
+                        Visible: =!IsBlank(hError)
+                  - HygGuide:
+                      Control: ModernButton@1.0.0
+                      Properties:
+                        AccessibleLabel: ="View info / instructions"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        Appearance: =ButtonAppearance.Outline
+                        BasePaletteColor: =ColorValue("#C8102E")
+                        BorderColor: =ColorValue("#DDE5EF")
+                        BorderThickness: =1
+                        Color: =ColorValue("#14253D")
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =48
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnSelect: =If(Coalesce(HygTaskPhotoBusy,false)||Coalesce(HygTaskPhotoPending,false),UpdateContext({HygTaskPhotoError:"First save the selected photo or discard the selection."}),Set(varInfoOrigin,"Hygiene");Navigate(Information))
+                        RadiusBottomLeft: =16
+                        RadiusBottomRight: =16
+                        RadiusTopLeft: =16
+                        RadiusTopRight: =16
+                        Size: =16
+                        Text: ="View info / instructions"
+                        Width: =Parent.Width
+                  - HygImpossible:
+                      Control: ModernButton@1.0.0
+                      Properties:
+                        AccessibleLabel: ="Report as not possible"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        Appearance: =ButtonAppearance.Outline
+                        BasePaletteColor: =ColorValue("#C8102E")
+                        BorderColor: =ColorValue("#DDE5EF")
+                        BorderThickness: =1
+                        Color: =ColorValue("#14253D")
+                        DisplayMode: =If(Coalesce(HygTaskPhotoBusy,false)||Coalesce(HygTaskPhotoPending,false)||hSaving||IsBlank(hPerson.ID)||IsBlank(Trim(HygNote.Text)),DisplayMode.Disabled,DisplayMode.Edit)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =48
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnSelect: =If(Coalesce(HygTaskPhotoBusy,false)||Coalesce(HygTaskPhotoPending,false),UpdateContext({HygTaskPhotoError:"First save the selected photo or discard the selection."}),If(!hSaving && varTaskId>0 && !IsBlank(hPerson.ID) && EndsWith(Lower(hPerson.Person.Email),"@example.invalid") && !IsBlank(Trim(HygNote.Text)),UpdateContext({hSaving:true,hError:""});IfError(true;With({current:LookUp(FleetTasks,ID=varTaskId)},If(IsBlank(current.ID)||current.Vehicle.Id<>varVehicleId||current.Status.Value="Completed",Error({Kind:ErrorKind.Validation,Message:"This task is no longer open. Please reload."}),UpdateContext({hSaved:Patch(FleetTasks,current,{Status:{Value:"Not possible"},CompletedBy:hPerson.Person,CompletedAt:Now(),Notes:HygNote.Text},{Modified:Now(),Editor:varDemoPerson})});UpdateContext({hSaved:LookUp(FleetTasks,ID=varTaskId)});UpdateContext({hSelected:hSaved,hMode:"Detail"});Set(varHygieneReturnToVehicle,false);UpdateContext({hDueBoundary:DateAdd(Today(),1,TimeUnit.Days),hRunning:false,hBusy:false,hEvalVehicle:varVehicleId,hPlanCursor:1,hPhase:"Global",hTaskCursor:1,hMode:Coalesce(hMode,"Due"),hError:""}); Set(varHygieneError,""); Set(varHygieneState,"Checking hygiene"); Set(varHygieneVehicleId,varVehicleId); Set(varHygieneDueTask,LookUp(FleetTasks,ID=0)); If(varVehicleId<=0, Set(varHygieneState,"Not checked"); Set(varHygieneError,"Select a vehicle first."), IfError(true;true;UpdateContext({hPlanMax:Coalesce(First(SortByColumns(FleetTaskTemplates,"ID",SortOrder.Descending)).ID,0),hTaskMax:Coalesce(First(SortByColumns(FleetTasks,"ID",SortOrder.Descending)).ID,0)});Reset(HygEvaluator);UpdateContext({hRunning:true}),Set(varHygieneState,"Check failed");Set(varHygieneError,FirstError.Message))))),UpdateContext({hError:FirstError.Message}));UpdateContext({hSaving:false}),UpdateContext({hError:"Select a person; a reason is required for an issue."})))
+                        RadiusBottomLeft: =16
+                        RadiusBottomRight: =16
+                        RadiusTopLeft: =16
+                        RadiusTopRight: =16
+                        Size: =16
+                        Text: ="Report as not possible"
+                        Visible: =hSelected.Status.Value<>"Completed"
+                        Width: =Parent.Width
+            - HygPlanPage:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  AlignInContainer: =AlignInContainer.Center
+                  DropShadow: =DropShadow.None
+                  Fill: =If("wipe disinfection" in Lower(hChosenPlan.Title),ColorValue("#FFF4CC"),If("exterior wash" in Lower(hChosenPlan.Title),ColorValue("#E6F3D8"),If("vacuuming" in Lower(hChosenPlan.Title) || "interior cleaning" in Lower(hChosenPlan.Title),ColorValue("#E1F0FC"),Color.White)))
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =8
+                  LayoutMaxWidth: =640
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  LayoutOverflowY: =LayoutOverflow.Scroll
+                  PaddingBottom: =12
+                  PaddingLeft: =12
+                  PaddingRight: =12
+                  PaddingTop: =12
+                  Visible: =hMode="PlanDetail"
+                  Width: =Min(640,Parent.Width)
+                Children:
+                  - HygPlanTitle:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =ColorValue("#14253D")
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Bold
+                        Height: =60
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =20
+                        Text: =hChosenPlan.Title
+                  - HygPlanData:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =ColorValue("#14253D")
+                        Font: =Font.'Segoe UI'
+                        Height: =120
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =16
+                        Text: |-
+                          ="Vehicle: "&If(hChosenPlan.VehicleKey="ALL","All vehicles",hChosenPlan.Vehicle.Value)&Char(10)&"Initial due date: "&Text(hChosenPlan.FirstDueDate,"dd.mm.yyyy hh:mm")&Char(10)&"Recurrence: "&Text(hChosenPlan.RecurrenceDays)&" days"
+                  - HygPlanInstructionLabel:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        Color: =ColorValue("#14253D")
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =48
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =16
+                        Text: ="What · How · With what · When · Day of the week"
+                  - HygPlanInstruction:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =ColorValue("#14253D")
+                        Font: =Font.'Segoe UI'
+                        Height: =96
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =16
+                        Text: =hChosenPlan.Instructions
+                  - HygMaintainPlan:
+                      Control: ModernButton@1.0.0
+                      Properties:
+                        AccessibleLabel: ="Manage task plans"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        Appearance: =ButtonAppearance.Outline
+                        BasePaletteColor: =ColorValue("#C8102E")
+                        BorderColor: =ColorValue("#DDE5EF")
+                        BorderThickness: =1
+                        Color: =ColorValue("#14253D")
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =60
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnSelect: =If(!IsBlank(varOperator.ID) && varOperator.Active && (varOperator.Role.Value="Team lead" || varOperator.Role.Value="Administrator"),Navigate(TaskPlanAdmin))
+                        RadiusBottomLeft: =16
+                        RadiusBottomRight: =16
+                        RadiusTopLeft: =16
+                        RadiusTopRight: =16
+                        Size: =16
+                        Text: ="Manage task plan"
+                        Visible: =(varOperator.Role.Value="Team lead" || varOperator.Role.Value="Administrator") && (!IsBlank(varOperator.ID) && varOperator.Active && (varOperator.Role.Value="Team lead" || varOperator.Role.Value="Administrator"))
+                        Width: =Parent.Width
+                  - HygPlanRights:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =ColorValue("#14253D")
+                        Font: =Font.'Segoe UI'
+                        Height: =72
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =16
+                        Text: ="Manage task templates in the app. Previously recorded task completions are retained."
+                        Visible: =!IsBlank(varOperator.ID) && varOperator.Active && (varOperator.Role.Value="Team lead" || varOperator.Role.Value="Administrator")
+            - HygRetry:
+                Control: ModernButton@1.0.0
+                Properties:
+                  AccessibleLabel: ="Recheck tasks"
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Appearance: =ButtonAppearance.Outline
+                  BasePaletteColor: =ColorValue("#C8102E")
+                  BorderColor: =ColorValue("#DDE5EF")
+                  BorderThickness: =1
+                  Color: =ColorValue("#14253D")
+                  DisplayMode: =If(hRunning||hSaving,DisplayMode.Disabled,DisplayMode.Edit)
+                  Font: =Font.'Segoe UI'
+                  FontWeight: =FontWeight.Semibold
+                  Height: =48
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  OnSelect: =UpdateContext({hDueBoundary:DateAdd(Today(),1,TimeUnit.Days),hRunning:false,hBusy:false,hEvalVehicle:varVehicleId,hPlanCursor:1,hPhase:"Global",hTaskCursor:1,hMode:Coalesce(hMode,"Due"),hError:""}); Set(varHygieneError,""); Set(varHygieneState,"Checking hygiene"); Set(varHygieneVehicleId,varVehicleId); Set(varHygieneDueTask,LookUp(FleetTasks,ID=0)); If(varVehicleId<=0, Set(varHygieneState,"Not checked"); Set(varHygieneError,"Select a vehicle first."), IfError(true;true;UpdateContext({hPlanMax:Coalesce(First(SortByColumns(FleetTaskTemplates,"ID",SortOrder.Descending)).ID,0),hTaskMax:Coalesce(First(SortByColumns(FleetTasks,"ID",SortOrder.Descending)).ID,0)});Reset(HygEvaluator);UpdateContext({hRunning:true}),Set(varHygieneState,"Check failed");Set(varHygieneError,FirstError.Message)))
+                  RadiusBottomLeft: =16
+                  RadiusBottomRight: =16
+                  RadiusTopLeft: =16
+                  RadiusTopRight: =16
+                  Size: =16
+                  Text: ="Recheck tasks"
+                  Visible: =hMode<>"Detail" && hMode<>"Person" && hMode<>"PlanDetail"
+                  Width: =Parent.Width
+            - HygSetup:
+                Control: ModernButton@1.0.0
+                Properties:
+                  AccessibleLabel: ="Manage task plans"
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Appearance: =ButtonAppearance.Outline
+                  BasePaletteColor: =ColorValue("#C8102E")
+                  BorderColor: =ColorValue("#DDE5EF")
+                  BorderThickness: =1
+                  Color: =ColorValue("#14253D")
+                  Font: =Font.'Segoe UI'
+                  FontWeight: =FontWeight.Semibold
+                  Height: =48
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  OnSelect: =If(!IsBlank(varOperator.ID) && varOperator.Active && (varOperator.Role.Value="Team lead" || varOperator.Role.Value="Administrator"),Navigate(TaskPlanAdmin))
+                  RadiusBottomLeft: =16
+                  RadiusBottomRight: =16
+                  RadiusTopLeft: =16
+                  RadiusTopRight: =16
+                  Size: =16
+                  Text: ="Manage task plan"
+                  Visible: =(hMode="Plan" && (varOperator.Role.Value="Team lead" || varOperator.Role.Value="Administrator")) && (!IsBlank(varOperator.ID) && varOperator.Active && (varOperator.Role.Value="Team lead" || varOperator.Role.Value="Administrator"))
+                  Width: =Parent.Width
+            - HygActions:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  FillPortions: =0
+                  Height: =64
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Horizontal
+                  LayoutGap: =8
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =8
+                  PaddingLeft: =12
+                  PaddingRight: =12
+                  PaddingTop: =8
+                  Visible: =hMode="Detail" && hSelected.Status.Value<>"Completed"
+                Children:
+                  - HygComplete:
+                      Control: ModernButton@1.0.0
+                      Properties:
+                        AccessibleLabel: ="Completed"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        BasePaletteColor: =ColorValue("#C8102E")
+                        BorderThickness: =0
+                        Color: =Color.White
+                        DisplayMode: =If(Coalesce(HygTaskPhotoBusy,false)||Coalesce(HygTaskPhotoPending,false)||hSaving||IsBlank(hPerson.ID),DisplayMode.Disabled,DisplayMode.Edit)
+                        FillPortions: =1
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =48
+                        Icon: ="Checkmark"
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnSelect: =If(Coalesce(HygTaskPhotoBusy,false)||Coalesce(HygTaskPhotoPending,false),UpdateContext({HygTaskPhotoError:"First save the selected photo or discard the selection."}),If(!hSaving && varTaskId>0 && !IsBlank(hPerson.ID) && EndsWith(Lower(hPerson.Person.Email),"@example.invalid") && hPerson.Active && true,UpdateContext({hSaving:true,hError:""});IfError(true;With({current:LookUp(FleetTasks,ID=varTaskId)},If(IsBlank(current.ID)||current.Vehicle.Id<>varVehicleId||current.Status.Value="Completed",Error({Kind:ErrorKind.Validation,Message:"This task is no longer open. Please reload."}),UpdateContext({hSaved:Patch(FleetTasks,current,{Status:{Value:"Completed"},CompletedBy:hPerson.Person,CompletedAt:Now(),Notes:HygNote.Text},{Modified:Now(),Editor:varDemoPerson})});UpdateContext({hSaved:LookUp(FleetTasks,ID=varTaskId)});UpdateContext({hSelected:hSaved,hMode:"Detail"});Set(varHygieneReturnToVehicle,false);UpdateContext({hDueBoundary:DateAdd(Today(),1,TimeUnit.Days),hRunning:false,hBusy:false,hEvalVehicle:varVehicleId,hPlanCursor:1,hPhase:"Global",hTaskCursor:1,hMode:Coalesce(hMode,"Due"),hError:""}); Set(varHygieneError,""); Set(varHygieneState,"Checking hygiene"); Set(varHygieneVehicleId,varVehicleId); Set(varHygieneDueTask,LookUp(FleetTasks,ID=0)); If(varVehicleId<=0, Set(varHygieneState,"Not checked"); Set(varHygieneError,"Select a vehicle first."), IfError(true;true;UpdateContext({hPlanMax:Coalesce(First(SortByColumns(FleetTaskTemplates,"ID",SortOrder.Descending)).ID,0),hTaskMax:Coalesce(First(SortByColumns(FleetTasks,"ID",SortOrder.Descending)).ID,0)});Reset(HygEvaluator);UpdateContext({hRunning:true}),Set(varHygieneState,"Check failed");Set(varHygieneError,FirstError.Message))))),UpdateContext({hError:FirstError.Message}));UpdateContext({hSaving:false}),UpdateContext({hError:"Select a person; a reason is required for an issue."})))
+                        RadiusBottomLeft: =16
+                        RadiusBottomRight: =16
+                        RadiusTopLeft: =16
+                        RadiusTopRight: =16
+                        Size: =16
+                        Text: ="Completed"
+                  - HygProblem:
+                      Control: ModernButton@1.0.0
+                      Properties:
+                        AccessibleLabel: ="Issue"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        Appearance: =ButtonAppearance.Outline
+                        BasePaletteColor: =ColorValue("#C8102E")
+                        BorderColor: =ColorValue("#DDE5EF")
+                        BorderThickness: =1
+                        Color: =ColorValue("#14253D")
+                        DisplayMode: =If(Coalesce(HygTaskPhotoBusy,false)||Coalesce(HygTaskPhotoPending,false)||hSaving||IsBlank(hPerson.ID)||IsBlank(Trim(HygNote.Text)),DisplayMode.Disabled,DisplayMode.Edit)
+                        FillPortions: =1
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =48
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnSelect: =If(Coalesce(HygTaskPhotoBusy,false)||Coalesce(HygTaskPhotoPending,false),UpdateContext({HygTaskPhotoError:"First save the selected photo or discard the selection."}),If(!hSaving && varTaskId>0 && !IsBlank(hPerson.ID) && EndsWith(Lower(hPerson.Person.Email),"@example.invalid") && hPerson.Active && !IsBlank(Trim(HygNote.Text)),UpdateContext({hSaving:true,hError:""});IfError(true;With({current:LookUp(FleetTasks,ID=varTaskId)},If(IsBlank(current.ID)||current.Vehicle.Id<>varVehicleId||current.Status.Value="Completed",Error({Kind:ErrorKind.Validation,Message:"This task is no longer open. Please reload."}),UpdateContext({hSaved:Patch(FleetTasks,current,{Status:{Value:"Issue reported"},CompletedBy:hPerson.Person,CompletedAt:Now(),Notes:HygNote.Text},{Modified:Now(),Editor:varDemoPerson})});UpdateContext({hSaved:LookUp(FleetTasks,ID=varTaskId)});UpdateContext({hSelected:hSaved,hMode:"Detail"});Set(varHygieneReturnToVehicle,false);UpdateContext({hDueBoundary:DateAdd(Today(),1,TimeUnit.Days),hRunning:false,hBusy:false,hEvalVehicle:varVehicleId,hPlanCursor:1,hPhase:"Global",hTaskCursor:1,hMode:Coalesce(hMode,"Due"),hError:""}); Set(varHygieneError,""); Set(varHygieneState,"Checking hygiene"); Set(varHygieneVehicleId,varVehicleId); Set(varHygieneDueTask,LookUp(FleetTasks,ID=0)); If(varVehicleId<=0, Set(varHygieneState,"Not checked"); Set(varHygieneError,"Select a vehicle first."), IfError(true;true;UpdateContext({hPlanMax:Coalesce(First(SortByColumns(FleetTaskTemplates,"ID",SortOrder.Descending)).ID,0),hTaskMax:Coalesce(First(SortByColumns(FleetTasks,"ID",SortOrder.Descending)).ID,0)});Reset(HygEvaluator);UpdateContext({hRunning:true}),Set(varHygieneState,"Check failed");Set(varHygieneError,FirstError.Message))))),UpdateContext({hError:FirstError.Message}));UpdateContext({hSaving:false}),UpdateContext({hError:"Select a person; a reason is required for an issue."})))
+                        RadiusBottomLeft: =16
+                        RadiusBottomRight: =16
+                        RadiusTopLeft: =16
+                        RadiusTopRight: =16
+                        Size: =16
+                        Text: ="Issue"
+            - HygNav:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  BorderColor: =ColorValue("#E5EAF1")
+                  DropShadow: =DropShadow.None
+                  Fill: =ColorValue("#10233F")
+                  FillPortions: =0
+                  Height: =76
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Horizontal
+                  LayoutGap: =4
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =18
+                  PaddingLeft: =8
+                  PaddingRight: =8
+                  PaddingTop: =10
+                  RadiusBottomLeft: =0
+                  RadiusBottomRight: =0
+                  RadiusTopLeft: =26
+                  RadiusTopRight: =26
+                Children:
+                  - HygNav0:
+                      Control: ModernButton@1.0.0
+                      Properties:
+                        AccessibleLabel: ="Vehicle"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        Appearance: =ButtonAppearance.Transparent
+                        BasePaletteColor: =ColorValue("#C8102E")
+                        BorderColor: =ColorValue("#E5EAF1")
+                        BorderThickness: =0
+                        Color: =ColorValue("#CFDBEB")
+                        DisplayMode: =If(Coalesce(HygTaskPhotoBusy,false)||Coalesce(HygTaskPhotoPending,false)||hMode="Detail" && hSelected.Status.Value<>"Completed",DisplayMode.Disabled,DisplayMode.Edit)
+                        FillPortions: =1
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =48
+                        Icon: ="VehicleCar"
+                        LayoutMinHeight: =44
+                        LayoutMinWidth: =0
+                        OnSelect: =Set(varHygieneReturnToVehicle,false);Set(varInfoOrigin,"");Navigate(VehicleHome)
+                        PaddingLeft: =3
+                        PaddingRight: =3
+                        RadiusBottomLeft: =16
+                        RadiusBottomRight: =16
+                        RadiusTopLeft: =16
+                        RadiusTopRight: =16
+                        Size: =12
+                        Text: ="Vehicle"
+                        Tooltip: =If(hMode="Detail" && hSelected.Status.Value<>"Completed","First finish the current action or cancel it using Back.","Vehicle")
+                        Width: =Max(44,(Parent.Width-28)/4)
+                  - HygNav1:
+                      Control: ModernButton@1.0.0
+                      Properties:
+                        AccessibleLabel: ="Damage"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        Appearance: =ButtonAppearance.Transparent
+                        BasePaletteColor: =ColorValue("#C8102E")
+                        BorderColor: =ColorValue("#E5EAF1")
+                        BorderThickness: =0
+                        Color: =If(Coalesce(varVehicleId,0)>0,ColorValue("#CFDBEB"),ColorValue("#8B95A5"))
+                        DisplayMode: =If(Coalesce(varVehicleId,0)>0,If(Coalesce(HygTaskPhotoBusy,false)||Coalesce(HygTaskPhotoPending,false)||hMode="Detail" && hSelected.Status.Value<>"Completed",DisplayMode.Disabled,DisplayMode.Edit),DisplayMode.Disabled)
+                        FillPortions: =1
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =48
+                        Icon: ="Warning"
+                        LayoutMinHeight: =44
+                        LayoutMinWidth: =0
+                        OnSelect: =If(Coalesce(varVehicleId,0)>0,Set(varHygieneReturnToVehicle,false);Set(varInfoOrigin,"");Navigate(DamageReports))
+                        PaddingLeft: =3
+                        PaddingRight: =3
+                        RadiusBottomLeft: =16
+                        RadiusBottomRight: =16
+                        RadiusTopLeft: =16
+                        RadiusTopRight: =16
+                        Size: =12
+                        Text: ="Damage"
+                        Tooltip: =If(Coalesce(varVehicleId,0)>0,If(hMode="Detail" && hSelected.Status.Value<>"Completed","First finish the current action or cancel it using Back.","Damage"),"Select a vehicle first.")
+                        Width: =Max(44,(Parent.Width-28)/4)
+                  - HygNav2:
+                      Control: ModernButton@1.0.0
+                      Properties:
+                        AccessibleLabel: ="Tasks"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        BasePaletteColor: =ColorValue("#C8102E")
+                        BorderThickness: =0
+                        Color: =If(Coalesce(varVehicleId,0)>0,ColorValue("#CFDBEB"),ColorValue("#8B95A5"))
+                        DisplayMode: =If(Coalesce(varVehicleId,0)>0,If(Coalesce(HygTaskPhotoBusy,false)||Coalesce(HygTaskPhotoPending,false)||hMode="Detail" && hSelected.Status.Value<>"Completed",DisplayMode.Disabled,DisplayMode.Edit),DisplayMode.Disabled)
+                        FillPortions: =1
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =48
+                        Icon: ="CheckmarkCircle"
+                        IconStyle: =IconStyle.Filled
+                        LayoutMinHeight: =44
+                        LayoutMinWidth: =0
+                        OnSelect: =If(Coalesce(varVehicleId,0)>0,Set(varHygieneReturnToVehicle,false);Set(varInfoOrigin,"");Navigate(HygieneCheck))
+                        PaddingLeft: =3
+                        PaddingRight: =3
+                        RadiusBottomLeft: =16
+                        RadiusBottomRight: =16
+                        RadiusTopLeft: =16
+                        RadiusTopRight: =16
+                        Size: =12
+                        Text: ="Tasks"
+                        Tooltip: =If(Coalesce(varVehicleId,0)>0,If(hMode="Detail" && hSelected.Status.Value<>"Completed","First finish the current action or cancel it using Back.","Hygiene"),"Select a vehicle first.")
+                        Width: =Max(44,(Parent.Width-28)/4)
+                  - HygNav3:
+                      Control: ModernButton@1.0.0
+                      Properties:
+                        AccessibleLabel: ="Info"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        Appearance: =ButtonAppearance.Transparent
+                        BasePaletteColor: =ColorValue("#C8102E")
+                        BorderColor: =ColorValue("#E5EAF1")
+                        BorderThickness: =0
+                        Color: =ColorValue("#CFDBEB")
+                        DisplayMode: =If(Coalesce(HygTaskPhotoBusy,false)||Coalesce(HygTaskPhotoPending,false)||hMode="Detail" && hSelected.Status.Value<>"Completed",DisplayMode.Disabled,DisplayMode.Edit)
+                        FillPortions: =1
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =48
+                        Icon: ="Info"
+                        LayoutMinHeight: =44
+                        LayoutMinWidth: =0
+                        OnSelect: =Set(varHygieneReturnToVehicle,false);Set(varInfoOrigin,"");Navigate(Information)
+                        PaddingLeft: =3
+                        PaddingRight: =3
+                        RadiusBottomLeft: =16
+                        RadiusBottomRight: =16
+                        RadiusTopLeft: =16
+                        RadiusTopRight: =16
+                        Size: =12
+                        Text: ="Info"
+                        Tooltip: =If(hMode="Detail" && hSelected.Status.Value<>"Completed","First finish the current action or cancel it using Back.","Info")
+                        Width: =Max(44,(Parent.Width-28)/4)

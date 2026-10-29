@@ -1,0 +1,1555 @@
+# ************************************************************************************************
+# Warning: YAML source code for Canvas Apps should only be used to review changes made within Power Apps Studio and for minor edits (Preview).
+# Use the maker portal to create and edit your Power Apps.
+# 
+# The schema file for Canvas Apps is available at https://go.microsoft.com/fwlink/?linkid=2304907
+# 
+# For more information, visit https://go.microsoft.com/fwlink/?linkid=2292623
+# ************************************************************************************************
+Screens:
+  TaskPlanAdmin:
+    Properties:
+      OnVisible: |-
+        =If(IsBlank(ahgMode),UpdateContext({ahgMode:"Browse",ahgAllVehicles:false,ahgDirty:false,ahgUnknown:false,ahgDiscard:false,ahgCheck:false}));If(!ahgBusy, UpdateContext({ahgBusy:true,ahgError:""});
+        IfError(UpdateContext({ahgAuthorized:false});
+        true;
+        Set(varOperator, LookUp(FleetMembers, Person.Email=varDemoUser.Email));
+        UpdateContext({ahgAuthorized:!IsBlank(varOperator.ID) && varOperator.Active && (varOperator.Role.Value="Team lead" || varOperator.Role.Value="Administrator")});
+        If(ahgAuthorized, true; true, UpdateContext({ahgError:"No admin access. Check active membership and role."})),
+        UpdateContext({ahgAuthorized:false,ahgError:"Could not load data or permissions. Try again."}));
+        UpdateContext({ahgBusy:false}));If(ahgAuthorized && ahgMode="Receipt" && !IsBlank(ahgSavedID),UpdateContext({ahgSavedRow:LookUp(FleetTaskTemplates,ID=ahgSavedID)});If(IsBlank(ahgSavedRow.ID),UpdateContext({ahgMode:"Form",ahgError:"The saved record was removed. Read it again or return to the list."})))
+    Children:
+      - conahgRoot:
+          Control: GroupContainer@1.5.0
+          Variant: AutoLayout
+          Properties:
+            DropShadow: =DropShadow.None
+            Fill: =ColorValue("#F2F5FA")
+            Height: =Max(0,Parent.Height-76)
+            LayoutAlignItems: =LayoutAlignItems.Stretch
+            LayoutDirection: =LayoutDirection.Vertical
+            LayoutGap: =12
+            LayoutOverflowY: =LayoutOverflow.Scroll
+            PaddingBottom: =16
+            PaddingLeft: =16
+            PaddingRight: =16
+            PaddingTop: =16
+            Width: =Parent.Width
+          Children:
+            - btnahgBack:
+                Control: Button@0.0.45
+                Properties:
+                  AccessibleLabel: ="Back to administration"
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Appearance: ='ButtonCanvas.Appearance'.Outline
+                  BasePaletteColor: =RGBA(180, 20, 40, 1)
+                  BorderColor: =ColorValue("#DDE5EF")
+                  BorderRadius: =16
+                  DisplayMode: =If(ahgBusy, DisplayMode.Disabled, DisplayMode.Edit)
+                  Font: =Font.'Segoe UI'
+                  FontColor: =RGBA(20, 39, 65, 1)
+                  FontSize: =16
+                  Height: =48
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  OnSelect: =If(ahgDirty || ahgUnknown,UpdateContext({ahgDiscard:true,ahgPending:"Back"}),Navigate(Administration,ScreenTransition.None,{admEntry:"Hub"}))
+                  Text: ="Back to administration"
+                  Width: =Parent.Width
+            - lblahgHeading:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Color: =ColorValue("#10233F")
+                  Fill: =Color.White
+                  Font: =Font.'Segoe UI'
+                  FontWeight: =FontWeight.Bold
+                  Height: =64
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =8
+                  PaddingLeft: =16
+                  PaddingRight: =12
+                  PaddingTop: =8
+                  Size: =If(App.Width<600,18,24)
+                  Text: ="DEMO · Tasks"
+            - lblahgInfo:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =RGBA(20, 39, 65, 1)
+                  Font: =Font.'Segoe UI'
+                  Height: =24
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: ="Manage templates. Existing tasks and records stay unchanged."
+            - lblahgScope:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =RGBA(20,39,65,1)
+                  Font: =Font.'Segoe UI'
+                  FontWeight: =FontWeight.Semibold
+                  Height: =24
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: ="Applies to"
+                  Visible: =ahgAuthorized && ahgMode="Form"
+            - btnahgScopeAll:
+                Control: Button@0.0.45
+                Properties:
+                  AccessibleLabel: ="Applies to all vehicles"
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Appearance: =If(ahgAllVehicles,'ButtonCanvas.Appearance'.Primary,'ButtonCanvas.Appearance'.Outline)
+                  BasePaletteColor: =RGBA(180,20,40,1)
+                  BorderRadius: =16
+                  DisplayMode: =If(ahgBusy || ahgUnknown || ahgDiscard || !IsBlank(ahgSavedID) || !ahgAuthorized,DisplayMode.Disabled,DisplayMode.Edit)
+                  Font: =Font.'Segoe UI'
+                  FontColor: =If(ahgAllVehicles,Color.White,RGBA(20,39,65,1))
+                  FontSize: =16
+                  Height: =48
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  OnSelect: =If(ahgAuthorized && ahgMode="Form" && !ahgBusy && !ahgUnknown && !ahgDiscard && IsBlank(ahgSavedID) && !ahgAllVehicles,UpdateContext({ahgAllVehicles:true,ahgVehicleID:Blank(),ahgVehicleTitle:"",ahgDirty:true});Reset(inpahgVehicleSearch))
+                  Text: =If(ahgAllVehicles,"✓ All vehicles","All vehicles")
+                  Visible: =ahgAuthorized && ahgMode="Form"
+                  Width: =Parent.Width
+            - btnahgScopeSpecific:
+                Control: Button@0.0.45
+                Properties:
+                  AccessibleLabel: ="Applies to one vehicle"
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Appearance: =If(!ahgAllVehicles,'ButtonCanvas.Appearance'.Primary,'ButtonCanvas.Appearance'.Outline)
+                  BasePaletteColor: =RGBA(180,20,40,1)
+                  BorderRadius: =16
+                  DisplayMode: =If(ahgBusy || ahgUnknown || ahgDiscard || !IsBlank(ahgSavedID) || !ahgAuthorized,DisplayMode.Disabled,DisplayMode.Edit)
+                  Font: =Font.'Segoe UI'
+                  FontColor: =If(!ahgAllVehicles,Color.White,RGBA(20,39,65,1))
+                  FontSize: =16
+                  Height: =48
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  OnSelect: =If(ahgAuthorized && ahgMode="Form" && !ahgBusy && !ahgUnknown && !ahgDiscard && IsBlank(ahgSavedID) && ahgAllVehicles,UpdateContext({ahgAllVehicles:false,ahgVehicleID:Blank(),ahgVehicleTitle:"",ahgDirty:true});Reset(inpahgVehicleSearch))
+                  Text: =If(!ahgAllVehicles,"✓ Single vehicle","Single vehicle")
+                  Visible: =ahgAuthorized && ahgMode="Form"
+                  Width: =Parent.Width
+            - lblahgBusy:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =RGBA(20, 39, 65, 1)
+                  Font: =Font.'Segoe UI'
+                  Height: =24
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: ="Loading data …"
+                  Visible: =ahgBusy
+            - lblahgError:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =RGBA(20, 39, 65, 1)
+                  Font: =Font.'Segoe UI'
+                  Height: =24
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: =ahgError
+                  Visible: =!IsBlank(ahgError)
+            - lblahgDenied:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =RGBA(20, 39, 65, 1)
+                  Font: =Font.'Segoe UI'
+                  Height: =24
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: ="Only active team leads and administrators have access."
+                  Visible: =!ahgAuthorized && !ahgBusy
+            - btnahgReload:
+                Control: Button@0.0.45
+                Properties:
+                  AccessibleLabel: ="Reload data"
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Appearance: ='ButtonCanvas.Appearance'.Outline
+                  BasePaletteColor: =RGBA(180, 20, 40, 1)
+                  BorderColor: =ColorValue("#DDE5EF")
+                  BorderRadius: =16
+                  DisplayMode: =If(ahgBusy, DisplayMode.Disabled, DisplayMode.Edit)
+                  Font: =Font.'Segoe UI'
+                  FontColor: =RGBA(20, 39, 65, 1)
+                  FontSize: =16
+                  Height: =48
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  OnSelect: |-
+                    =If(!ahgBusy, UpdateContext({ahgBusy:true,ahgError:""});
+                    IfError(UpdateContext({ahgAuthorized:false});
+                    true;
+                    Set(varOperator, LookUp(FleetMembers, Person.Email=varDemoUser.Email));
+                    UpdateContext({ahgAuthorized:!IsBlank(varOperator.ID) && varOperator.Active && (varOperator.Role.Value="Team lead" || varOperator.Role.Value="Administrator")});
+                    If(ahgAuthorized, true; true, UpdateContext({ahgError:"No admin access. Check active membership and role."})),
+                    UpdateContext({ahgAuthorized:false,ahgError:"Could not load data or permissions. Try again."}));
+                    UpdateContext({ahgBusy:false}))
+                  Text: ="Reload data"
+                  Visible: =!ahgBusy && (ahgMode="Browse" || !ahgAuthorized)
+                  Width: =Parent.Width
+            - conahgDiscard:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  FillPortions: =0
+                  Height: =lblahgDiscard.Height + 16 + 96
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =8
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  Visible: =ahgDiscard
+                Children:
+                  - lblahgDiscard:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =RGBA(20, 39, 65, 1)
+                        Font: =Font.'Segoe UI'
+                        Height: =24
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =16
+                        Text: =If(ahgUnknown,"Save result is unclear. Check the list before creating another record. Discard draft?","Discard unsaved draft?")
+                  - btnahgKeep:
+                      Control: Button@0.0.45
+                      Properties:
+                        AccessibleLabel: ="Keep draft"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        Appearance: ='ButtonCanvas.Appearance'.Outline
+                        BasePaletteColor: =RGBA(180, 20, 40, 1)
+                        BorderColor: =ColorValue("#DDE5EF")
+                        BorderRadius: =16
+                        DisplayMode: =If(ahgBusy, DisplayMode.Disabled, DisplayMode.Edit)
+                        Font: =Font.'Segoe UI'
+                        FontColor: =RGBA(20, 39, 65, 1)
+                        FontSize: =16
+                        Height: =48
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnSelect: =UpdateContext({ahgDiscard:false})
+                        Text: ="Keep draft"
+                        Width: =Parent.Width
+                  - btnahgDiscard:
+                      Control: Button@0.0.45
+                      Properties:
+                        AccessibleLabel: ="Discard draft"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        Appearance: ='ButtonCanvas.Appearance'.Outline
+                        BasePaletteColor: =RGBA(180, 20, 40, 1)
+                        BorderColor: =ColorValue("#DDE5EF")
+                        BorderRadius: =16
+                        DisplayMode: =If(ahgBusy, DisplayMode.Disabled, DisplayMode.Edit)
+                        Font: =Font.'Segoe UI'
+                        FontColor: =RGBA(20, 39, 65, 1)
+                        FontSize: =16
+                        Height: =48
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnSelect: =UpdateContext({ahgDirty:false,ahgUnknown:false,ahgDiscard:false,ahgMode:"Browse",ahgAllVehicles:false,ahgVehicleID:Blank(),ahgVehicleTitle:"",ahgSavedID:Blank(),ahgSavedRow:Blank()});If(ahgPending="Back",Navigate(Administration,ScreenTransition.None,{admEntry:"Hub"}))
+                        Text: ="Discard draft"
+                        Width: =Parent.Width
+            - btnahgNew:
+                Control: Button@0.0.45
+                Properties:
+                  AccessibleLabel: ="New task template"
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Appearance: ='ButtonCanvas.Appearance'.Outline
+                  BasePaletteColor: =RGBA(180, 20, 40, 1)
+                  BorderColor: =ColorValue("#DDE5EF")
+                  BorderRadius: =16
+                  DisplayMode: =If(ahgBusy, DisplayMode.Disabled, DisplayMode.Edit)
+                  Font: =Font.'Segoe UI'
+                  FontColor: =RGBA(20, 39, 65, 1)
+                  FontSize: =16
+                  Height: =48
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  OnSelect: =UpdateContext({ahgMode:"Form",ahgID:Blank(),ahgBaseModified:Blank(),ahgRow:varDemoDefaultTaskTemplates,ahgAllVehicles:false,ahgVehicleID:Blank(),ahgVehicleTitle:"",ahgSavedID:Blank(),ahgSavedRow:Blank(),ahgUnknown:false,ahgError:"",ahgDirty:false});Reset(inpahgTitle); Reset(inpahgInstructions); Reset(inpahgRepeat); Reset(inpahgDue); Reset(inpahgActive); Reset(inpahgMandatory); Reset(inpahgCategory); Reset(inpahgInterval);Reset(inpahgVehicleSearch);
+                  Text: ="New task template"
+                  Visible: =ahgAuthorized && ahgMode="Browse" && !ahgDiscard
+                  Width: =Parent.Width
+            - conahgSearch:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  FillPortions: =0
+                  Height: =lblahgSearch.Height + 8 + 48
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =8
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  Visible: =ahgAuthorized && ahgMode="Browse"
+                Children:
+                  - lblahgSearch:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =RGBA(20, 39, 65, 1)
+                        Font: =Font.'Segoe UI'
+                        Height: =24
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =16
+                        Text: ="Search by name"
+                  - inpahgSearch:
+                      Control: TextInput@0.0.54
+                      Properties:
+                        AccessibleLabel: ="Search by name"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        ContentLanguage: ="en-GB"
+                        DisplayMode: =If(ahgBusy,DisplayMode.Disabled,DisplayMode.Edit)
+                        FontSize: =16
+                        Height: =48
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        Placeholder: ="Enter text"
+                        TriggerOutput: ='TextInputCanvas.TriggerOutput'.Keypress
+            - galahgPlans:
+                Control: Gallery@2.15.0
+                Variant: VariableHeight
+                Properties:
+                  AccessibleLabel: ="Task plans"
+                  ContentLanguage: ="en-GB"
+                  FillPortions: =0
+                  Height: =Max(240,Min(540,Parent.Height*0.6))
+                  Items: =Filter(FleetTaskTemplates,StartsWith(Title,inpahgSearch.Value))
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  TabIndex: =0
+                  TemplatePadding: =8
+                  TemplateSize: =160
+                  Visible: =ahgAuthorized && ahgMode="Browse" && !ahgDiscard
+                Children:
+                  - conahgPlansRow:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        BorderColor: =ColorValue("#E2E9F2")
+                        BorderThickness: =1
+                        Fill: =Color.White
+                        Height: =lblahgPlansIdentity.Height+8+48+16
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutGap: =8
+                        PaddingBottom: =8
+                        PaddingTop: =8
+                        RadiusBottomLeft: =24
+                        RadiusBottomRight: =24
+                        RadiusTopLeft: =24
+                        RadiusTopRight: =24
+                        Width: =Parent.TemplateWidth
+                      Children:
+                        - lblahgPlansIdentity:
+                            Control: Label@2.5.1
+                            Properties:
+                              AlignInContainer: =AlignInContainer.Stretch
+                              AutoHeight: =true
+                              Color: =RGBA(20, 39, 65, 1)
+                              Font: =Font.'Segoe UI'
+                              Height: =24
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingRight: =0
+                              PaddingTop: =0
+                              Size: =16
+                              Text: |-
+                                =ThisItem.Title & Char(10) & "Applies to: " & If(ThisItem.VehicleKey="ALL","All vehicles",Coalesce(ThisItem.Vehicle.Value,"No vehicle assigned")) & Char(10) & "Every " & Text(ThisItem.RecurrenceDays) & " days · " & If(ThisItem.Active,"Active","Inactive")
+                        - btnahgPlansSelect:
+                            Control: Button@0.0.45
+                            Properties:
+                              AccessibleLabel: ="Edit"
+                              AlignInContainer: =AlignInContainer.Stretch
+                              Appearance: ='ButtonCanvas.Appearance'.Outline
+                              BasePaletteColor: =RGBA(180, 20, 40, 1)
+                              BorderColor: =ColorValue("#DDE5EF")
+                              BorderRadius: =16
+                              DisplayMode: =If(ahgBusy, DisplayMode.Disabled, DisplayMode.Edit)
+                              Font: =Font.'Segoe UI'
+                              FontColor: =RGBA(20, 39, 65, 1)
+                              FontSize: =16
+                              Height: =48
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              OnSelect: |-
+                                =If(!ahgBusy,UpdateContext({ahgID:ThisItem.ID});UpdateContext({ahgBusy:true,ahgError:"",ahgSavedID:Blank(),ahgSavedRow:Blank()});
+                                IfError(true; UpdateContext({ahgRow:LookUp(FleetTaskTemplates,ID=ahgID)});
+                                If(IsBlank(ahgRow.ID),UpdateContext({ahgError:"Record was removed. Reload the list."}),
+                                UpdateContext({ahgBaseModified:ahgRow.Modified,ahgAllVehicles:ahgRow.VehicleKey="ALL",ahgVehicleID:If(ahgRow.VehicleKey="ALL",Blank(),ahgRow.Vehicle.Id),ahgVehicleTitle:If(ahgRow.VehicleKey="ALL","",ahgRow.Vehicle.Value),ahgMode:"Form",ahgDirty:false,ahgUnknown:false});Reset(inpahgTitle); Reset(inpahgInstructions); Reset(inpahgRepeat); Reset(inpahgDue); Reset(inpahgActive); Reset(inpahgMandatory); Reset(inpahgCategory); Reset(inpahgInterval);Reset(inpahgVehicleSearch);),
+                                UpdateContext({ahgError:"The entry could not be loaded. Please try again."})); UpdateContext({ahgBusy:false}))
+                              Text: ="Edit"
+                              Width: =Parent.Width
+            - lblahgEmpty:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =RGBA(20, 39, 65, 1)
+                  Font: =Font.'Segoe UI'
+                  Height: =24
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: ="No matching task templates found."
+                  Visible: =ahgAuthorized && ahgMode="Browse" && !ahgBusy && IsBlank(ahgError) && IsEmpty(Filter(FleetTaskTemplates,StartsWith(Title,inpahgSearch.Value)))
+            - conahgTitle:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  FillPortions: =0
+                  Height: =lblahgTitle.Height + 8 + 48
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =8
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  Visible: =ahgAuthorized && ahgMode="Form"
+                Children:
+                  - lblahgTitle:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =RGBA(20, 39, 65, 1)
+                        Font: =Font.'Segoe UI'
+                        Height: =24
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =16
+                        Text: ="Name"
+                  - inpahgTitle:
+                      Control: TextInput@0.0.54
+                      Properties:
+                        AccessibleLabel: ="Name"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        ContentLanguage: ="en-GB"
+                        DisplayMode: =If(ahgBusy || ahgUnknown || ahgDiscard || !IsBlank(ahgSavedID) || !ahgAuthorized, DisplayMode.Disabled, DisplayMode.Edit)
+                        FontSize: =16
+                        Height: =48
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnChange: =If(ahgMode="Form" && ahgAuthorized && !ahgBusy,UpdateContext({ahgDirty:true}))
+                        Placeholder: ="Enter text"
+                        TriggerOutput: ='TextInputCanvas.TriggerOutput'.Keypress
+                        Value: =If(IsBlank(ahgID),"",ahgRow.Title)
+            - lblahgVehicle:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =RGBA(20, 39, 65, 1)
+                  Font: =Font.'Segoe UI'
+                  Height: =24
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: |-
+                    ="Vehicle: " & If(IsBlank(ahgVehicleID),"Please select",ahgVehicleTitle & " (ID " & Text(ahgVehicleID) & ")")
+                  Visible: =ahgAuthorized && ahgMode="Form" && !ahgAllVehicles
+            - conahgVehicleSearch:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  FillPortions: =0
+                  Height: =lblahgVehicleSearch.Height + 8 + 48
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =8
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  Visible: =ahgAuthorized && ahgMode="Form" && !ahgAllVehicles
+                Children:
+                  - lblahgVehicleSearch:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =RGBA(20, 39, 65, 1)
+                        Font: =Font.'Segoe UI'
+                        Height: =24
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =16
+                        Text: ="Search vehicles"
+                  - inpahgVehicleSearch:
+                      Control: TextInput@0.0.54
+                      Properties:
+                        AccessibleLabel: ="Search vehicles"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        ContentLanguage: ="en-GB"
+                        DisplayMode: =If(ahgBusy || ahgUnknown || ahgDiscard || !IsBlank(ahgSavedID) || !ahgAuthorized, DisplayMode.Disabled, DisplayMode.Edit)
+                        FontSize: =16
+                        Height: =48
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        Placeholder: ="Enter text"
+                        TriggerOutput: ='TextInputCanvas.TriggerOutput'.Keypress
+            - galahgVehicles:
+                Control: Gallery@2.15.0
+                Variant: VariableHeight
+                Properties:
+                  AccessibleLabel: ="Vehicles"
+                  ContentLanguage: ="en-GB"
+                  FillPortions: =0
+                  Height: =240
+                  Items: =Filter(FleetVehicles,StartsWith(Title,inpahgVehicleSearch.Value) || StartsWith(Registration,inpahgVehicleSearch.Value))
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  TabIndex: =0
+                  TemplatePadding: =8
+                  TemplateSize: =160
+                  Visible: =ahgAuthorized && ahgMode="Form" && !ahgAllVehicles
+                Children:
+                  - conahgVehiclesRow:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        BorderColor: =ColorValue("#E2E9F2")
+                        BorderThickness: =1
+                        Fill: =Color.White
+                        Height: =lblahgVehiclesIdentity.Height+8+48+16
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutGap: =8
+                        PaddingBottom: =8
+                        PaddingTop: =8
+                        RadiusBottomLeft: =24
+                        RadiusBottomRight: =24
+                        RadiusTopLeft: =24
+                        RadiusTopRight: =24
+                        Width: =Parent.TemplateWidth
+                      Children:
+                        - lblahgVehiclesIdentity:
+                            Control: Label@2.5.1
+                            Properties:
+                              AlignInContainer: =AlignInContainer.Stretch
+                              AutoHeight: =true
+                              Color: =RGBA(20, 39, 65, 1)
+                              Font: =Font.'Segoe UI'
+                              Height: =24
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingRight: =0
+                              PaddingTop: =0
+                              Size: =16
+                              Text: =ThisItem.Title & Char(10) & ThisItem.Registration
+                        - btnahgVehiclesSelect:
+                            Control: Button@0.0.45
+                            Properties:
+                              AccessibleLabel: ="Select vehicle"
+                              AlignInContainer: =AlignInContainer.Stretch
+                              Appearance: ='ButtonCanvas.Appearance'.Outline
+                              BasePaletteColor: =RGBA(180, 20, 40, 1)
+                              BorderColor: =ColorValue("#DDE5EF")
+                              BorderRadius: =16
+                              DisplayMode: =If(ahgBusy, DisplayMode.Disabled, DisplayMode.Edit)
+                              Font: =Font.'Segoe UI'
+                              FontColor: =RGBA(20, 39, 65, 1)
+                              FontSize: =16
+                              Height: =48
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              OnSelect: =If(ahgAuthorized && ahgMode="Form" && !ahgAllVehicles && !ahgBusy && !ahgUnknown && !ahgDiscard && IsBlank(ahgSavedID),UpdateContext({ahgVehicleID:ThisItem.ID,ahgVehicleTitle:ThisItem.Title,ahgDirty:true}))
+                              Text: ="Select vehicle"
+                              Width: =Parent.Width
+            - lblahgVehicleEmpty:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =RGBA(20, 39, 65, 1)
+                  Font: =Font.'Segoe UI'
+                  Height: =24
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: ="No matching vehicle found. Change your search; select an existing vehicle."
+                  Visible: =ahgAuthorized && ahgMode="Form" && !ahgAllVehicles && IsEmpty(Filter(FleetVehicles,StartsWith(Title,inpahgVehicleSearch.Value) || StartsWith(Registration,inpahgVehicleSearch.Value)))
+            - conahgInstructions:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  FillPortions: =0
+                  Height: =lblahgInstructions.Height + 8 + 160
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =8
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  Visible: =ahgAuthorized && ahgMode="Form"
+                Children:
+                  - lblahgInstructions:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =RGBA(20, 39, 65, 1)
+                        Font: =Font.'Segoe UI'
+                        Height: =24
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =16
+                        Text: ="Instructions"
+                  - inpahgInstructions:
+                      Control: TextInput@0.0.54
+                      Properties:
+                        AccessibleLabel: ="Instructions"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        ContentLanguage: ="en-GB"
+                        DisplayMode: =If(ahgBusy || ahgUnknown || ahgDiscard || !IsBlank(ahgSavedID) || !ahgAuthorized, DisplayMode.Disabled, DisplayMode.Edit)
+                        FontSize: =16
+                        Height: =160
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        Mode: ='TextInputCanvas.Mode'.Multiline
+                        OnChange: =If(ahgMode="Form" && ahgAuthorized && !ahgBusy,UpdateContext({ahgDirty:true}))
+                        Placeholder: ="Enter text"
+                        TriggerOutput: ='TextInputCanvas.TriggerOutput'.Keypress
+                        Value: =If(IsBlank(ahgID),"",ahgRow.Instructions)
+            - conahgDue:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  FillPortions: =0
+                  Height: =lblahgDue.Height + 8 + 48
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =8
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  Visible: =ahgAuthorized && ahgMode="Form"
+                Children:
+                  - lblahgDue:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =RGBA(20, 39, 65, 1)
+                        Font: =Font.'Segoe UI'
+                        Height: =24
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =16
+                        Text: ="First due date"
+                  - inpahgDue:
+                      Control: DatePicker@0.0.46
+                      Properties:
+                        AccessibleLabel: ="First due date"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        ContentLanguage: ="en-GB"
+                        DisplayMode: =If(ahgBusy || ahgUnknown || ahgDiscard || !IsBlank(ahgSavedID) || !ahgAuthorized, DisplayMode.Disabled, DisplayMode.Edit)
+                        FontSize: =16
+                        Height: =48
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnChange: =If(ahgMode="Form" && ahgAuthorized && !ahgBusy,UpdateContext({ahgDirty:true}))
+                        Placeholder: ="Select date"
+                        SelectedDate: =If(IsBlank(ahgID),Blank(),ahgRow.FirstDueDate)
+            - conahgRepeat:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  FillPortions: =0
+                  Height: =lblahgRepeat.Height + 8 + 48
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =8
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  Visible: =ahgAuthorized && ahgMode="Form"
+                Children:
+                  - lblahgRepeat:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =RGBA(20, 39, 65, 1)
+                        Font: =Font.'Segoe UI'
+                        Height: =24
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =16
+                        Text: ="Repeat every (days)"
+                  - inpahgRepeat:
+                      Control: TextInput@0.0.54
+                      Properties:
+                        AccessibleLabel: ="Repeat every (days)"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        ContentLanguage: ="en-GB"
+                        DisplayMode: =If(ahgBusy || ahgUnknown || ahgDiscard || !IsBlank(ahgSavedID) || !ahgAuthorized, DisplayMode.Disabled, DisplayMode.Edit)
+                        FontSize: =16
+                        Height: =48
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnChange: =If(ahgMode="Form" && ahgAuthorized && !ahgBusy,UpdateContext({ahgDirty:true}))
+                        Placeholder: ="Enter text"
+                        TriggerOutput: ='TextInputCanvas.TriggerOutput'.Keypress
+                        Value: =If(IsBlank(ahgID),"",Text(ahgRow.RecurrenceDays))
+            - conahgActive:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  FillPortions: =0
+                  Height: =lblahgActive.Height + 8 + 48
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =8
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  Visible: =ahgAuthorized && ahgMode="Form"
+                Children:
+                  - lblahgActive:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =RGBA(20, 39, 65, 1)
+                        Font: =Font.'Segoe UI'
+                        Height: =24
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =16
+                        Text: ="Active"
+                  - inpahgActive:
+                      Control: Toggle@1.1.5
+                      Properties:
+                        AccessibleLabel: ="Active"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        Checked: =If(IsBlank(ahgID),false,ahgRow.Active)
+                        DisplayMode: =If(ahgBusy || ahgUnknown || ahgDiscard || !IsBlank(ahgSavedID) || !ahgAuthorized, DisplayMode.Disabled, DisplayMode.Edit)
+                        FontColor: =RGBA(20, 39, 65, 1)
+                        FontSize: =16
+                        Height: =48
+                        Label: =If(Self.Checked,"Yes – active","No – inactive")
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnCheck: =If(ahgMode="Form" && ahgAuthorized && !ahgBusy,UpdateContext({ahgDirty:true}))
+                        OnUncheck: =If(ahgMode="Form" && ahgAuthorized && !ahgBusy,UpdateContext({ahgDirty:true}))
+            - conahgMandatory:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  FillPortions: =0
+                  Height: =lblahgMandatory.Height + 8 + 48
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =8
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  Visible: =ahgAuthorized && ahgMode="Form"
+                Children:
+                  - lblahgMandatory:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =RGBA(20, 39, 65, 1)
+                        Font: =Font.'Segoe UI'
+                        Height: =24
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =16
+                        Text: ="Mandatory"
+                  - inpahgMandatory:
+                      Control: Toggle@1.1.5
+                      Properties:
+                        AccessibleLabel: ="Mandatory"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        Checked: =If(IsBlank(ahgID),false,ahgRow.Mandatory)
+                        DisplayMode: =If(ahgBusy || ahgUnknown || ahgDiscard || !IsBlank(ahgSavedID) || !ahgAuthorized, DisplayMode.Disabled, DisplayMode.Edit)
+                        FontColor: =RGBA(20, 39, 65, 1)
+                        FontSize: =16
+                        Height: =48
+                        Label: =If(Self.Checked,"Yes","No")
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnCheck: =If(ahgMode="Form" && ahgAuthorized && !ahgBusy,UpdateContext({ahgDirty:true}))
+                        OnUncheck: =If(ahgMode="Form" && ahgAuthorized && !ahgBusy,UpdateContext({ahgDirty:true}))
+            - conahgCategory:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  FillPortions: =0
+                  Height: =lblahgCategory.Height + 8 + 48
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =8
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  Visible: =ahgAuthorized && ahgMode="Form"
+                Children:
+                  - lblahgCategory:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =RGBA(20, 39, 65, 1)
+                        Font: =Font.'Segoe UI'
+                        Height: =24
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =16
+                        Text: ="Category (optional)"
+                  - inpahgCategory:
+                      Control: ComboBox@0.0.51
+                      Properties:
+                        AccessibleLabel: ="Category (optional)"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        ContentLanguage: ="en-GB"
+                        DefaultSelectedItems: =If(IsBlank(ahgID),[],Table(ahgRow.Category))
+                        DisplayMode: =If(ahgBusy || ahgUnknown || ahgDiscard || !IsBlank(ahgSavedID) || !ahgAuthorized, DisplayMode.Disabled, DisplayMode.Edit)
+                        FontSize: =16
+                        Height: =48
+                        InputTextPlaceholder: ="Select or search"
+                        Items: =colDemoChoiceTaskTemplatesCategory
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnChange: =If(ahgMode="Form" && ahgAuthorized && !ahgBusy,UpdateContext({ahgDirty:true}))
+            - conahgInterval:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  FillPortions: =0
+                  Height: =lblahgInterval.Height + 8 + 48
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =8
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  Visible: =ahgAuthorized && ahgMode="Form"
+                Children:
+                  - lblahgInterval:
+                      Control: Label@2.5.1
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =RGBA(20, 39, 65, 1)
+                        Font: =Font.'Segoe UI'
+                        Height: =24
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =16
+                        Text: ="Interval (optional)"
+                  - inpahgInterval:
+                      Control: ComboBox@0.0.51
+                      Properties:
+                        AccessibleLabel: ="Interval (optional)"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        ContentLanguage: ="en-GB"
+                        DefaultSelectedItems: =If(IsBlank(ahgID),[],Table(ahgRow.Interval))
+                        DisplayMode: =If(ahgBusy || ahgUnknown || ahgDiscard || !IsBlank(ahgSavedID) || !ahgAuthorized, DisplayMode.Disabled, DisplayMode.Edit)
+                        FontSize: =16
+                        Height: =48
+                        InputTextPlaceholder: ="Select or search"
+                        Items: =colDemoChoiceTaskTemplatesInterval
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnChange: =If(ahgMode="Form" && ahgAuthorized && !ahgBusy,UpdateContext({ahgDirty:true}))
+            - lblahgValidation:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =RGBA(20, 39, 65, 1)
+                  Font: =Font.'Segoe UI'
+                  Height: =24
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: |-
+                    ="Required: name, scope, instructions, date and a positive whole number of days. For Single vehicle, select a vehicle. Repeat days determine due dates."
+                  Visible: =ahgAuthorized && ahgMode="Form"
+            - btnahgSave:
+                Control: Button@0.0.45
+                Properties:
+                  AccessibleLabel: ="Save task template"
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Appearance: ='ButtonCanvas.Appearance'.Primary
+                  BasePaletteColor: =RGBA(180, 20, 40, 1)
+                  BorderRadius: =16
+                  DisplayMode: =If(ahgBusy || ahgUnknown || ahgDiscard || !IsBlank(ahgSavedID) || !(!IsBlank(Trim(inpahgTitle.Value)) && !IsBlank(Trim(inpahgInstructions.Value)) && (ahgAllVehicles || (!IsBlank(ahgVehicleID) && ahgVehicleID>0)) && !IsBlank(inpahgDue.SelectedDate) && IsMatch(Trim(inpahgRepeat.Value),"[0-9]+") && IfError(Value(inpahgRepeat.Value)>0,false)),DisplayMode.Disabled,DisplayMode.Edit)
+                  Font: =Font.'Segoe UI'
+                  FontColor: =Color.White
+                  FontSize: =16
+                  Height: =48
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  OnSelect: |-
+                    =If(!ahgBusy && !ahgUnknown && !ahgDiscard && IsBlank(ahgSavedID),
+                    If(!(!IsBlank(Trim(inpahgTitle.Value)) && !IsBlank(Trim(inpahgInstructions.Value)) && (ahgAllVehicles || (!IsBlank(ahgVehicleID) && ahgVehicleID>0)) && !IsBlank(inpahgDue.SelectedDate) && IsMatch(Trim(inpahgRepeat.Value),"[0-9]+") && IfError(Value(inpahgRepeat.Value)>0,false)),UpdateContext({ahgError:"Name, scope, instructions, first due date and a positive whole number of days are required. For Single vehicle, select a vehicle."}),
+                    UpdateContext({ahgBusy:true,ahgError:"",ahgWriteAttempt:false});
+                    IfError(UpdateContext({ahgAuthorized:false});
+                    true;
+                    Set(varOperator, LookUp(FleetMembers, Person.Email=varDemoUser.Email));
+                    UpdateContext({ahgAuthorized:!IsBlank(varOperator.ID) && varOperator.Active && (varOperator.Role.Value="Team lead" || varOperator.Role.Value="Administrator")});
+                    If(!ahgAuthorized,UpdateContext({ahgError:"Access is no longer permitted. Your draft is kept."}),
+                    If(!ahgAllVehicles,true);UpdateContext({ahgVehicle:If(ahgAllVehicles,Blank(),LookUp(FleetVehicles,ID=ahgVehicleID))});
+                    true;UpdateContext({ahgFresh:LookUp(FleetTaskTemplates,ID=ahgID)});
+                    If(!ahgAllVehicles && IsBlank(ahgVehicle.ID),UpdateContext({ahgError:"Vehicle no longer exists. Select an existing vehicle."}),
+                    !IsBlank(ahgID) && (IsBlank(ahgFresh.ID) || ahgFresh.Modified<>ahgBaseModified),
+                    UpdateContext({ahgError:"Record changed or was removed. Your draft is kept. Cancel and reopen to load current data."}),
+                    UpdateContext({ahgWriteAttempt:true});
+                    UpdateContext({ahgPatch:If(IsBlank(ahgID),With({demoNewId:Coalesce(Max(FleetTaskTemplates,ID),0)+1,demoNow:Now()},Collect(FleetTaskTemplates,Patch(varDemoDefaultTaskTemplates,{Title:Trim(inpahgTitle.Value), Vehicle:If(ahgAllVehicles,Blank(),{Id:ahgVehicle.ID,Value:ahgVehicle.Title}), VehicleKey:If(ahgAllVehicles,"ALL",Text(ahgVehicle.ID)), Instructions:inpahgInstructions.Value,
+                    FirstDueDate:inpahgDue.SelectedDate,RecurrenceDays:Value(inpahgRepeat.Value),Active:inpahgActive.Checked,Mandatory:inpahgMandatory.Checked,
+                    Category:inpahgCategory.Selected,Interval:inpahgInterval.Selected},{ID:demoNewId,Created:demoNow,Modified:demoNow,Author:varDemoPerson,Editor:varDemoPerson}));LookUp(FleetTaskTemplates,ID=demoNewId)),Patch(FleetTaskTemplates,LookUp(FleetTaskTemplates,ID=ahgID),{Title:Trim(inpahgTitle.Value), Vehicle:If(ahgAllVehicles,Blank(),{Id:ahgVehicle.ID,Value:ahgVehicle.Title}), VehicleKey:If(ahgAllVehicles,"ALL",Text(ahgVehicle.ID)), Instructions:inpahgInstructions.Value,
+                    FirstDueDate:inpahgDue.SelectedDate,RecurrenceDays:Value(inpahgRepeat.Value),Active:inpahgActive.Checked,Mandatory:inpahgMandatory.Checked,
+                    Category:inpahgCategory.Selected,Interval:inpahgInterval.Selected},{Modified:Now(),Editor:varDemoPerson}))});
+                    UpdateContext({ahgSavedID:ahgPatch.ID});
+                    If(IsBlank(ahgSavedID),UpdateContext({ahgUnknown:true,ahgError:"Save result is unclear. Do not save again. Keep the draft, reload the list and check by name or vehicle."}),
+                    Set(varHygieneVehicleId,0);Set(varHygieneState,"Not checked");
+                    true;UpdateContext({ahgSavedRow:LookUp(FleetTaskTemplates,ID=ahgSavedID)});
+                    If(IsBlank(ahgSavedRow.ID),UpdateContext({ahgError:"Saved ID received; confirmation is unavailable. Read it again only."}),UpdateContext({ahgMode:"Receipt",ahgDirty:false}))))),
+                    If(ahgWriteAttempt && IsBlank(ahgSavedID),UpdateContext({ahgUnknown:true,ahgError:"Save result is unclear. Do not save again. Your draft is kept. Reload the list and check existing records."}),
+                    UpdateContext({ahgError:If(IsBlank(ahgSavedID),"Save was not performed. Check the connection; your draft is kept.","Saved ID received; confirmation is missing. Read it again only.")})));
+                    UpdateContext({ahgBusy:false})))
+                  Text: ="Save task template"
+                  Visible: =ahgAuthorized && ahgMode="Form"
+                  Width: =Parent.Width
+            - btnahgReadReceipt:
+                Control: Button@0.0.45
+                Properties:
+                  AccessibleLabel: ="Read saved ID again"
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Appearance: ='ButtonCanvas.Appearance'.Outline
+                  BasePaletteColor: =RGBA(180, 20, 40, 1)
+                  BorderColor: =ColorValue("#DDE5EF")
+                  BorderRadius: =16
+                  DisplayMode: =If(ahgBusy, DisplayMode.Disabled, DisplayMode.Edit)
+                  Font: =Font.'Segoe UI'
+                  FontColor: =RGBA(20, 39, 65, 1)
+                  FontSize: =16
+                  Height: =48
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  OnSelect: |-
+                    =If(!ahgBusy && !IsBlank(ahgSavedID),UpdateContext({ahgBusy:true,ahgError:""});
+                    IfError(UpdateContext({ahgAuthorized:false});
+                    true;
+                    Set(varOperator, LookUp(FleetMembers, Person.Email=varDemoUser.Email));
+                    UpdateContext({ahgAuthorized:!IsBlank(varOperator.ID) && varOperator.Active && (varOperator.Role.Value="Team lead" || varOperator.Role.Value="Administrator")});
+                    If(ahgAuthorized,true;UpdateContext({ahgSavedRow:LookUp(FleetTaskTemplates,ID=ahgSavedID)});
+                    If(IsBlank(ahgSavedRow.ID),UpdateContext({ahgError:"Saved ID is unavailable. Read it again; do not save again."}),UpdateContext({ahgMode:"Receipt",ahgDirty:false})),UpdateContext({ahgError:"Access is no longer permitted."})),
+                    UpdateContext({ahgError:"Save returned an ID. Confirmation is missing. Read it again only."}));UpdateContext({ahgBusy:false}))
+                  Text: ="Read saved ID again"
+                  Visible: =ahgAuthorized && !IsBlank(ahgSavedID) && ahgMode<>"Receipt"
+                  Width: =Parent.Width
+            - btnahgCheckUnknown:
+                Control: Button@0.0.45
+                Properties:
+                  AccessibleLabel: ="Reload list to check"
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Appearance: ='ButtonCanvas.Appearance'.Outline
+                  BasePaletteColor: =RGBA(180, 20, 40, 1)
+                  BorderColor: =ColorValue("#DDE5EF")
+                  BorderRadius: =16
+                  DisplayMode: =If(ahgBusy, DisplayMode.Disabled, DisplayMode.Edit)
+                  Font: =Font.'Segoe UI'
+                  FontColor: =RGBA(20, 39, 65, 1)
+                  FontSize: =16
+                  Height: =48
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  OnSelect: =If(!ahgBusy,UpdateContext({ahgBusy:true});IfError(true;UpdateContext({ahgCheck:true}),UpdateContext({ahgError:"Could not load the list. The draft stays locked."}));UpdateContext({ahgBusy:false}))
+                  Text: ="Reload list to check"
+                  Visible: =ahgAuthorized && ahgUnknown
+                  Width: =Parent.Width
+            - galahgCheckPlans:
+                Control: Gallery@2.15.0
+                Variant: VariableHeight
+                Properties:
+                  AccessibleLabel: ="Task plans"
+                  ContentLanguage: ="en-GB"
+                  FillPortions: =0
+                  Height: =280
+                  Items: =Filter(FleetTaskTemplates,StartsWith(Title,inpahgTitle.Value))
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  TabIndex: =0
+                  TemplatePadding: =8
+                  TemplateSize: =160
+                  Visible: =ahgAuthorized && ahgUnknown && ahgCheck
+                Children:
+                  - conahgCheckPlansRow:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        BorderColor: =ColorValue("#E2E9F2")
+                        BorderThickness: =1
+                        Fill: =Color.White
+                        Height: =lblahgCheckPlansIdentity.Height+8+48+16
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutGap: =8
+                        PaddingBottom: =8
+                        PaddingTop: =8
+                        RadiusBottomLeft: =24
+                        RadiusBottomRight: =24
+                        RadiusTopLeft: =24
+                        RadiusTopRight: =24
+                        Width: =Parent.TemplateWidth
+                      Children:
+                        - lblahgCheckPlansIdentity:
+                            Control: Label@2.5.1
+                            Properties:
+                              AlignInContainer: =AlignInContainer.Stretch
+                              AutoHeight: =true
+                              Color: =RGBA(20, 39, 65, 1)
+                              Font: =Font.'Segoe UI'
+                              Height: =24
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingRight: =0
+                              PaddingTop: =0
+                              Size: =16
+                              Text: =ThisItem.Title & Char(10) & "ID " & Text(ThisItem.ID) & " · " & If(ThisItem.VehicleKey="ALL","All vehicles",Coalesce(ThisItem.Vehicle.Value,"No vehicle assigned"))
+                        - btnahgCheckPlansSelect:
+                            Control: Button@0.0.45
+                            Properties:
+                              AccessibleLabel: ="Check record"
+                              AlignInContainer: =AlignInContainer.Stretch
+                              Appearance: ='ButtonCanvas.Appearance'.Outline
+                              BasePaletteColor: =RGBA(180, 20, 40, 1)
+                              BorderColor: =ColorValue("#DDE5EF")
+                              BorderRadius: =16
+                              DisplayMode: =If(ahgBusy, DisplayMode.Disabled, DisplayMode.Edit)
+                              Font: =Font.'Segoe UI'
+                              FontColor: =RGBA(20, 39, 65, 1)
+                              FontSize: =16
+                              Height: =48
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              OnSelect: =UpdateContext({ahgError:"Check this existing record. Discard the draft if needed, then edit the existing template in the list."})
+                              Text: ="Check record"
+                              Width: =Parent.Width
+            - btnahgCancel:
+                Control: Button@0.0.45
+                Properties:
+                  AccessibleLabel: ="Cancel"
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Appearance: ='ButtonCanvas.Appearance'.Outline
+                  BasePaletteColor: =RGBA(180, 20, 40, 1)
+                  BorderColor: =ColorValue("#DDE5EF")
+                  BorderRadius: =16
+                  DisplayMode: =If(ahgBusy, DisplayMode.Disabled, DisplayMode.Edit)
+                  Font: =Font.'Segoe UI'
+                  FontColor: =RGBA(20, 39, 65, 1)
+                  FontSize: =16
+                  Height: =48
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  OnSelect: =If(ahgDirty || ahgUnknown,UpdateContext({ahgDiscard:true,ahgPending:"Browse"}),UpdateContext({ahgMode:"Browse",ahgAllVehicles:false,ahgVehicleID:Blank(),ahgVehicleTitle:"",ahgSavedID:Blank(),ahgSavedRow:Blank()}))
+                  Text: ="Cancel"
+                  Visible: =ahgAuthorized && ahgMode="Form"
+                  Width: =Parent.Width
+            - lblahgReceiptHeading:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =RGBA(20, 39, 65, 1)
+                  Font: =Font.'Segoe UI'
+                  FontWeight: =FontWeight.Semibold
+                  Height: =24
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =18
+                  Text: ="Saved for this session · ID " & Text(ahgSavedRow.ID)
+                  Visible: =ahgAuthorized && ahgMode="Receipt" && !IsBlank(ahgSavedRow.ID) && ahgSavedRow.ID=ahgSavedID
+            - lblahgReceiptName:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =RGBA(20, 39, 65, 1)
+                  Font: =Font.'Segoe UI'
+                  Height: =24
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: |-
+                    ="Name: " & ahgSavedRow.Title
+                  Visible: =ahgAuthorized && ahgMode="Receipt" && !IsBlank(ahgSavedRow.ID) && ahgSavedRow.ID=ahgSavedID
+            - lblahgReceiptVehicle:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =RGBA(20, 39, 65, 1)
+                  Font: =Font.'Segoe UI'
+                  Height: =24
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: |-
+                    ="Applies to: " & If(ahgSavedRow.VehicleKey="ALL","All vehicles",Coalesce(ahgSavedRow.Vehicle.Value,"No vehicle assigned")) & Char(10) & "Vehicle assignment: " & If(IsBlank(ahgSavedRow.Vehicle.Id),"None",ahgSavedRow.Vehicle.Value & " · ID " & Text(ahgSavedRow.Vehicle.Id))
+                  Visible: =ahgAuthorized && ahgMode="Receipt" && !IsBlank(ahgSavedRow.ID) && ahgSavedRow.ID=ahgSavedID
+            - lblahgReceiptVehicleKey:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =RGBA(20, 39, 65, 1)
+                  Font: =Font.'Segoe UI'
+                  Height: =24
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: |-
+                    ="Vehicle key: " & ahgSavedRow.VehicleKey
+                  Visible: =ahgAuthorized && ahgMode="Receipt" && !IsBlank(ahgSavedRow.ID) && ahgSavedRow.ID=ahgSavedID
+            - lblahgReceiptInstructions:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =RGBA(20, 39, 65, 1)
+                  Font: =Font.'Segoe UI'
+                  Height: =24
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: |-
+                    ="Instructions: " & ahgSavedRow.Instructions
+                  Visible: =ahgAuthorized && ahgMode="Receipt" && !IsBlank(ahgSavedRow.ID) && ahgSavedRow.ID=ahgSavedID
+            - lblahgReceiptDue:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =RGBA(20, 39, 65, 1)
+                  Font: =Font.'Segoe UI'
+                  Height: =24
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: |-
+                    ="Initial due date: " & Text(ahgSavedRow.FirstDueDate,"dd.mm.yyyy")
+                  Visible: =ahgAuthorized && ahgMode="Receipt" && !IsBlank(ahgSavedRow.ID) && ahgSavedRow.ID=ahgSavedID
+            - lblahgReceiptRepeat:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =RGBA(20, 39, 65, 1)
+                  Font: =Font.'Segoe UI'
+                  Height: =24
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: |-
+                    ="Repeat every (days): " & Text(ahgSavedRow.RecurrenceDays)
+                  Visible: =ahgAuthorized && ahgMode="Receipt" && !IsBlank(ahgSavedRow.ID) && ahgSavedRow.ID=ahgSavedID
+            - lblahgReceiptActive:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =RGBA(20, 39, 65, 1)
+                  Font: =Font.'Segoe UI'
+                  Height: =24
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: |-
+                    ="Active: " & If(ahgSavedRow.Active,"Yes","No")
+                  Visible: =ahgAuthorized && ahgMode="Receipt" && !IsBlank(ahgSavedRow.ID) && ahgSavedRow.ID=ahgSavedID
+            - lblahgReceiptMandatory:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =RGBA(20, 39, 65, 1)
+                  Font: =Font.'Segoe UI'
+                  Height: =24
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: |-
+                    ="Mandatory: " & If(ahgSavedRow.Mandatory,"Yes","No")
+                  Visible: =ahgAuthorized && ahgMode="Receipt" && !IsBlank(ahgSavedRow.ID) && ahgSavedRow.ID=ahgSavedID
+            - lblahgReceiptCategory:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =RGBA(20, 39, 65, 1)
+                  Font: =Font.'Segoe UI'
+                  Height: =24
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: |-
+                    ="Category: " & Coalesce(ahgSavedRow.Category.Value,"—")
+                  Visible: =ahgAuthorized && ahgMode="Receipt" && !IsBlank(ahgSavedRow.ID) && ahgSavedRow.ID=ahgSavedID
+            - lblahgReceiptInterval:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =RGBA(20, 39, 65, 1)
+                  Font: =Font.'Segoe UI'
+                  Height: =24
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =16
+                  Text: |-
+                    ="Interval: " & Coalesce(ahgSavedRow.Interval.Value,"—")
+                  Visible: =ahgAuthorized && ahgMode="Receipt" && !IsBlank(ahgSavedRow.ID) && ahgSavedRow.ID=ahgSavedID
+            - btnahgContinue:
+                Control: Button@0.0.45
+                Properties:
+                  AccessibleLabel: ="Edit saved template"
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Appearance: ='ButtonCanvas.Appearance'.Outline
+                  BasePaletteColor: =RGBA(180, 20, 40, 1)
+                  BorderColor: =ColorValue("#DDE5EF")
+                  BorderRadius: =16
+                  DisplayMode: =If(ahgBusy, DisplayMode.Disabled, DisplayMode.Edit)
+                  Font: =Font.'Segoe UI'
+                  FontColor: =RGBA(20, 39, 65, 1)
+                  FontSize: =16
+                  Height: =48
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  OnSelect: |-
+                    =UpdateContext({ahgID:ahgSavedID});UpdateContext({ahgBusy:true,ahgError:"",ahgSavedID:Blank(),ahgSavedRow:Blank()});
+                    IfError(true; UpdateContext({ahgRow:LookUp(FleetTaskTemplates,ID=ahgID)});
+                    If(IsBlank(ahgRow.ID),UpdateContext({ahgError:"Record was removed. Reload the list."}),
+                    UpdateContext({ahgBaseModified:ahgRow.Modified,ahgAllVehicles:ahgRow.VehicleKey="ALL",ahgVehicleID:If(ahgRow.VehicleKey="ALL",Blank(),ahgRow.Vehicle.Id),ahgVehicleTitle:If(ahgRow.VehicleKey="ALL","",ahgRow.Vehicle.Value),ahgMode:"Form",ahgDirty:false,ahgUnknown:false});Reset(inpahgTitle); Reset(inpahgInstructions); Reset(inpahgRepeat); Reset(inpahgDue); Reset(inpahgActive); Reset(inpahgMandatory); Reset(inpahgCategory); Reset(inpahgInterval);Reset(inpahgVehicleSearch);),
+                    UpdateContext({ahgError:"The entry could not be loaded. Please try again."})); UpdateContext({ahgBusy:false})
+                  Text: ="Edit saved template"
+                  Visible: =ahgAuthorized && ahgMode="Receipt" && !IsBlank(ahgSavedRow.ID)
+                  Width: =Parent.Width
+            - btnahgBrowse:
+                Control: Button@0.0.45
+                Properties:
+                  AccessibleLabel: ="Back to templates"
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Appearance: ='ButtonCanvas.Appearance'.Outline
+                  BasePaletteColor: =RGBA(180, 20, 40, 1)
+                  BorderColor: =ColorValue("#DDE5EF")
+                  BorderRadius: =16
+                  DisplayMode: =If(ahgBusy, DisplayMode.Disabled, DisplayMode.Edit)
+                  Font: =Font.'Segoe UI'
+                  FontColor: =RGBA(20, 39, 65, 1)
+                  FontSize: =16
+                  Height: =48
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  OnSelect: |-
+                    =UpdateContext({ahgMode:"Browse",ahgAllVehicles:false,ahgVehicleID:Blank(),ahgVehicleTitle:"",ahgSavedID:Blank(),ahgSavedRow:Blank(),ahgDirty:false});If(!ahgBusy, UpdateContext({ahgBusy:true,ahgError:""});
+                    IfError(UpdateContext({ahgAuthorized:false});
+                    true;
+                    Set(varOperator, LookUp(FleetMembers, Person.Email=varDemoUser.Email));
+                    UpdateContext({ahgAuthorized:!IsBlank(varOperator.ID) && varOperator.Active && (varOperator.Role.Value="Team lead" || varOperator.Role.Value="Administrator")});
+                    If(ahgAuthorized, true; true, UpdateContext({ahgError:"No admin access. Check active membership and role."})),
+                    UpdateContext({ahgAuthorized:false,ahgError:"Could not load data or permissions. Try again."}));
+                    UpdateContext({ahgBusy:false}))
+                  Text: ="Back to templates"
+                  Visible: =ahgAuthorized && ahgMode="Receipt" && !IsBlank(ahgSavedRow.ID)
+                  Width: =Parent.Width
+      - conahgBottomNav:
+          Control: GroupContainer@1.5.0
+          Variant: AutoLayout
+          Properties:
+            BorderColor: =ColorValue("#E5EAF1")
+            DropShadow: =DropShadow.None
+            Fill: =ColorValue("#10233F")
+            Height: =76
+            LayoutAlignItems: =LayoutAlignItems.Stretch
+            LayoutDirection: =LayoutDirection.Horizontal
+            LayoutGap: =4
+            PaddingBottom: =18
+            PaddingLeft: =8
+            PaddingRight: =8
+            PaddingTop: =10
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =26
+            RadiusTopRight: =26
+            Width: =Parent.Width
+            Y: =Parent.Height-Self.Height
+          Children:
+            - btnahgBottomNav0:
+                Control: ModernButton@1.0.0
+                Properties:
+                  AccessibleLabel: ="Vehicle"
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Appearance: =ButtonAppearance.Transparent
+                  BasePaletteColor: =ColorValue("#C8102E")
+                  BorderThickness: =0
+                  Color: =ColorValue("#CFDBEB")
+                  DisplayMode: =If(Coalesce(ahgDirty,false) || Coalesce(ahgBusy,false) || Coalesce(ahgUnknown,false),DisplayMode.Disabled,DisplayMode.Edit)
+                  FillPortions: =1
+                  Font: =Font.'Segoe UI'
+                  FontWeight: =FontWeight.Semibold
+                  Height: =48
+                  Icon: ="VehicleCar"
+                  LayoutMinHeight: =44
+                  LayoutMinWidth: =0
+                  OnSelect: =Set(varInfoOrigin,"");Navigate(VehicleHome)
+                  PaddingBottom: =0
+                  PaddingLeft: =3
+                  PaddingRight: =3
+                  PaddingTop: =0
+                  RadiusBottomLeft: =16
+                  RadiusBottomRight: =16
+                  RadiusTopLeft: =16
+                  RadiusTopRight: =16
+                  Size: =12
+                  Text: ="Vehicle"
+                  Tooltip: =If(Coalesce(ahgDirty,false) || Coalesce(ahgBusy,false) || Coalesce(ahgUnknown,false),"First finish the current action or cancel it using Back.","Vehicle")
+                  Width: =Max(44,(Parent.Width-28)/4)
+            - btnahgBottomNav1:
+                Control: ModernButton@1.0.0
+                Properties:
+                  AccessibleLabel: ="Damage"
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Appearance: =ButtonAppearance.Transparent
+                  BasePaletteColor: =ColorValue("#C8102E")
+                  BorderColor: =ColorValue("#E5EAF1")
+                  BorderThickness: =0
+                  Color: =If(Coalesce(varVehicleId,0)>0,ColorValue("#CFDBEB"),ColorValue("#8B95A5"))
+                  DisplayMode: =If(Coalesce(varVehicleId,0)>0,If(Coalesce(ahgDirty,false) || Coalesce(ahgBusy,false) || Coalesce(ahgUnknown,false),DisplayMode.Disabled,DisplayMode.Edit),DisplayMode.Disabled)
+                  FillPortions: =1
+                  Font: =Font.'Segoe UI'
+                  FontWeight: =FontWeight.Semibold
+                  Height: =48
+                  Icon: ="Warning"
+                  LayoutMinHeight: =44
+                  LayoutMinWidth: =0
+                  OnSelect: =If(Coalesce(varVehicleId,0)>0,Navigate(DamageReports))
+                  PaddingBottom: =0
+                  PaddingLeft: =3
+                  PaddingRight: =3
+                  PaddingTop: =0
+                  RadiusBottomLeft: =16
+                  RadiusBottomRight: =16
+                  RadiusTopLeft: =16
+                  RadiusTopRight: =16
+                  Size: =12
+                  Text: ="Damage"
+                  Tooltip: =If(Coalesce(varVehicleId,0)>0,If(Coalesce(ahgDirty,false) || Coalesce(ahgBusy,false) || Coalesce(ahgUnknown,false),"First finish the current action or cancel it using Back.","Damage"),"Select a vehicle first.")
+                  Width: =Max(44,(Parent.Width-28)/4)
+            - btnahgBottomNav2:
+                Control: ModernButton@1.0.0
+                Properties:
+                  AccessibleLabel: ="Tasks"
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Appearance: =ButtonAppearance.Transparent
+                  BasePaletteColor: =ColorValue("#C8102E")
+                  BorderColor: =ColorValue("#E5EAF1")
+                  BorderThickness: =0
+                  Color: =If(Coalesce(varVehicleId,0)>0,ColorValue("#CFDBEB"),ColorValue("#8B95A5"))
+                  DisplayMode: =If(Coalesce(varVehicleId,0)>0,If(Coalesce(ahgDirty,false) || Coalesce(ahgBusy,false) || Coalesce(ahgUnknown,false),DisplayMode.Disabled,DisplayMode.Edit),DisplayMode.Disabled)
+                  FillPortions: =1
+                  Font: =Font.'Segoe UI'
+                  FontWeight: =FontWeight.Semibold
+                  Height: =48
+                  Icon: ="CheckmarkCircle"
+                  LayoutMinHeight: =44
+                  LayoutMinWidth: =0
+                  OnSelect: =If(Coalesce(varVehicleId,0)>0,Navigate(HygieneCheck))
+                  PaddingBottom: =0
+                  PaddingLeft: =3
+                  PaddingRight: =3
+                  PaddingTop: =0
+                  RadiusBottomLeft: =16
+                  RadiusBottomRight: =16
+                  RadiusTopLeft: =16
+                  RadiusTopRight: =16
+                  Size: =12
+                  Text: ="Tasks"
+                  Tooltip: =If(Coalesce(varVehicleId,0)>0,If(Coalesce(ahgDirty,false) || Coalesce(ahgBusy,false) || Coalesce(ahgUnknown,false),"First finish the current action or cancel it using Back.","Hygiene"),"Select a vehicle first.")
+                  Width: =Max(44,(Parent.Width-28)/4)
+            - btnahgBottomNav3:
+                Control: ModernButton@1.0.0
+                Properties:
+                  AccessibleLabel: ="Info"
+                  AlignInContainer: =AlignInContainer.Stretch
+                  BasePaletteColor: =ColorValue("#C8102E")
+                  BorderColor: =ColorValue("#E5EAF1")
+                  BorderThickness: =0
+                  Color: =ColorValue("#CFDBEB")
+                  DisplayMode: =If(Coalesce(ahgDirty,false) || Coalesce(ahgBusy,false) || Coalesce(ahgUnknown,false),DisplayMode.Disabled,DisplayMode.Edit)
+                  FillPortions: =1
+                  Font: =Font.'Segoe UI'
+                  FontWeight: =FontWeight.Semibold
+                  Height: =48
+                  Icon: ="Info"
+                  IconStyle: =IconStyle.Filled
+                  LayoutMinHeight: =44
+                  LayoutMinWidth: =0
+                  OnSelect: =Set(varInfoOrigin,"");Navigate(Information)
+                  PaddingBottom: =0
+                  PaddingLeft: =3
+                  PaddingRight: =3
+                  PaddingTop: =0
+                  RadiusBottomLeft: =16
+                  RadiusBottomRight: =16
+                  RadiusTopLeft: =16
+                  RadiusTopRight: =16
+                  Size: =12
+                  Text: ="Info"
+                  Tooltip: =If(Coalesce(ahgDirty,false) || Coalesce(ahgBusy,false) || Coalesce(ahgUnknown,false),"First finish the current action or cancel it using Back.","Info")
+                  Width: =Max(44,(Parent.Width-28)/4)
